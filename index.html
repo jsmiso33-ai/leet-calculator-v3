@@ -1062,6 +1062,101 @@
     color: #fff;
     border-color: var(--ink);
   }
+
+  /* ===== 기출 기록에서 불러오기 ===== */
+  .import-log-row {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .import-log-btn {
+    background: none;
+    border: 1px solid var(--line);
+    padding: 8px 16px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }
+  .import-log-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .import-icon {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .import-log-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    width: 420px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 4px;
+  }
+  .import-log-list {
+    padding: 6px 0;
+  }
+  .import-log-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--ink);
+    border-bottom: 1px solid #f0ede6;
+  }
+  .import-log-item:last-child { border-bottom: none; }
+  .import-log-item:hover { background: #faf8f3; }
+  .import-log-item .ili-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 50px;
+  }
+  .import-log-item .ili-scores {
+    flex: 1;
+    margin-left: 12px;
+    color: var(--ink-soft);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .import-log-item .ili-date {
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-left: 8px;
+  }
+  .import-log-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-size: 12px;
+  }
+  .import-log-applied {
+    display: inline-block;
+    padding: 3px 8px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 11px;
+    border-radius: 2px;
+    margin-left: 8px;
+    animation: fadeIn 0.3s;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 </style>
 </head>
 <body>
@@ -1268,6 +1363,16 @@
     <section class="input-area">
       <div class="section-label">정량 점수 입력</div>
       <div class="section-desc">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장됩니다.</div>
+
+      <!-- 기출 기록에서 불러오기 -->
+      <div class="import-log-row" id="importLogRow">
+        <button class="import-log-btn" id="importLogBtn" onclick="toggleImportLog()">
+          <span class="import-icon">↓</span> 기출 풀이 기록에서 불러오기
+        </button>
+        <div class="import-log-dropdown" id="importLogDropdown" style="display:none;">
+          <div class="import-log-list" id="importLogList"></div>
+        </div>
+      </div>
 
       <div class="schools-input-grid">
         <div class="field">
@@ -3922,6 +4027,119 @@ function buildSchoolChips() {
 function syncFromCalcTab() {
   // 계산기 탭의 가장 최근 선택된 학년도 결과 활용은 복잡하므로,
   // 사용자가 직접 입력하도록 두는 게 안전함. 별도 동기화 로직은 생략.
+}
+
+// ===== 기출 기록에서 LEET 점수 불러오기 =====
+function toggleImportLog() {
+  const dd = document.getElementById('importLogDropdown');
+  if (dd.style.display === 'none') {
+    buildImportLogList();
+    dd.style.display = 'block';
+    // 바깥 클릭 시 닫기
+    setTimeout(() => {
+      document.addEventListener('click', closeImportLogOutside);
+    }, 0);
+  } else {
+    dd.style.display = 'none';
+    document.removeEventListener('click', closeImportLogOutside);
+  }
+}
+
+function closeImportLogOutside(e) {
+  const row = document.getElementById('importLogRow');
+  if (!row.contains(e.target)) {
+    document.getElementById('importLogDropdown').style.display = 'none';
+    document.removeEventListener('click', closeImportLogOutside);
+  }
+}
+
+function buildImportLogList() {
+  const list = document.getElementById('importLogList');
+  if (!logEntries || logEntries.length === 0) {
+    list.innerHTML = '<div class="import-log-empty">기출 풀이 기록이 없습니다.<br>기출 풀이 기록 탭에서 먼저 점수를 기록하세요.</div>';
+    return;
+  }
+
+  // 최신순 정렬
+  const sorted = [...logEntries].sort((a, b) => {
+    if (a.date && b.date) return b.date.localeCompare(a.date);
+    return (b.createdAt || '').localeCompare(a.createdAt || '');
+  });
+
+  list.innerHTML = sorted.map((entry, idx) => {
+    const result = calcForYear(entry.year, entry.eon, entry.chu);
+    if (!result || !result.eon || !result.chu) return '';
+
+    const eonStd = result.eon.std !== null ? result.eon.std.toFixed(1) : '—';
+    const chuStd = result.chu.std !== null ? result.chu.std.toFixed(1) : '—';
+    const eonPct = result.eon.pct !== null && result.eon.pct !== undefined ? result.eon.pct.toFixed(1) : '—';
+    const chuPct = result.chu.pct !== null && result.chu.pct !== undefined ? result.chu.pct.toFixed(1) : '—';
+
+    const dateStr = entry.date || '';
+    const memo = entry.memo ? ` (${entry.memo})` : '';
+
+    return `<div class="import-log-item" onclick="applyLogEntry(${idx})" data-idx="${idx}">
+      <span class="ili-year">${entry.year}</span>
+      <span class="ili-scores">언어 ${eonStd} / 추리 ${chuStd} · 백분위 ${eonPct} / ${chuPct}${memo}</span>
+      <span class="ili-date">${dateStr}</span>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  if (list.innerHTML === '') {
+    list.innerHTML = '<div class="import-log-empty">유효한 점수가 있는 기록이 없습니다.</div>';
+  }
+}
+
+function applyLogEntry(sortedIdx) {
+  const sorted = [...logEntries].sort((a, b) => {
+    if (a.date && b.date) return b.date.localeCompare(a.date);
+    return (b.createdAt || '').localeCompare(a.createdAt || '');
+  });
+  const entry = sorted[sortedIdx];
+  if (!entry) return;
+
+  const result = calcForYear(entry.year, entry.eon, entry.chu);
+  if (!result || !result.eon || !result.chu) return;
+
+  // 표준점수 적용
+  if (result.eon.std !== null) {
+    schState.eonStd = parseFloat(result.eon.std.toFixed(1));
+    document.getElementById('schEonStd').value = schState.eonStd;
+  }
+  if (result.chu.std !== null) {
+    schState.chuStd = parseFloat(result.chu.std.toFixed(1));
+    document.getElementById('schChuStd').value = schState.chuStd;
+  }
+
+  // 백분위 적용
+  if (result.eon.pct !== null && result.eon.pct !== undefined) {
+    schState.eonPct = parseFloat(result.eon.pct.toFixed(1));
+    const el = document.getElementById('schEonPct');
+    if (el) el.value = schState.eonPct;
+  }
+  if (result.chu.pct !== null && result.chu.pct !== undefined) {
+    schState.chuPct = parseFloat(result.chu.pct.toFixed(1));
+    const el = document.getElementById('schChuPct');
+    if (el) el.value = schState.chuPct;
+  }
+
+  // 저장 + 렌더링
+  saveSchInput(schState);
+  renderSchools();
+
+  // 드롭다운 닫기
+  document.getElementById('importLogDropdown').style.display = 'none';
+  document.removeEventListener('click', closeImportLogOutside);
+
+  // 적용 완료 표시
+  const btn = document.getElementById('importLogBtn');
+  const badge = document.createElement('span');
+  badge.className = 'import-log-applied';
+  badge.textContent = `${entry.year}학년도 적용됨`;
+  const oldBadge = btn.parentElement.querySelector('.import-log-applied');
+  if (oldBadge) oldBadge.remove();
+  btn.after(badge);
+  setTimeout(() => badge.remove(), 3000);
 }
 
 restoreSchInputs();
