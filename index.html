@@ -802,7 +802,7 @@
 
   .schools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
     gap: 16px;
   }
 
@@ -1044,8 +1044,8 @@
   .sch-chip {
     padding: 5px 11px;
     border: 1px solid var(--line);
-    background: #faf8f3;
-    border-radius: 2px;
+    background: #fff;
+    border-radius: 4px;
     font-family: 'IBM Plex Sans KR', sans-serif;
     font-size: 12px;
     color: var(--ink-soft);
@@ -1056,11 +1056,31 @@
   .sch-chip:hover {
     border-color: var(--ink);
     color: var(--ink);
+    background: #f5f3ee;
   }
+  /* 지역별 active 색상 */
   .sch-chip.active {
-    background: var(--ink);
     color: #fff;
-    border-color: var(--ink);
+    border-color: transparent;
+  }
+  .sch-chip-group[data-region="서울"] .sch-chip.active {
+    background: var(--accent);
+  }
+  .sch-chip-group[data-region="경기/인천"] .sch-chip.active {
+    background: #1565c0;
+  }
+  .sch-chip-group[data-region="지방"] .sch-chip.active {
+    background: #2e7d32;
+  }
+  /* 비활성 상태도 지역별 힌트 */
+  .sch-chip-group[data-region="서울"] .sch-chip:not(.active) {
+    border-left: 3px solid var(--accent);
+  }
+  .sch-chip-group[data-region="경기/인천"] .sch-chip:not(.active) {
+    border-left: 3px solid #1565c0;
+  }
+  .sch-chip-group[data-region="지방"] .sch-chip:not(.active) {
+    border-left: 3px solid #2e7d32;
   }
 
   /* ===== 기출 기록에서 불러오기 ===== */
@@ -1157,6 +1177,98 @@
     animation: fadeIn 0.3s;
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ===========================================================================
+     모바일 최적화
+     =========================================================================== */
+
+  /* 전체 레이아웃 */
+  @media (max-width: 640px) {
+    .container { padding: 0 12px; }
+    .masthead { padding: 20px 16px; flex-direction: column; gap: 8px; }
+    .masthead h1 { font-size: 22px; }
+    .masthead .subtitle { font-size: 12px; }
+    .masthead .meta { font-size: 10px; text-align: left; }
+  }
+
+  /* 탭 메뉴 */
+  @media (max-width: 640px) {
+    .tabs { gap: 0; }
+    .tab-btn { padding: 10px 10px; font-size: 12px; flex: 1; text-align: center; }
+  }
+
+  /* 학교 카드 그리드: 모바일에서 1열 */
+  @media (max-width: 640px) {
+    .schools-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .school-card { padding: 16px; }
+    .sc-head { flex-direction: column; gap: 4px; }
+    .sc-name { font-size: 16px; }
+    .sc-leet-pct { font-size: 11px; }
+    .sc-total-row { flex-direction: column; gap: 8px; align-items: flex-start; }
+    .sc-total-val { font-size: 26px; }
+    .sc-total-val .denom { font-size: 14px; }
+    .sc-row .sc-area { min-width: 36px; font-size: 10px; }
+    .sc-row .sc-val { min-width: 65px; font-size: 12px; }
+    .sc-row .sc-bar { height: 5px; }
+  }
+
+  /* 정렬 컨트롤 */
+  @media (max-width: 640px) {
+    .schools-controls { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .ctrl-buttons { width: 100%; }
+    .sort-btn { flex: 1; text-align: center; padding: 8px 6px; font-size: 11px; }
+  }
+
+  /* 학교 선택 카드 */
+  @media (max-width: 640px) {
+    details.school-filter-card summary { padding: 12px 16px; font-size: 13px; }
+    .sf-body { padding: 4px 12px 14px; }
+    .sf-quick-actions { gap: 4px; }
+    .sf-quick-actions button { padding: 6px 8px; font-size: 10px; flex: 1; }
+    .sch-chip { padding: 6px 8px; font-size: 11px; }
+    .sch-chip-glabel { font-size: 9px; }
+  }
+
+  /* 기출 기록 불러오기 드롭다운 */
+  @media (max-width: 640px) {
+    .import-log-dropdown { width: 100%; left: 0; right: 0; }
+    .import-log-item { padding: 10px 12px; flex-wrap: wrap; gap: 4px; }
+    .import-log-item .ili-scores { font-size: 10px; margin-left: 0; }
+    .import-log-item .ili-date { font-size: 9px; }
+  }
+
+  /* 점수 입력 영역 */
+  @media (max-width: 640px) {
+    .section-label { font-size: 15px; }
+    .section-desc { font-size: 11px; }
+    .input-area { padding: 16px; }
+    .info-callout { padding: 10px 12px; font-size: 11px; }
+    .info-callout ul { margin-left: 10px; }
+  }
+
+  /* 기출 풀이 기록 탭 */
+  @media (max-width: 640px) {
+    .log-form { padding: 16px; }
+    .log-form-grid { grid-template-columns: 1fr; }
+    .log-entry { padding: 10px 12px; }
+    .log-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .log-stat-card { padding: 10px; }
+  }
+
+  /* 표준점수 계산기 탭 */
+  @media (max-width: 640px) {
+    .result-card { padding: 16px; }
+    .detail-summary { flex-direction: column; gap: 16px; }
+    .chart-container { height: 220px !important; }
+  }
+
+  /* 풋터 */
+  @media (max-width: 640px) {
+    .foot { padding: 16px; font-size: 10px; line-height: 1.6; }
+  }
 </style>
 </head>
 <body>
@@ -1188,7 +1300,7 @@
 
   <section class="input-area">
     <div class="section-label">원점수 입력</div>
-    <div class="section-desc">맞힌 문항 수를 입력하세요. 연도별 문항수 차이(2009·2019 시험제도 변경)는 자동 처리됩니다. <span style="color:var(--gold);font-weight:500;">· 입력값은 자동 저장됩니다</span></div>
+    <div class="section-desc">맞힌 문항 수를 입력하세요. 연도별 문항수 차이(2009·2019 시험제도 변경)는 자동 처리됩니다. 입력란의 최대 문항 수도 선택한 연도에 맞춰 자동으로 조절됩니다. <span style="color:var(--gold);font-weight:500;">· 입력값은 자동 저장됩니다</span></div>
 
     <div class="input-grid">
       <div class="field">
@@ -2529,26 +2641,6 @@ const LAW_SCHOOLS = [
     },
   },
 
-  // ========== 연세대 ==========
-  // 별첨 환산표1(LEET 표점합 → 50~150) + 환산표2(백분위 → 50~150)
-  {
-    name: '연세대', group: '서울', leetRatio: 35.7,
-    leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
-    totalMax: 400,
-    engPF: { toeic: 800, teps: 309, toefl: 90 },  // 일반적 기준 (모집요강 기반)
-    calc(input) {
-      // LEET 환산표1: 168 이상 150, ..., 85 이하 50
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        const sum = input.eonStd + input.chuStd;
-        leet = yonseiLeetTable(sum);
-      }
-      // 학부 환산표2: 100% → 150, 백분위 비례 감소 (대략 80% → 130, 60% → 110, 40% → 95 정도)
-      const gpa = input.gpaPct !== null ? yonseiGpaTable(input.gpaPct) : null;
-      return { leet, gpa, eng: null };
-    },
-  },
-
   // ========== 고려대 ==========
   // 별첨1 학부 환산표 + 별첨2 LEET 환산표 (모두 백분위 기반)
   {
@@ -2565,6 +2657,26 @@ const LAW_SCHOOLS = [
       // 학부: 별첨1 환산표 (4.5만점 평점 + 백분위 → 환산점수)
       // 백분위 100 → 150, 91 → 146, 89 → 141, 85 → 137, 80 → 134
       const gpa = input.gpaPct !== null ? koreaGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 연세대 ==========
+  // 별첨 환산표1(LEET 표점합 → 50~150) + 환산표2(백분위 → 50~150)
+  {
+    name: '연세대', group: '서울', leetRatio: 35.7,
+    leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
+    totalMax: 400,
+    engPF: { toeic: 800, teps: 309, toefl: 90 },  // 일반적 기준 (모집요강 기반)
+    calc(input) {
+      // LEET 환산표1: 168 이상 150, ..., 85 이하 50
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        leet = yonseiLeetTable(sum);
+      }
+      // 학부 환산표2: 100% → 150, 백분위 비례 감소 (대략 80% → 130, 60% → 110, 40% → 95 정도)
+      const gpa = input.gpaPct !== null ? yonseiGpaTable(input.gpaPct) : null;
       return { leet, gpa, eng: null };
     },
   },
@@ -2836,109 +2948,6 @@ const LAW_SCHOOLS = [
     },
   },
 
-  // ========== 강원대 ==========
-  {
-    name: '강원대', group: '지방', leetRatio: 44.0,
-    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
-    totalMax: 350,
-    engPF: { toeic: 720, teps: 308, toefl: 75 },
-    calc(input) {
-      // LEET: 표점합 구간별
-      // 80 미만 → 40, 80~100 → 50 + (표점합-80), 100~140 → 70 + (표점합-100)×2, 140 이상 → 150
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        const sum = input.eonStd + input.chuStd;
-        if (sum < 80) leet = 40;
-        else if (sum < 100) leet = 50 + (sum - 80);
-        else if (sum < 140) leet = 70 + (sum - 100) * 2;
-        else leet = 150;
-      }
-      // 학부: 백분위 구간별
-      // 70 미만 → 40, 70~80 → 60 + (백분위-70), 80~100 → 70 + (백분위-80)×1.5
-      let gpa = null;
-      if (input.gpaPct !== null) {
-        const p = input.gpaPct;
-        if (p < 70) gpa = 40;
-        else if (p < 80) gpa = 60 + (p - 70);
-        else gpa = 70 + (p - 80) * 1.5;
-        gpa = Math.min(100, Math.max(40, gpa));
-      }
-      return { leet, gpa, eng: null };
-    },
-  },
-
-  // ========== 충남대 ==========
-  {
-    name: '충남대', group: '지방', leetRatio: 69.77,
-    leetMax: 120, gpaMax: 100, engMax: 100, engType: 'score',
-    totalMax: 350,
-    engPF: null,
-    calc(input) {
-      // LEET: [(언어 표점 + 추리 표점) × 0.7] - 20
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        leet = (input.eonStd + input.chuStd) * 0.7 - 20;
-        leet = Math.min(120, Math.max(0, leet));
-      }
-      // 학부: 백분율 그대로 100점 만점
-      const gpa = input.gpaPct !== null ? Math.min(100, input.gpaPct) : null;
-      // 영어: 16등급 환산표
-      const eng = cnuEngTable(input.engType, input.engScore);
-      return { leet, gpa, eng };
-    },
-  },
-
-  // ========== 충북대 ==========
-  {
-    name: '충북대', group: '지방', leetRatio: 89.3,
-    leetMax: 200, gpaMax: 100, engMax: null, engType: 'pf',
-    totalMax: 330,
-    engPF: { toeic: 750, teps: 286, toefl: 85 },
-    note: '학부 백분율 81.00 미만 지원 불가',
-    calc(input) {
-      // LEET: (언어 표점 + 추리 표점) × 1.3, 200 초과 시 200
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        leet = (input.eonStd + input.chuStd) * 1.3;
-        leet = Math.min(200, Math.max(0, leet));
-      }
-      // 학부: 3등급 환산표 (93 이상 100, 87 이상 98, 81 이상 96, 81 미만 지원불가)
-      let gpa = null;
-      if (input.gpaPct !== null) {
-        if (input.gpaPct >= 93) gpa = 100;
-        else if (input.gpaPct >= 87) gpa = 98;
-        else if (input.gpaPct >= 81) gpa = 96;
-        else gpa = 0;  // 지원불가지만 일단 0으로 표시
-      }
-      return { leet, gpa, eng: null };
-    },
-  },
-
-  // ========== 경북대 ==========
-  {
-    name: '경북대', group: '지방', leetRatio: 46.4,
-    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
-    totalMax: 300,
-    engPF: { toeic: 800, teps: 310, toefl: 91 },
-    calc(input) {
-      // LEET: 85 + {85 × (언어+추리) / (최고값 × 2)}
-      // 최고값 = 협회 발표 최상위 급간 상한점수, 신리트 기준 언어 ~90, 추리 ~120
-      // 합 환산: 85 + 65 × (sum / 210) 정도로 근사
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        const sum = input.eonStd + input.chuStd;
-        // 모집요강: 85 + 85 × 표점합 / (최고합 × 2... 식이 모호함, 정확히는 (표점합/(최고합×2)) × 85?)
-        // 여기서는 보수적으로 85 + 65×(sum/210) 적용 (만점 150)
-        // 단, 모집요강 텍스트 그대로면 85 + 85×sum/(2×최고)이고 최고를 90+120/2=105로 보면
-        leet = 85 + 65 * (sum / 210);
-        leet = Math.min(150, Math.max(85, leet));
-      }
-      // 학부: 65 + (35 × 백분위 / 100)
-      const gpa = input.gpaPct !== null ? 65 + 35 * input.gpaPct / 100 : null;
-      return { leet, gpa, eng: null };
-    },
-  },
-
   // ========== 부산대 ==========
   {
     name: '부산대', group: '지방', leetRatio: 40.0,
@@ -2962,83 +2971,21 @@ const LAW_SCHOOLS = [
     },
   },
 
-  // ========== 영남대 ==========
+  // ========== 경북대 ==========
   {
-    name: '영남대', group: '지방', leetRatio: 58.8,
-    leetMax: 300, gpaMax: 100, engMax: 100, engType: 'score',
-    totalMax: 700,
-    engPF: null,
+    name: '경북대', group: '지방', leetRatio: 46.4,
+    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 300,
+    engPF: { toeic: 800, teps: 310, toefl: 91 },
     calc(input) {
-      // LEET: (언어 표점 + 추리 표점) ÷ 2 ... 근데 이렇게 하면 만점이 100점대 → 300이 안됨
-      // 모집요강 그대로: ÷2 → 그러면 만점 약 100점 → 300점에 부족
-      // → 실제로는 (언어+추리)/2 × 3 정도 비례 환산일 것 (원본 그대로 ÷ 2 사용)
-      let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        leet = (input.eonStd + input.chuStd) / 2;
-        // 만점 300으로 스케일 조정 (원본 식 ÷2 후 × 3 추정)
-        leet = leet * 3;
-        leet = Math.min(300, Math.max(0, leet));
-      }
-      // 학부: 4등급 환산표
-      let gpa = null;
-      if (input.gpaScore !== null && input.gpaScale) {
-        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
-        if (conv >= 4.0) gpa = 100;
-        else if (conv >= 3.5) gpa = 95;
-        else if (conv >= 3.0) gpa = 90;
-        else gpa = 80;
-      } else if (input.gpaPct !== null) {
-        // 백분위로 근사
-        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;
-        if (estGpa >= 4.0) gpa = 100;
-        else if (estGpa >= 3.5) gpa = 95;
-        else if (estGpa >= 3.0) gpa = 90;
-        else gpa = 80;
-      }
-      // 영어: 3등급 환산표
-      const eng = yuEngTable(input.engType, input.engScore);
-      return { leet, gpa, eng };
-    },
-  },
-
-  // ========== 동아대 (가·나군) ==========
-  {
-    name: '동아대', group: '지방', leetRatio: 51.3,
-    leetMax: 300, gpaMax: 100, engMax: 200, engType: 'score',
-    totalMax: 800,
-    engPF: null,
-    note: '영어 명목 200점이지만 실질 0점 (사실상 P/F)',
-    calc(input) {
-      // LEET: 표점합 구간별 + (언어+추리)/2
-      // 합 90 미만: 200 + (eon+chu)/2
-      // 합 90~100: 210 + (eon+chu)/2
-      // 합 100 이상: 220 + (eon+chu)/2
-      // 상한 80 (자료에는 80인데 만점 300이라 모순) → 280으로 추정
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
         const sum = input.eonStd + input.chuStd;
-        let base = 200;  // 기본점수 추정 (실제로는 모집요강의 base 값)
-        if (sum >= 100) base = 220;
-        else if (sum >= 90) base = 210;
-        leet = base + sum / 2;
-        leet = Math.min(300, Math.max(0, leet));
+        leet = 85 + 65 * (sum / 210);
+        leet = Math.min(150, Math.max(85, leet));
       }
-      // 학부: 85 + (평점/4.5 × 15)
-      let gpa = null;
-      if (input.gpaScore !== null && input.gpaScale) {
-        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
-        gpa = 85 + (conv / 4.5) * 15;
-      } else if (input.gpaPct !== null) {
-        gpa = 85 + (input.gpaPct / 100) * 15;
-      }
-      // 영어: 명목 200 만점이지만 기본점수 200이라 사실상 통과만 하면 만점
-      let eng = null;
-      if (input.engScore !== null) {
-        const std = { toefl: 68, toeic: 600, teps: 255 };
-        if (input.engScore >= (std[input.engType] || Infinity)) eng = 200;
-        else eng = 0;
-      }
-      return { leet, gpa, eng };
+      const gpa = input.gpaPct !== null ? 65 + 35 * input.gpaPct / 100 : null;
+      return { leet, gpa, eng: null };
     },
   },
 
@@ -3046,16 +2993,14 @@ const LAW_SCHOOLS = [
   {
     name: '전남대', group: '지방', leetRatio: 42.6,
     leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
-    totalMax: 500,  // 1단계 350 + 2단계 100 + ... 실제 1단계 350
+    totalMax: 500,
     engPF: { toeic: 750, teps: 285, toefl: 85 },
     calc(input) {
-      // LEET: (언어 표점 + 추리 표점) + 5, 150 초과 시 150, 75 미만 시 75
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
         leet = input.eonStd + input.chuStd + 5;
         leet = Math.min(150, Math.max(75, leet));
       }
-      // 학부: 77.5 × 백분율 / 100 + 72.5, 119 미만 시 119
       let gpa = null;
       if (input.gpaPct !== null) {
         gpa = 77.5 * input.gpaPct / 100 + 72.5;
@@ -3074,7 +3019,6 @@ const LAW_SCHOOLS = [
     engPF: { toeic: 700, teps: 300, toefl: 80 },
     note: 'LEET 환산이 시그모이드 함수',
     calc(input) {
-      // LEET: 18.6 / [1 + e^(-0.13×(x-110))] + 21.5
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
         const x = input.eonStd + input.chuStd;
@@ -3082,37 +3026,77 @@ const LAW_SCHOOLS = [
         else if (x < 75) leet = 21.5;
         else leet = 18.6 / (1 + Math.exp(-0.13 * (x - 110))) + 21.5;
       }
-      // 학부: 100점 만점 환산 → 구간별 (98~100 15, ..., 70~74 6, 69 이하 0)
       const gpa = input.gpaPct !== null ? jbnuGpaTable(input.gpaPct) : null;
       return { leet, gpa, eng: null };
     },
   },
 
-  // ========== 원광대 ==========
+  // ========== 충남대 ==========
   {
-    name: '원광대', group: '지방', leetRatio: 54.5,
-    leetMax: 40, gpaMax: 20, engMax: 20, engType: 'score',
-    totalMax: 100,
+    name: '충남대', group: '지방', leetRatio: 69.77,
+    leetMax: 120, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 350,
     engPF: null,
     calc(input) {
-      // LEET: (평균점수 + 72) × 2 / 7, 환산점수 28~40
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
-        const avg = (input.eonStd + input.chuStd) / 2;
-        leet = (avg + 72) * 2 / 7;
-        leet = Math.min(40, Math.max(28, leet));
+        leet = (input.eonStd + input.chuStd) * 0.7 - 20;
+        leet = Math.min(120, Math.max(0, leet));
       }
-      // 학부: (평점/4.5 × 2) + 18
-      let gpa = null;
-      if (input.gpaScore !== null && input.gpaScale) {
-        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
-        gpa = (conv / 4.5) * 2 + 18;
-      } else if (input.gpaPct !== null) {
-        gpa = (input.gpaPct / 100) * 2 + 18;
-      }
-      // 영어: 점수반영 (TOEIC 750~950 등)
-      const eng = wonkwangEngTable(input.engType, input.engScore);
+      const gpa = input.gpaPct !== null ? Math.min(100, input.gpaPct) : null;
+      const eng = cnuEngTable(input.engType, input.engScore);
       return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 충북대 ==========
+  {
+    name: '충북대', group: '지방', leetRatio: 89.3,
+    leetMax: 200, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 330,
+    engPF: { toeic: 750, teps: 286, toefl: 85 },
+    note: '학부 백분율 81.00 미만 지원 불가',
+    calc(input) {
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) * 1.3;
+        leet = Math.min(200, Math.max(0, leet));
+      }
+      let gpa = null;
+      if (input.gpaPct !== null) {
+        if (input.gpaPct >= 93) gpa = 100;
+        else if (input.gpaPct >= 87) gpa = 98;
+        else if (input.gpaPct >= 81) gpa = 96;
+        else gpa = 0;
+      }
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 강원대 ==========
+  {
+    name: '강원대', group: '지방', leetRatio: 44.0,
+    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 350,
+    engPF: { toeic: 720, teps: 308, toefl: 75 },
+    calc(input) {
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        if (sum < 80) leet = 40;
+        else if (sum < 100) leet = 50 + (sum - 80);
+        else if (sum < 140) leet = 70 + (sum - 100) * 2;
+        else leet = 150;
+      }
+      let gpa = null;
+      if (input.gpaPct !== null) {
+        const p = input.gpaPct;
+        if (p < 70) gpa = 40;
+        else if (p < 80) gpa = 60 + (p - 70);
+        else gpa = 70 + (p - 80) * 1.5;
+        gpa = Math.min(100, Math.max(40, gpa));
+      }
+      return { leet, gpa, eng: null };
     },
   },
 
@@ -3123,15 +3107,104 @@ const LAW_SCHOOLS = [
     totalMax: 60,
     engPF: { toeic: 710, teps: 334, toefl: 75 },
     calc(input) {
-      // LEET: (언어×0.4 + 추리×0.6) × 0.40
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
         leet = (input.eonStd * 0.4 + input.chuStd * 0.6) * 0.40;
         leet = Math.min(40, Math.max(0, leet));
       }
-      // 학부: 20 × (환산점수/100), 환산점수는 학교별 평점평균표 (백분위로 근사)
       const gpa = input.gpaPct !== null ? 20 * input.gpaPct / 100 : null;
       return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 동아대 (가·나군) ==========
+  {
+    name: '동아대', group: '지방', leetRatio: 51.3,
+    leetMax: 300, gpaMax: 100, engMax: 200, engType: 'score',
+    totalMax: 800,
+    engPF: null,
+    note: '영어 명목 200점이지만 실질 0점 (사실상 P/F)',
+    calc(input) {
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        let base = 200;
+        if (sum >= 100) base = 220;
+        else if (sum >= 90) base = 210;
+        leet = base + sum / 2;
+        leet = Math.min(300, Math.max(0, leet));
+      }
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = 85 + (conv / 4.5) * 15;
+      } else if (input.gpaPct !== null) {
+        gpa = 85 + (input.gpaPct / 100) * 15;
+      }
+      let eng = null;
+      if (input.engScore !== null) {
+        const std = { toefl: 68, toeic: 600, teps: 255 };
+        if (input.engScore >= (std[input.engType] || Infinity)) eng = 200;
+        else eng = 0;
+      }
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 원광대 ==========
+  {
+    name: '원광대', group: '지방', leetRatio: 54.5,
+    leetMax: 40, gpaMax: 20, engMax: 20, engType: 'score',
+    totalMax: 100,
+    engPF: null,
+    calc(input) {
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const avg = (input.eonStd + input.chuStd) / 2;
+        leet = (avg + 72) * 2 / 7;
+        leet = Math.min(40, Math.max(28, leet));
+      }
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = (conv / 4.5) * 2 + 18;
+      } else if (input.gpaPct !== null) {
+        gpa = (input.gpaPct / 100) * 2 + 18;
+      }
+      const eng = wonkwangEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 영남대 ==========
+  {
+    name: '영남대', group: '지방', leetRatio: 58.8,
+    leetMax: 300, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 700,
+    engPF: null,
+    calc(input) {
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) / 2;
+        leet = leet * 3;
+        leet = Math.min(300, Math.max(0, leet));
+      }
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        if (conv >= 4.0) gpa = 100;
+        else if (conv >= 3.5) gpa = 95;
+        else if (conv >= 3.0) gpa = 90;
+        else gpa = 80;
+      } else if (input.gpaPct !== null) {
+        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;
+        if (estGpa >= 4.0) gpa = 100;
+        else if (estGpa >= 3.5) gpa = 95;
+        else if (estGpa >= 3.0) gpa = 90;
+        else gpa = 80;
+      }
+      const eng = yuEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
     },
   },
 ];
@@ -3960,6 +4033,7 @@ function buildSchoolChips() {
     if (gSchools.length === 0) return;
     const groupDiv = document.createElement('div');
     groupDiv.className = 'sch-chip-group';
+    groupDiv.setAttribute('data-region', gName);
     groupDiv.innerHTML = `<div class="sch-chip-glabel">${gName}</div><div class="sch-chip-row"></div>`;
     const row = groupDiv.querySelector('.sch-chip-row');
     gSchools.forEach(s => {
