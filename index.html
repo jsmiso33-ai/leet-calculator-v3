@@ -44,19 +44,19 @@
   :root {
     --bg: #f4f1ea;
     --bg-card: #ffffff;
-    --ink: #1a1a1a;
-    --ink-soft: #4a4a4a;
-    --ink-mute: #8a8a8a;
-    --line: #d8d3c7;
-    --accent: #8b1a1a;
-    --accent-soft: #c44545;
-    --blue: #1e3a5f;
-    --blue-soft: #4a7ba8;
-    --gold: #b8964c;
-    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+    --ink: #111111;
+    --ink-soft: #333333;
+    --ink-mute: #666666;
+    --line: #d0cabe;
+    --accent: #7a1515;
+    --accent-soft: #a83030;
+    --blue: #152e50;
+    --blue-soft: #2e5f8a;
+    --gold: #9a7a30;
+    --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans KR', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   body { min-height: 100vh; padding: 48px 24px 80px; }
   .container { max-width: 1200px; margin: 0 auto; }
 
@@ -243,10 +243,10 @@
     border-bottom: 1px solid #ece8df;
     color: var(--ink);
   }
-  table.score-table td.year { font-weight: 600; }
-  table.score-table td.std { font-weight: 600; color: var(--accent); font-size: 14px; }
+  table.score-table td.year { font-weight: 700; }
+  table.score-table td.std { font-weight: 700; color: var(--accent); font-size: 15px; }
   table.score-table td.std.estimated { font-style: italic; color: var(--accent-soft); }
-  table.score-table td.pct { color: var(--blue); font-weight: 500; }
+  table.score-table td.pct { color: var(--blue); font-weight: 600; }
   table.score-table td.era { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.04em; }
   table.score-table tr:hover { background: #faf8f3; }
 
@@ -461,43 +461,59 @@
   .auth-status {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     justify-content: flex-end;
   }
   .auth-mode {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--ink-soft);
     letter-spacing: 0.02em;
   }
   .auth-mode.signed-in {
-    color: var(--accent);
-    font-weight: 600;
+    color: #2d7a3e;
+    font-weight: 700;
   }
   .auth-btn {
-    background: var(--bg-card);
-    border: 1px solid var(--line);
+    background: #ffffff;
+    border: 2px solid var(--line);
     color: var(--ink);
-    padding: 6px 14px;
+    padding: 10px 22px;
     font-family: 'IBM Plex Sans KR', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.15s;
+    letter-spacing: 0.02em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: inline-flex;
+    align-items: center;
   }
   .auth-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--ink);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
   }
   .auth-btn.signed-in {
     background: transparent;
-    border-color: var(--ink-mute);
+    border: 1px solid var(--ink-mute);
     color: var(--ink-mute);
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: none;
+  }
+  .auth-btn.signed-in:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: transparent;
+    box-shadow: none;
+    transform: none;
   }
   .auth-info {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     color: var(--ink-mute);
     margin-top: 6px;
     text-align: right;
@@ -901,13 +917,13 @@
   }
   .sc-total-val {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--accent);
     letter-spacing: -0.01em;
   }
   .sc-total-val .denom {
-    color: var(--ink-mute);
+    color: var(--ink-soft);
     font-weight: 400;
     font-size: 14px;
     margin-left: 2px;
@@ -930,15 +946,16 @@
     align-items: center;
   }
   .sc-row .sc-area {
-    color: var(--ink-mute);
+    color: var(--ink-soft);
     font-size: 11px;
+    font-weight: 500;
     letter-spacing: 0.03em;
     text-transform: uppercase;
   }
   .sc-row .sc-bar {
-    height: 6px;
-    background: #ece8df;
-    border-radius: 3px;
+    height: 8px;
+    background: #e5e0d5;
+    border-radius: 4px;
     overflow: hidden;
     position: relative;
   }
@@ -952,12 +969,12 @@
   .sc-row .sc-bar-fill.eng { background: var(--gold); }
   .sc-row .sc-val {
     color: var(--ink);
-    font-weight: 600;
+    font-weight: 700;
     text-align: right;
     min-width: 70px;
   }
   .sc-row .sc-val .denom {
-    color: var(--ink-mute);
+    color: var(--ink-soft);
     font-weight: 400;
     font-size: 10px;
   }
@@ -1506,7 +1523,7 @@
     <div class="meta">
       <div id="authStatus" class="auth-status">
         <span class="auth-mode" id="authMode">📱 게스트 모드</span>
-        <button class="auth-btn" id="authBtn">구글 로그인</button>
+        <button class="auth-btn" id="authBtn"><svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px;margin-right:8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google 로그인</button>
       </div>
       <div class="auth-info">
         <span id="authInfo">기록은 이 브라우저에만 저장됩니다</span>
@@ -1825,6 +1842,18 @@
         <button class="sort-btn" data-adm-sort="diff">내 LEET 여유 큰 순</button>
       </div>
     </section>
+
+    <!-- 학교 선택 -->
+    <details class="school-filter-card" id="admFilterCard">
+      <summary>
+        <span class="sf-label">학교 선택</span>
+        <span class="sf-count" id="admFilterCount"></span>
+      </summary>
+      <div class="sf-body">
+        <div class="sf-quick-actions" id="admChipsActions"></div>
+        <div class="sf-chips" id="admChips"></div>
+      </div>
+    </details>
 
     <!-- 테이블 -->
     <section class="adm-table-wrap">
@@ -2658,6 +2687,104 @@ render();
 // 입시결과 비교 탭
 // ===========================================================================
 let admSortKey = 'leet-cut';
+let admSelectedSchools = null; // null = 전체, 배열 = 선택된 학교만
+
+function buildAdmChips() {
+  const wrap = document.getElementById('admChips');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  const selSet = (admSelectedSchools === null)
+    ? new Set(Object.keys(ADMISSION_2026))
+    : new Set(admSelectedSchools);
+
+  const groups = { '서울': [], '경기/인천': [], '지방': [] };
+  for (const name of Object.keys(ADMISSION_2026)) {
+    const school = LAW_SCHOOLS.find(s => s.name === name);
+    if (!school) continue;
+    const g = school.group || '지방';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(name);
+  }
+
+  Object.entries(groups).forEach(([gName, names]) => {
+    if (names.length === 0) return;
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'sch-chip-group';
+    groupDiv.setAttribute('data-region', gName);
+    groupDiv.innerHTML = `<div class="sch-chip-glabel">${gName}</div><div class="sch-chip-row"></div>`;
+    const row = groupDiv.querySelector('.sch-chip-row');
+    names.forEach(name => {
+      const chip = document.createElement('div');
+      chip.className = 'sch-chip';
+      if (selSet.has(name)) chip.classList.add('active');
+      chip.textContent = name;
+      chip.addEventListener('click', () => {
+        const cur = (admSelectedSchools === null)
+          ? new Set(Object.keys(ADMISSION_2026))
+          : new Set(admSelectedSchools);
+        if (cur.has(name)) cur.delete(name);
+        else cur.add(name);
+        if (cur.size === Object.keys(ADMISSION_2026).length) {
+          admSelectedSchools = null;
+        } else {
+          admSelectedSchools = [...cur];
+        }
+        chip.classList.toggle('active');
+        updateAdmFilterCount();
+        renderAdmission();
+      });
+      row.appendChild(chip);
+    });
+    wrap.appendChild(groupDiv);
+  });
+
+  // 빠른 선택 버튼
+  const actions = document.getElementById('admChipsActions');
+  if (actions) {
+    actions.innerHTML = `
+      <button data-action="all">전체 선택</button>
+      <button data-action="seoul">서울권만</button>
+      <button data-action="metro">서울/경기·인천</button>
+      <button data-action="clear">선택 해제</button>
+    `;
+    actions.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const a = btn.dataset.action;
+        if (a === 'all') {
+          admSelectedSchools = null;
+        } else if (a === 'clear') {
+          admSelectedSchools = [];
+        } else if (a === 'seoul') {
+          admSelectedSchools = Object.keys(ADMISSION_2026).filter(name => {
+            const s = LAW_SCHOOLS.find(x => x.name === name);
+            return s && s.group === '서울';
+          });
+        } else if (a === 'metro') {
+          admSelectedSchools = Object.keys(ADMISSION_2026).filter(name => {
+            const s = LAW_SCHOOLS.find(x => x.name === name);
+            return s && (s.group === '서울' || s.group === '경기/인천');
+          });
+        }
+        buildAdmChips();
+        updateAdmFilterCount();
+        renderAdmission();
+      });
+    });
+  }
+  updateAdmFilterCount();
+}
+
+function updateAdmFilterCount() {
+  const countEl = document.getElementById('admFilterCount');
+  if (!countEl) return;
+  const total = Object.keys(ADMISSION_2026).length;
+  if (admSelectedSchools === null) {
+    countEl.textContent = `전체 ${total}개 표시 중`;
+  } else {
+    countEl.textContent = `${admSelectedSchools.length} / ${total}개 표시 중`;
+  }
+}
 
 function renderAdmission() {
   // 내 점수 요약
@@ -2678,9 +2805,13 @@ function renderAdmission() {
     </div>
   `;
 
-  // 25개교 데이터 빌드
+  // 25개교 데이터 빌드 (필터 적용)
+  const admFilter = (admSelectedSchools === null)
+    ? null
+    : new Set(admSelectedSchools);
   const rows = [];
   for (const [name, ad] of Object.entries(ADMISSION_2026)) {
+    if (admFilter && !admFilter.has(name)) continue;
     const school = LAW_SCHOOLS.find(s => s.name === name);
     if (!school) continue;
 
@@ -2797,6 +2928,10 @@ function renderAdmission() {
 
   // 렌더링
   const tbody = document.getElementById('admTableBody');
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px 20px;color:var(--ink-mute);font-style:italic;">선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.</td></tr>`;
+    return;
+  }
   tbody.innerHTML = rows.map(r => {
     const subHtml = r.subText ? `<span class="adm-school-sub">${r.subText}</span>` : '';
     // title 속성용 plain text (HTML 태그 제거)
@@ -2831,7 +2966,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + target));
     if (target === 'log') renderLog();
-    if (target === 'admission') renderAdmission();
+    if (target === 'admission') { buildAdmChips(); renderAdmission(); }
   });
 });
 
@@ -2870,7 +3005,7 @@ function updateAuthUI() {
   } else {
     mode.textContent = '📱 게스트 모드';
     mode.classList.remove('signed-in');
-    btn.textContent = '구글 로그인';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px;margin-right:8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google 로그인';
     btn.classList.remove('signed-in');
     info.textContent = '기록은 이 브라우저에만 저장됩니다';
   }
