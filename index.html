@@ -4530,7 +4530,7 @@ const ADMISSION_2026 = {
     // 커트라인은 표점합 기준. 학교 환산(200점 만점)과 체계가 달라 직접 비교 불가
     year: 2026, enrolled: 124,
     leet: { val: 140.9, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 96.8%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.8%' },
     ref: '언어 백분위 50%=96.2, 추리 백분위 50%=97.3',
   },
   '연세대': {
@@ -4542,7 +4542,7 @@ const ADMISSION_2026 = {
   '성균관대': {
     year: 2026, enrolled: 132,
     leet: { val: 136.6, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 96.4%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.4%' },
   },
   '한양대': {
     year: 2026, enrolled: 105,
@@ -4552,8 +4552,8 @@ const ADMISSION_2026 = {
   '서강대': {
     year: 2026, enrolled: 42,
     leet: { val: 125.6, max: null, label: 'LEET 가군 (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '가군 93.8% / 나군 96.1%' },
-    ref: '나군 LEET 50%=123.2',
+    gpa:  { val: null, max: null, label: '학점', unit: '', note: '93.8%' },
+    ref: '나군 LEET 50%=123.2 · 학점 나군 96.1%',
   },
   '한국외대': {
     year: 2026, enrolled: 55,
@@ -4564,7 +4564,7 @@ const ADMISSION_2026 = {
   '경희대': {
     year: 2026, enrolled: 65,
     leet: { val: 135.3, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 97.97%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '97.97%' },
   },
   '이화여대': {
     year: 2026, enrolled: 106,
@@ -4575,7 +4575,7 @@ const ADMISSION_2026 = {
   '서울시립대': {
     year: 2026, enrolled: 55,
     leet: { val: 132.0, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 97.4%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '97.4%' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 960' },
   },
   '중앙대': {
@@ -4588,24 +4588,24 @@ const ADMISSION_2026 = {
     // 총점 기준 상위50% 학생의 정량점수. LEET 표점합=55.5+74.2=129.7
     year: 2026, enrolled: 44,
     leet: { val: 129.7, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 97.7%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '97.7%' },
     ref: '언어 55.5 + 추리 74.2',
   },
   '아주대': {
     // 가군 기준 (최종석차 기준, 상위25%가 50%보다 높을 수 있음)
     year: 2026, enrolled: 55,
     leet: { val: 134.0, max: null, label: 'LEET 가군 (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '가군 97.8% / 나군 96.0%' },
-    eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 가군 890 / 나군 955' },
-    ref: '나군 LEET 50%=129.7',
+    gpa:  { val: null, max: null, label: '학점', unit: '', note: '97.8%' },
+    eng:  { val: null, max: null, label: '영어', unit: '', note: '890' },
+    ref: '나군 LEET 50%=129.7 · 학점 나군 96.0% · 영어 나군 955',
   },
   '인하대': {
     // 가군/나군 평균. LEET 표점합, 학부 GPA 4.5만점, 영어 TOEIC
     year: 2026, enrolled: 54,
     leet: { val: 125.2, max: null, label: 'LEET 가군 (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '가군 4.01 / 나군 4.23 (4.5만점)' },
-    eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 가군 970 / 나군 975' },
-    ref: '나군 LEET 50%=125.5',
+    gpa:  { val: null, max: null, label: '학점 GPA', unit: '', note: '4.01 / 4.5' },
+    eng:  { val: null, max: null, label: '영어', unit: '', note: '970' },
+    ref: '나군 LEET 50%=125.5 · 학점 나군 4.23 · 영어 나군 975',
   },
   '부산대': {
     // 자체 환산점수 30점 만점 체계
@@ -4617,37 +4617,37 @@ const ADMISSION_2026 = {
   '경북대': {
     year: 2026, enrolled: 132,
     leet: { val: 127.5, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 96.7%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.7%' },
   },
   '전남대': {
     // 가군일반/나군일반 중 나군 기준 (모집인원 더 많음)
     year: 2026, enrolled: 126,
     leet: { val: 125.2, max: null, label: 'LEET 나군 (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '나군 97.8% / 가군일반 97.0%' },
-    ref: '가군일반 LEET 50%=125.5, 가군특별 125.1',
+    gpa:  { val: null, max: null, label: '학점', unit: '', note: '97.8%' },
+    ref: '가군일반 LEET 50%=125.5 · 학점 가군 97.0%',
   },
   '전북대': {
     year: 2026, enrolled: 88,
     leet: { val: 123.1, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 96.6%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.6%' },
   },
   '충남대': {
     // 자체 환산 120점/100점/100점 체계
     year: 2026, enrolled: 110,
     leet: { val: 66.24, max: 120, label: 'LEET 환산', unit: '/ 120' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학부 환산 98.10 / 100' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '98.1%' },
     eng:  { val: 100, max: 100, label: '영어 환산', unit: '/ 100' },
   },
   '충북대': {
     // 자체 환산 200점/100점 체계
     year: 2026, enrolled: 77,
     leet: { val: 168.61, max: 200, label: 'LEET 환산', unit: '/ 200' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학점 백분위 98.0%' },
+    gpa:  { val: null, max: null, label: '학부', unit: '', note: '98.0%' },
   },
   '강원대': {
     year: 2026, enrolled: 41,
     leet: { val: 125.4, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부', unit: '', note: '학부 95.9 / 100점' },
+    gpa:  { val: null, max: null, label: '학점', unit: '', note: '95.9%' },
   },
   '제주대': {
     // 자체 환산 40점/20점 체계 (가군 기준)
@@ -4659,19 +4659,19 @@ const ADMISSION_2026 = {
   '동아대': {
     year: 2026, enrolled: 86,
     leet: { val: 120.9, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: 'GPA 4.03 / 4.5만점' },
+    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.03 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 900' },
   },
   '원광대': {
     year: 2026, enrolled: 62,
     leet: { val: 116.2, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: 'GPA 4.12 / 4.5만점' },
+    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.12 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 935' },
   },
   '영남대': {
     year: 2026, enrolled: 76,
     leet: { val: 120.5, max: null, label: 'LEET (표점합)', unit: '' },
-    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: 'GPA 4.18 / 4.5만점' },
+    gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.18 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 965' },
   },
 };
