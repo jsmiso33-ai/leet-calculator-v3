@@ -1,0 +1,4258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LEET 표준점수 계산기 · 2009–2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --bg-card: #ffffff;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-mute: #8a8a8a;
+    --line: #d8d3c7;
+    --accent: #8b1a1a;
+    --accent-soft: #c44545;
+    --blue: #1e3a5f;
+    --blue-soft: #4a7ba8;
+    --gold: #b8964c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'IBM Plex Sans KR', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; padding: 48px 24px 80px; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .title-block h1 {
+    font-family: 'Gowun Batang', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .title-block .subtitle {
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .meta {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+  }
+  .meta .red { color: var(--accent); font-weight: 600; }
+
+  section.input-area {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+  }
+  .section-label {
+    font-family: 'Gowun Batang', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    background: var(--accent);
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 20px;
+    margin-left: 16px;
+  }
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 640px) { .input-grid { grid-template-columns: 1fr; } }
+  .field label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .field label .max { color: var(--ink-mute); font-size: 11px; margin-left: 6px; }
+  .field input[type="number"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #faf8f3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input[type="number"]:focus { border-color: var(--accent); background: #fff; }
+
+  .year-selector { margin-top: 8px; }
+  .year-selector .y-label { font-size: 12px; color: var(--ink-soft); margin-bottom: 8px; }
+  .year-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .y-chip {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    background: #faf8f3;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--ink-soft);
+    user-select: none;
+  }
+  .y-chip:hover { border-color: var(--ink); }
+  .y-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .y-chip.era-old.active { background: var(--gold); border-color: var(--gold); }
+  .quick-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .quick-actions button {
+    background: none;
+    border: 1px dashed var(--line);
+    padding: 6px 12px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .quick-actions button:hover { border-color: var(--ink); color: var(--ink); }
+
+  .results-area { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+  @media (max-width: 900px) { .results-area { grid-template-columns: 1fr; } }
+  .result-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+  }
+  .result-card .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+  .result-card .head .name {
+    font-family: 'Gowun Batang', serif;
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .result-card .head .max-info {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+  }
+  .result-card .raw-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .result-card .raw-display .num { color: var(--ink); font-weight: 600; }
+
+  table.score-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  table.score-table th {
+    text-align: left;
+    padding: 8px 10px;
+    background: #faf8f3;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  table.score-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ece8df;
+    color: var(--ink);
+  }
+  table.score-table td.year { font-weight: 600; }
+  table.score-table td.std { font-weight: 600; color: var(--accent); font-size: 14px; }
+  table.score-table td.std.estimated { font-style: italic; color: var(--accent-soft); }
+  table.score-table td.pct { color: var(--blue); font-weight: 500; }
+  table.score-table td.era { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.04em; }
+  table.score-table tr:hover { background: #faf8f3; }
+
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+  }
+  .chart-wrap { position: relative; height: 360px; margin-top: 16px; }
+
+  .combined {
+    background: var(--bg-card);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .combined::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 4px;
+    background: var(--accent);
+  }
+  @media (max-width: 640px) { .combined { grid-template-columns: 1fr; gap: 16px; } }
+  .combined .label-block { font-family: 'Gowun Batang', serif; }
+  .combined .label-block .lbl {
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+  .combined .label-block .lbl-main {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .combined .table-block { overflow-x: auto; }
+  .combined table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .combined table th {
+    text-align: left;
+    padding: 6px 12px 10px;
+    border-bottom: 1px solid var(--line);
+    background: #faf8f3;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .combined table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ece8df;
+    color: var(--ink);
+  }
+  .combined table tr:last-child td { border-bottom: none; }
+  .combined table tr:hover td { background: #faf8f3; }
+  .combined table td.total {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+  }
+  .combined table td.year { font-weight: 700; color: var(--ink); }
+
+  /* Detail viewer */
+  details.detail-viewer {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+  }
+  details.detail-viewer summary {
+    padding: 20px 28px;
+    cursor: pointer;
+    font-family: 'Gowun Batang', serif;
+    font-size: 16px;
+    font-weight: 700;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  details.detail-viewer summary::-webkit-details-marker { display: none; }
+  details.detail-viewer summary::after { content: '＋'; color: var(--ink-mute); font-size: 18px; }
+  details.detail-viewer[open] summary::after { content: '－'; }
+  details.detail-viewer summary:hover { background: #faf8f3; }
+  .viewer-body {
+    padding: 8px 28px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 12px 0 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .y-tab {
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .y-tab:hover { color: var(--ink); }
+  .y-tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .conv-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .conv-tables { grid-template-columns: 1fr; } }
+  .conv-table {
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .conv-table .ct-head {
+    background: #faf8f3;
+    padding: 8px 12px;
+    font-family: 'Gowun Batang', serif;
+    font-size: 13px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--line);
+  }
+  table.conv {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  table.conv th, table.conv td {
+    padding: 4px 8px;
+    text-align: center;
+    border-bottom: 1px solid #ece8df;
+  }
+  table.conv th {
+    background: #faf8f3;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--ink-mute);
+  }
+  table.conv td.r { font-weight: 600; }
+  table.conv td.s { color: var(--accent); }
+  table.conv td.s.est { font-style: italic; color: var(--accent-soft); }
+  table.conv td.p { color: var(--blue-soft); font-size: 10px; }
+  table.conv tr.user-hit { background: #fff8d8; }
+  table.conv tr.user-hit td.s { color: var(--accent); font-weight: 700; }
+
+  footer.foot {
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    margin-top: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+  }
+  footer.foot strong { color: var(--ink-soft); font-weight: 600; }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-mute);
+    font-size: 14px;
+    font-style: italic;
+  }
+  .badge-est {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    background: #faf2e0;
+    color: var(--gold);
+    border: 1px solid #e8dab2;
+    border-radius: 2px;
+    font-size: 9px;
+    font-style: normal;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* ===== 로그인 UI ===== */
+  .auth-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .auth-mode {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+  }
+  .auth-mode.signed-in {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .auth-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 6px 14px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .auth-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .auth-btn.signed-in {
+    background: transparent;
+    border-color: var(--ink-mute);
+    color: var(--ink-mute);
+  }
+  .auth-info {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    text-align: right;
+  }
+  .sync-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    padding: 4px 10px;
+    background: #faf8f3;
+    border-radius: 2px;
+    margin-left: 12px;
+  }
+  .sync-indicator.syncing { color: var(--gold); }
+  .sync-indicator.synced { color: #2d7a3e; }
+  .sync-indicator.error { color: var(--accent); }
+  .sync-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ===== 탭 네비게이션 ===== */
+  nav.tab-nav {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 12px 20px;
+    font-family: 'Gowun Batang', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink-mute);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ===== 기출 기록 탭 ===== */
+  .log-input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 800px) {
+    .log-input-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    .log-input-grid { grid-template-columns: 1fr; }
+  }
+  .log-select, .log-date, .log-memo {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: #faf8f3;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .log-memo {
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 13px;
+  }
+  .log-select:focus, .log-date:focus, .log-memo:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .log-preview {
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: #faf8f3;
+    border-left: 3px solid var(--gold);
+    border-radius: 2px;
+  }
+  .preview-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 480px) {
+    .preview-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+  .preview-item { display: flex; flex-direction: column; }
+  .preview-item .pl {
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .preview-item .pv {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .preview-item .pv.total { color: var(--accent); font-size: 22px; }
+
+  .log-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #6b1414; }
+  .btn-primary:disabled { background: #c9c0b4; cursor: not-allowed; }
+  .btn-secondary {
+    background: none;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    padding: 10px 20px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 14px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .btn-secondary:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* 통계 카드 */
+  .log-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 800px) { .log-stats { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 20px 24px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+  }
+  .stat-card .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .stat-card .stat-value {
+    font-family: 'Gowun Batang', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .stat-card .stat-value.accent { color: var(--accent); }
+
+  /* 기록 목록 */
+  .log-list-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .log-list { padding: 16px 28px 24px; }
+  .log-entry {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #ece8df;
+    align-items: center;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-entry .e-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    min-width: 90px;
+  }
+  .log-entry .e-info { display: flex; flex-direction: column; gap: 2px; }
+  .log-entry .e-year {
+    font-family: 'Gowun Batang', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .log-entry .e-detail {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .log-entry .e-memo {
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-style: italic;
+    margin-top: 2px;
+  }
+  .log-entry .e-scores { text-align: right; }
+  .log-entry .e-total {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .log-entry .e-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+  }
+  .log-entry .e-delete {
+    background: none;
+    border: 1px solid var(--line);
+    color: var(--ink-mute);
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .log-entry .e-delete:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  @media (max-width: 600px) {
+    .log-entry { grid-template-columns: 1fr auto; gap: 8px; }
+    .log-entry .e-date { grid-column: 1 / -1; min-width: 0; }
+    .log-entry .e-delete { grid-row: 2; grid-column: 2; align-self: start; }
+  }
+
+  /* ===== 학교별 환산 탭 ===== */
+  .schools-input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .schools-input-grid { grid-template-columns: 1fr; }
+  }
+  .info-callout {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: #faf8f3;
+    border-left: 3px solid var(--gold);
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .info-callout strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .info-callout ul {
+    margin: 8px 0 0 16px;
+    padding: 0;
+  }
+  .info-callout li { margin-bottom: 6px; }
+
+  .schools-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .schools-controls .ctrl-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .ctrl-buttons {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .sort-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 2px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .sort-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .sort-btn.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  .schools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .school-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .school-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 16px 32px rgba(0,0,0,0.08);
+  }
+  .school-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+  }
+  .school-card.tier-low::before { background: var(--blue-soft); }
+  .school-card.tier-mid::before { background: var(--gold); }
+
+  .sc-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+  .sc-name {
+    font-family: 'Gowun Batang', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .sc-leet-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.02em;
+  }
+  .sc-leet-pct .num {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .sc-total-row {
+    margin: 10px 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #ece8df;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .sc-total-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .sc-total-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.01em;
+  }
+  .sc-total-val .denom {
+    color: var(--ink-mute);
+    font-weight: 400;
+    font-size: 14px;
+    margin-left: 2px;
+  }
+  .sc-total-val.empty { color: var(--ink-mute); font-size: 16px; }
+  .sc-pct-mini {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--blue);
+    margin-top: 2px;
+  }
+
+  .sc-rows { display: flex; flex-direction: column; gap: 6px; }
+  .sc-row {
+    display: grid;
+    grid-template-columns: 70px 1fr auto;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    align-items: center;
+  }
+  .sc-row .sc-area {
+    color: var(--ink-mute);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+  .sc-row .sc-bar {
+    height: 6px;
+    background: #ece8df;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .sc-row .sc-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+  .sc-row .sc-bar-fill.gpa { background: var(--blue); }
+  .sc-row .sc-bar-fill.eng { background: var(--gold); }
+  .sc-row .sc-val {
+    color: var(--ink);
+    font-weight: 600;
+    text-align: right;
+    min-width: 70px;
+  }
+  .sc-row .sc-val .denom {
+    color: var(--ink-mute);
+    font-weight: 400;
+    font-size: 10px;
+  }
+  .sc-row .sc-val.empty { color: var(--ink-mute); font-weight: 400; }
+
+  .sc-eng-pf {
+    font-size: 10px;
+    color: var(--ink-mute);
+    background: #faf8f3;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-left: 6px;
+  }
+
+  .sc-note {
+    margin-top: 12px;
+    padding: 6px 10px;
+    background: #faf2e0;
+    border-left: 2px solid var(--gold);
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    border-radius: 2px;
+  }
+
+  /* ===== 학교 선택 카드 ===== */
+  details.school-filter-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  details.school-filter-card summary {
+    padding: 14px 22px;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Gowun Batang', serif;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  details.school-filter-card summary::-webkit-details-marker { display: none; }
+  details.school-filter-card summary::after {
+    content: '＋';
+    color: var(--ink-mute);
+    font-size: 16px;
+    font-weight: 400;
+  }
+  details.school-filter-card[open] summary::after { content: '－'; }
+  details.school-filter-card summary:hover { background: #faf8f3; }
+  .sf-label::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--accent);
+    margin-right: 10px;
+    vertical-align: -2px;
+  }
+  .sf-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 400;
+  }
+  .sf-body {
+    padding: 4px 22px 18px;
+    border-top: 1px solid var(--line);
+  }
+  .sf-quick-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin: 14px 0 14px;
+  }
+  .sf-quick-actions button {
+    background: none;
+    border: 1px dashed var(--line);
+    padding: 5px 10px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .sf-quick-actions button:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .sf-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sch-chip-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .sch-chip-glabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .sch-chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .sch-chip {
+    padding: 5px 11px;
+    border: 1px solid var(--line);
+    background: #faf8f3;
+    border-radius: 2px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .sch-chip:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+  .sch-chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="masthead">
+    <div class="title-block">
+      <h1>LEET 표준점수 환산</h1>
+      <div class="subtitle">법학적성시험 · 2009 — 2026 학년도</div>
+    </div>
+    <div class="meta">
+      <div id="authStatus" class="auth-status">
+        <span class="auth-mode" id="authMode">📱 게스트 모드</span>
+        <button class="auth-btn" id="authBtn">구글 로그인</button>
+      </div>
+      <div class="auth-info">
+        <span id="authInfo">기록은 이 브라우저에만 저장됩니다</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="calc">표준점수 계산기</button>
+    <button class="tab-btn" data-tab="log">기출 풀이 기록</button>
+    <button class="tab-btn" data-tab="schools">학교별 환산점수</button>
+  </nav>
+
+  <div class="tab-panel active" id="tab-calc">
+
+  <section class="input-area">
+    <div class="section-label">원점수 입력</div>
+    <div class="section-desc">맞힌 문항 수를 입력하세요. 연도별 문항수 차이(2009·2019 시험제도 변경)는 자동 처리됩니다. <span style="color:var(--gold);font-weight:500;">· 입력값은 자동 저장됩니다</span></div>
+
+    <div class="input-grid">
+      <div class="field">
+        <label>언어이해 원점수 <span class="max">최대 40</span></label>
+        <input type="number" id="eonInput" min="0" max="40" step="1" placeholder="예: 22" />
+      </div>
+      <div class="field">
+        <label>추리논증 원점수 <span class="max">최대 40</span></label>
+        <input type="number" id="chuInput" min="0" max="40" step="1" placeholder="예: 28" />
+      </div>
+    </div>
+
+    <div class="year-selector">
+      <div class="y-label">비교할 학년도 선택 (복수 선택 가능)</div>
+      <div class="year-chips" id="yearChips"></div>
+      <div class="quick-actions">
+        <button id="selectAll">전체 선택</button>
+        <button id="selectNew">신리트만 (2020~)</button>
+        <button id="selectRecent">최근 5개년</button>
+        <button id="selectClear">선택 해제</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="combined" id="combinedSection" style="display:none">
+    <div class="label-block">
+      <div class="lbl">표준점수 합계</div>
+      <div class="lbl-main">언어 + 추리</div>
+    </div>
+    <div class="table-block">
+      <table id="combinedTable">
+        <thead><tr><th>학년도</th><th>언어이해</th><th>추리논증</th><th>합계</th><th>추정 백분위</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="results-area">
+    <div class="result-card">
+      <div class="head">
+        <span class="name">언어이해</span>
+        <span class="max-info" id="eonHeadMax">— / 30</span>
+      </div>
+      <div class="raw-display">원점수 <span class="num" id="eonRawDisplay">—</span></div>
+      <table class="score-table" id="eonTable">
+        <thead><tr><th>학년도</th><th>구분</th><th>표준점수</th><th>백분위</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="result-card">
+      <div class="head">
+        <span class="name">추리논증</span>
+        <span class="max-info" id="chuHeadMax">— / 40</span>
+      </div>
+      <div class="raw-display">원점수 <span class="num" id="chuRawDisplay">—</span></div>
+      <table class="score-table" id="chuTable">
+        <thead><tr><th>학년도</th><th>구분</th><th>표준점수</th><th>백분위</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <section class="chart-card">
+    <div class="section-label">연도별 표준점수 합계 추이</div>
+    <div class="section-desc">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
+    <div class="chart-wrap"><canvas id="chart"></canvas></div>
+  </section>
+
+  <details class="detail-viewer">
+    <summary>전체 환산표 (연도별 원점수–표준점수–백분위)</summary>
+    <div class="viewer-body">
+      <div class="year-tabs" id="yearTabs"></div>
+      <div id="convTablesArea"></div>
+    </div>
+  </details>
+  </div><!-- /tab-calc -->
+
+  <div class="tab-panel" id="tab-log">
+
+    <!-- 새 기록 입력 -->
+    <section class="input-area">
+      <div class="section-label">새 기출 기록 추가</div>
+      <div class="section-desc">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
+
+      <div class="log-input-grid">
+        <div class="field">
+          <label>학년도 기출</label>
+          <select id="logYear" class="log-select"></select>
+        </div>
+        <div class="field">
+          <label>푼 날짜</label>
+          <input type="date" id="logDate" class="log-date" />
+        </div>
+        <div class="field">
+          <label>언어이해 원점수 <span class="max" id="logEonMax">/ 30</span></label>
+          <input type="number" id="logEon" min="0" max="40" step="1" placeholder="0" />
+        </div>
+        <div class="field">
+          <label>추리논증 원점수 <span class="max" id="logChuMax">/ 40</span></label>
+          <input type="number" id="logChu" min="0" max="40" step="1" placeholder="0" />
+        </div>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>메모 (선택)</label>
+        <input type="text" id="logMemo" class="log-memo" placeholder="예: 시간 부족, 추리 연습장 활용 등" />
+      </div>
+
+      <!-- 미리보기 -->
+      <div class="log-preview" id="logPreview" style="display:none;">
+        <div class="preview-row">
+          <div class="preview-item"><span class="pl">언어이해 표점</span><span class="pv" id="prevEon">—</span></div>
+          <div class="preview-item"><span class="pl">추리논증 표점</span><span class="pv" id="prevChu">—</span></div>
+          <div class="preview-item"><span class="pl">합계</span><span class="pv total" id="prevTotal">—</span></div>
+        </div>
+      </div>
+
+      <div class="log-actions">
+        <button id="logAdd" class="btn-primary">기록 추가</button>
+        <button id="logCancel" class="btn-secondary" style="display:none;">취소</button>
+      </div>
+    </section>
+
+    <!-- 통계 카드 -->
+    <section class="log-stats" id="logStats" style="display:none;">
+      <div class="stat-card">
+        <div class="stat-label">총 풀이 기록</div>
+        <div class="stat-value" id="statCount">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">평균 합계</div>
+        <div class="stat-value" id="statAvg">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">최고 합계</div>
+        <div class="stat-value" id="statMax">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">최근 합계</div>
+        <div class="stat-value" id="statRecent">—</div>
+      </div>
+    </section>
+
+    <!-- 추이 그래프 -->
+    <section class="chart-card" id="logChartCard" style="display:none;">
+      <div class="section-label">시간순 표준점수 추이</div>
+      <div class="section-desc">푼 날짜 순으로 표준점수 합계 변화를 보여줍니다.</div>
+      <div class="chart-wrap"><canvas id="logChart"></canvas></div>
+    </section>
+
+    <!-- 기록 목록 -->
+    <section class="log-list-card">
+      <div style="display:flex;align-items:center;padding: 24px 28px 0;">
+        <div class="section-label" style="margin:0;">기록 목록</div>
+        <span class="sync-indicator" id="syncIndicator" style="display:none;">
+          <span class="sync-dot"></span>
+          <span id="syncText">동기화됨</span>
+        </span>
+      </div>
+      <div class="log-list" id="logList">
+        <div class="empty-state" style="padding: 40px 20px;">
+          아직 기록이 없습니다.<br>
+          위쪽에서 첫 기출 풀이 기록을 추가해보세요.
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /tab-log -->
+
+  <div class="tab-panel" id="tab-schools">
+
+    <!-- 점수 입력 -->
+    <section class="input-area">
+      <div class="section-label">정량 점수 입력</div>
+      <div class="section-desc">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장됩니다.</div>
+
+      <div class="schools-input-grid">
+        <div class="field">
+          <label>LEET 언어이해 표준점수</label>
+          <input type="number" id="schEonStd" min="0" max="100" step="0.1" placeholder="예: 62.5" />
+        </div>
+        <div class="field">
+          <label>LEET 추리논증 표준점수</label>
+          <input type="number" id="schChuStd" min="0" max="100" step="0.1" placeholder="예: 78.9" />
+        </div>
+      </div>
+
+      <div class="schools-input-grid" style="margin-top:12px;">
+        <div class="field">
+          <label>LEET 언어이해 백분위 <span class="max">(서울대·고려대·아주대·부산대용)</span></label>
+          <input type="number" id="schEonPct" min="0" max="100" step="0.1" placeholder="예: 88.5" />
+        </div>
+        <div class="field">
+          <label>LEET 추리논증 백분위 <span class="max">(서울대·고려대·아주대·부산대용)</span></label>
+          <input type="number" id="schChuPct" min="0" max="100" step="0.1" placeholder="예: 95.2" />
+        </div>
+      </div>
+
+      <div class="schools-input-grid" style="margin-top:12px;">
+        <div class="field">
+          <label>GPA 백분위 <span class="max">(0–100)</span></label>
+          <input type="number" id="schGpaPct" min="0" max="100" step="0.01" placeholder="예: 95.5" />
+        </div>
+        <div class="field">
+          <label>GPA <span class="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
+          <div style="display:flex;gap:6px;">
+            <input type="number" id="schGpaScore" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style="flex:1;" />
+            <select id="schGpaScale" class="log-select" style="width:90px;">
+              <option value="4.5">4.5만점</option>
+              <option value="4.3">4.3만점</option>
+              <option value="4.0">4.0만점</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="schools-input-grid" style="margin-top:12px;">
+        <div class="field">
+          <label>공인영어 종류</label>
+          <select id="schEngType" class="log-select">
+            <option value="toeic">TOEIC</option>
+            <option value="teps">TEPS (뉴텝스)</option>
+            <option value="toefl">TOEFL iBT</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>영어 점수</label>
+          <input type="number" id="schEngScore" min="0" max="990" step="1" placeholder="예: 950" />
+        </div>
+      </div>
+
+      <div class="info-callout">
+        <strong>입력 방법 안내</strong>
+        <ul>
+          <li><strong>LEET 표준점수 / 백분위</strong>: 표준점수는 거의 모든 학교에서 사용되고, 백분위는 서울대·고려대·아주대·부산대 등에서 추가로 사용됩니다. 표준점수만 입력해도 대부분 학교 계산은 가능해요.</li>
+          <li><strong>GPA 백분위</strong>: 학교마다 환산식이 달라서 본인 학교에서 받은 백분위(또는 동일 학과 내 본인 위치)를 직접 입력하세요. 학적팀에서 발급받거나 졸업증명서/성적증명서에서 확인할 수 있습니다.</li>
+          <li><strong>GPA 평점</strong>: 한국외대·중앙대·영남대·동아대·원광대·인하대 등은 평점 자체를 환산표에 적용합니다. 백분위만 입력하면 추정 평점으로 계산하니 가능하면 둘 다 입력하세요.</li>
+          <li><strong>영어</strong>: 9개 학교만 점수 반영, 나머지는 P/F입니다 (각 학교 카드에 표시).</li>
+          <li>실제 입시 점수는 정성평가(서류·면접)가 더해져 최종 결정되므로, 이 도구는 <strong>정량 영역 비교용</strong>으로만 사용하세요.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 정렬 + 학교 선택 -->
+    <section class="schools-controls">
+      <div class="ctrl-label">정렬 기준:</div>
+      <div class="ctrl-buttons">
+        <button class="sort-btn active" data-sort="leet">LEET 비중 높은 순</button>
+        <button class="sort-btn" data-sort="alpha">학교명 가나다순</button>
+        <button class="sort-btn" data-sort="myscore">내 점수율 높은 순</button>
+      </div>
+    </section>
+
+    <!-- 학교 선택 -->
+    <details class="school-filter-card" id="schoolFilterCard">
+      <summary>
+        <span class="sf-label">학교 선택</span>
+        <span class="sf-count" id="schoolFilterCount"></span>
+      </summary>
+      <div class="sf-body">
+        <div class="sf-quick-actions" id="schoolChipsActions"></div>
+        <div class="sf-chips" id="schoolChips"></div>
+      </div>
+    </details>
+
+    <!-- 학교별 카드 -->
+    <section class="schools-grid" id="schoolsGrid"></section>
+
+  </div><!-- /tab-schools -->
+
+  <footer class="foot">
+    <strong>표준점수 데이터 출처:</strong> 2009–2025 학년도는 suomessa 블로그에 정리된 법학전문대학원협의회 공식 환산표,
+    2026 학년도는 로연(lawyeon.kr) 환산표를 사용했습니다.<br>
+    <strong>학교별 환산식 출처:</strong> 25개 로스쿨 2026학년도 모집요강 (각 대학교 입학처 공식 자료) 직접 반영.<br>
+    <strong>구리트(2009–2019):</strong> 두 영역 모두 평균 50, 표준편차 10. <strong>신리트(2020~):</strong> 언어 평균 45·SD 9, 추리 평균 60·SD 12.
+    표에 직접 명시된 값은 그대로 사용하고, 표 범위 밖(주로 낮은 원점수)은 평균/표준편차에 기반해 보정 계산합니다.<br>
+    <strong>합계 추정 백분위:</strong> 영역별 백분위의 기하평균으로 근사한 값입니다 (정확한 값은 응시자 전체의 합계 분포가 필요).
+    실제 입시에서는 학교별 환산식으로 다시 계산되므로 이 수치는 직관적 비교용으로만 활용하세요.<br>
+    <strong>학교별 환산점수 주의:</strong> 일부 환산표(고려대 학부, 연세대, 영남대 등)는 모집요강 표가 매우 길거나 일부 구간만 공개되어 있어, 인접 구간으로부터 보간/추정한 값이 포함되어 있습니다. 정확도는 표 데이터가 명시된 구간에서 가장 높습니다.
+  </footer>
+</div>
+
+<script>
+// ===========================================================================
+// LEET 공식 환산표 데이터
+// 각 연도: { items_eon, items_chu, era, eon_mean, chu_mean,
+//   eon_table: { 원점수: [표준점수, 백분위 or null] },
+//   eon_estimated: Set of raw scores that are italic (estimated/extrapolated) }
+// ===========================================================================
+
+const LEET = {
+  2009: {
+    items_eon: 40, items_chu: 40, era: 'old',
+    eon_mean: 28.52, chu_mean: 22.63,
+    eon: {
+      40:[73.3,99.9], 39:[71.3,99.7], 38:[69.3,99.0], 37:[67.2,97.5], 36:[65.2,95.0],
+      35:[63.2,91.6], 34:[61.1,87.1], 33:[59.1,81.5], 32:[57.1,74.8], 31:[55.0,67.2],
+      30:[53.0,59.1], 29:[51.0,51.1], 28:[48.9,43.3], 27:[46.9,35.8], 26:[44.9,29.3],
+      25:[42.8,23.5], 24:[40.8,18.2], 23:[38.8,13.7], 22:[36.7,null], 21:[34.7,null],
+      20:[32.7,null], 19:[30.6,null], 18:[28.6,null], 17:[26.6,null], 16:[24.5,null],
+      15:[22.5,null]
+    },
+    chu: {
+      40:[83.0,100.0], 39:[81.1,100.0], 38:[79.2,100.0], 37:[77.3,99.9], 36:[75.4,99.7],
+      35:[73.5,99.4], 34:[71.6,98.8], 33:[69.7,97.9], 32:[67.8,96.5], 31:[65.9,94.6],
+      30:[64.0,91.9], 29:[62.1,88.0], 28:[60.2,83.6], 27:[58.3,78.8], 26:[56.4,73.0],
+      25:[54.5,66.4], 24:[52.6,59.4], 23:[50.7,52.1], 22:[48.8,44.9], 21:[46.9,37.7],
+      20:[45.0,null], 19:[43.1,null], 18:[41.2,19.3], 17:[39.3,14.5], 16:[37.4,null],
+      15:[35.5,null]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2010: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 20.84, chu_mean: 20.93,
+    eon: {
+      35:[81.8,null], 34:[79.5,null], 33:[77.3,100.0], 32:[75.0,99.8], 31:[72.8,99.5],
+      30:[70.6,98.8], 29:[68.3,97.5], 28:[66.1,95.3], 27:[63.8,92.0], 26:[61.6,87.5],
+      25:[59.3,81.4], 24:[57.1,74.9], 23:[54.8,67.1], 22:[52.6,58.8], 21:[50.4,50.2],
+      20:[48.1,41.4], 19:[45.9,33.1], 18:[43.6,25.7], 17:[41.4,19.3]
+    },
+    chu: {
+      35:[80.1,null], 34:[78.0,99.9], 33:[75.8,99.8], 32:[73.7,99.5], 31:[71.5,98.9],
+      30:[69.4,97.8], 29:[67.3,96.1], 28:[65.1,93.6], 27:[63.0,90.3], 26:[60.8,85.8],
+      25:[58.7,80.3], 24:[56.6,73.8], 23:[54.4,66.1], 22:[52.3,58.0], 21:[50.1,49.7],
+      20:[48.0,41.4], 19:[45.9,33.5], 18:[43.7,26.5], 17:[41.6,null]
+    },
+    eon_est: [35, 34], chu_est: [35, 17]
+  },
+
+  2011: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 23.6, chu_mean: 19.44,
+    eon: {
+      35:[72.8,99.9], 34:[70.8,99.6], 33:[68.8,98.8], 32:[66.8,97.0], 31:[64.8,94.2],
+      30:[62.8,90.4], 29:[60.8,85.7], 28:[58.8,79.9], 27:[56.8,73.2], 26:[54.8,66.0],
+      25:[52.8,58.1], 24:[50.8,50.0], 23:[48.8,42.4], 22:[46.8,35.4], 21:[44.8,29.0],
+      20:[42.8,23.2], 19:[40.8,18.1], 18:[38.8,13.9], 17:[36.8,10.4], 16:[34.8,7.6],
+      15:[32.8,5.5], 14:[30.8,3.9], 13:[28.8,2.6], 12:[26.8,1.7], 11:[24.8,null],
+      10:[22.8,null], 9:[20.8,null]
+    },
+    chu: {
+      35:[83.0,100.0], 34:[80.9,100.0], 33:[78.8,99.8], 32:[76.6,99.8], 31:[74.5,99.6],
+      30:[72.4,99.0], 29:[70.3,98.1], 28:[68.2,96.6], 27:[66.0,94.5], 26:[63.9,91.7],
+      25:[61.8,88.0], 24:[59.7,82.8], 23:[57.6,76.8], 22:[55.4,69.9], 21:[53.3,62.2],
+      20:[51.2,54.3], 19:[49.1,46.2], 18:[47.0,38.0], 17:[44.8,30.5], 16:[42.7,23.7],
+      15:[40.6,17.7], 14:[38.5,12.7], 13:[36.3,8.8], 12:[34.2,5.9], 11:[32.1,3.9],
+      10:[30.0,2.6], 9:[27.9,1.4]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2012: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 20.33, chu_mean: 19.86,
+    eon: {
+      35:[84.7,null], 34:[82.4,null], 33:[80.0,null], 32:[77.6,null], 31:[75.3,null],
+      30:[72.9,99.5], 29:[70.5,98.7], 28:[68.2,97.2], 27:[65.8,95.0], 26:[63.4,91.4],
+      25:[61.1,86.5], 24:[58.7,80.3], 23:[56.4,72.4], 22:[54.0,63.8], 21:[51.6,54.9],
+      20:[49.3,45.7], 19:[46.9,36.9], 18:[44.6,28.9], 17:[42.2,21.8], 16:[39.9,15.9]
+    },
+    chu: {
+      35:[87.3,null], 34:[84.8,null], 33:[82.2,null], 32:[79.9,null], 31:[77.5,99.9],
+      30:[75.0,99.7], 29:[72.6,99.3], 28:[70.1,98.4], 27:[67.7,97.0], 26:[65.2,94.5],
+      25:[62.7,90.6], 24:[60.3,84.9], 23:[57.8,77.6], 22:[55.3,69.0], 21:[52.9,59.7],
+      20:[50.4,50.0], 19:[47.9,40.2], 18:[45.5,31.2], 17:[43.0,23.4], 16:[41.6,null]
+    },
+    eon_est: [35, 34, 33, 32, 31], chu_est: [35, 34, 33, 32, 16]
+  },
+
+  2013: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 18.48, chu_mean: 18.86,
+    eon: {
+      35:[88.2,100.0], 34:[85.9,100.0], 33:[83.6,100.0], 32:[81.3,99.9], 31:[79.0,99.9],
+      30:[76.7,99.7], 29:[74.3,99.4], 28:[72.0,98.9], 27:[69.7,97.8], 26:[67.4,95.9],
+      25:[65.1,93.3], 24:[62.8,89.6], 23:[60.5,84.8], 22:[58.1,78.9], 21:[55.8,71.6],
+      20:[53.5,63.6], 19:[51.2,54.8], 18:[48.9,45.5], 17:[46.6,36.7], 16:[44.3,28.4],
+      15:[42.0,21.2]
+    },
+    chu: {
+      35:[88.3,100.0], 34:[85.9,100.0], 33:[83.5,100.0], 32:[81.1,100.0], 31:[78.8,99.9],
+      30:[76.4,99.8], 29:[74.0,99.5], 28:[71.7,98.9], 27:[69.3,97.8], 26:[66.9,95.9],
+      25:[64.6,88.7], 24:[62.2,73.4], 23:[59.8,76.7], 22:[57.4,68.9], 21:[55.1,59.7],
+      20:[52.7,50.2], 19:[50.3,40.9], 18:[48.0,32.5], 17:[38.5,24.8], 16:[36.1,18.3],
+      15:[33.7,13.0]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2014: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 25.1, chu_mean: 22.4,
+    eon: {
+      35:[68.9,99.7], 34:[67.0,98.6], 33:[65.1,95.2], 32:[63.2,92.3], 31:[61.1,87.1],
+      30:[59.4,81.2], 29:[57.5,74.7], 28:[55.6,67.5], 27:[53.7,60.0], 26:[51.8,52.5],
+      25:[49.9,45.1], 24:[48.0,38.2], 23:[46.1,31.8], 22:[44.2,26.2], 21:[42.3,21.3],
+      20:[40.4,16.9], 19:[38.5,13.3], 18:[36.6,10.5], 17:[34.7,8.1], 16:[32.8,6.1],
+      15:[30.9,4.5]
+    },
+    chu: {
+      35:[75.9,100.0], 34:[73.9,99.8], 33:[71.8,99.4], 32:[69.8,98.5], 31:[67.7,97.2],
+      30:[65.6,95.2], 29:[63.6,92.2], 28:[61.5,87.9], 27:[59.5,82.6], 26:[57.4,76.0],
+      25:[55.3,68.3], 24:[53.3,60.5], 23:[51.2,52.5], 22:[49.2,44.8], 21:[47.1,37.2],
+      20:[45.1,29.8], 19:[43.0,23.4], 18:[40.9,17.9], 17:[38.9,13.6], 16:[36.8,10.1],
+      15:[34.8,5.3]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2015: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 24, chu_mean: 21.4,
+    eon: {
+      35:[70.8,99.8], 34:[68.9,99.2], 33:[67.0,97.8], 32:[65.1,95.5], 31:[63.2,92.1],
+      30:[61.3,87.6], 29:[59.4,82.1], 28:[57.5,null], 27:[55.7,68.8], 26:[53.8,61.3],
+      25:[51.9,53.4], 24:[50.0,46.0], 23:[48.1,39.0], 22:[46.2,32.6], 21:[44.3,26.8],
+      20:[42.4,21.6], 19:[40.5,17.2], 18:[38.6,13.5], 17:[36.7,10.2], 16:[34.8,7.7],
+      15:[32.9,5.8]
+    },
+    chu: {
+      35:[79.2,100.0], 34:[77.1,100.0], 33:[74.9,99.8], 32:[72.8,99.5], 31:[70.6,98.9],
+      30:[68.5,97.7], 29:[66.4,95.6], 28:[64.2,92.6], 27:[62.1,88.7], 26:[59.9,83.6],
+      25:[57.8,77.3], 24:[55.7,70.2], 23:[53.5,62.3], 22:[51.4,54.0], 21:[49.2,45.5],
+      20:[47.1,37.3], 19:[44.9,29.7], 18:[42.8,23.0], 17:[40.7,17.6], 16:[38.5,13.0],
+      15:[36.4,9.2]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2016: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 23.21, chu_mean: 19.07,
+    eon: {
+      35:[73.0,99.9], 34:[71.1,99.7], 33:[69.1,98.9], 32:[67.2,97.4], 31:[65.2,95.0],
+      30:[63.3,91.7], 29:[61.3,87.4], 28:[59.3,81.8], 27:[57.4,75.3], 26:[55.4,68.3],
+      25:[53.5,61.0], 24:[51.5,53.4], 23:[49.6,45.5], 22:[47.6,48.1], 21:[45.7,31.3],
+      20:[43.7,24.9], 19:[41.8,19.9], 18:[39.8,15.6], 17:[37.9,12.0], 16:[35.9,9.1],
+      15:[34.0,6.7]
+    },
+    chu: {
+      35:[84.7,100.0], 34:[82.6,100.0], 33:[80.4,100.0], 32:[78.2,100.0], 31:[76.0,99.9],
+      30:[73.8,99.6], 29:[71.7,99.2], 28:[69.5,98.2], 27:[67.3,96.5], 26:[65.1,93.9],
+      25:[62.9,90.4], 24:[60.8,85.7], 23:[58.6,79.7], 22:[56.4,72.5], 21:[54.2,64.7],
+      20:[52.0,56.3], 19:[49.8,47.8], 18:[47.7,39.6], 17:[45.5,32.1], 16:[43.3,25.3],
+      15:[41.1,19.4]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2017: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 21.8, chu_mean: 21.4,
+    eon: {
+      35:[74.9,100.0], 34:[73.0,99.8], 33:[71.1,99.4], 32:[69.3,98.5], 31:[67.4,97.1],
+      30:[65.5,95.0], 29:[63.6,91.9], 28:[61.7,87.7], 27:[59.8,83.0], 26:[57.9,77.4],
+      25:[56.1,70.9], 24:[54.2,63.8], 23:[52.3,56.7], 22:[50.4,49.6], 21:[48.5,42.4],
+      20:[46.6,35.5], 19:[44.8,29.3], 18:[42.9,23.6], 17:[41.0,18.6], 16:[39.1,null],
+      15:[37.2,11.0]
+    },
+    chu: {
+      35:[76.3,100.0], 34:[74.3,99.9], 33:[72.4,99.7], 32:[70.5,99.1], 31:[68.6,98.0],
+      30:[66.6,96.2], 29:[64.7,93.7], 28:[62.8,90.2], 27:[60.9,85.7], 26:[58.9,80.7],
+      25:[57.0,74.7], 24:[55.1,67.3], 23:[53.2,60.0], 22:[51.2,52.8], 21:[49.3,45.7],
+      20:[47.4,38.5], 19:[45.5,31.5], 18:[43.5,25.2], 17:[41.6,null], 16:[39.7,15.7],
+      15:[37.8,null]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2018: {
+    items_eon: 35, items_chu: 35, era: 'old',
+    eon_mean: 21.3, chu_mean: 20.6,
+    eon: {
+      35:[78.2,100.0], 34:[76.2,100.0], 33:[74.2,99.9], 32:[72.2,99.6], 31:[70.2,99.0],
+      30:[68.1,97.8], 29:[66.1,95.9], 28:[64.1,93.0], 27:[62.1,89.0], 26:[60.0,83.9],
+      25:[58.0,78.0], 24:[56.0,71.1], 23:[53.9,63.2], 22:[51.9,55.0], 21:[49.9,47.0],
+      20:[47.9,39.9], 19:[45.8,null], 18:[43.8,25.8], 17:[41.8,null], 15:[37.7,11.5]
+    },
+    chu: {
+      35:[77.4,100.0], 34:[75.5,100.0], 33:[73.6,99.8], 32:[71.7,99.4], 31:[69.8,98.5],
+      30:[67.9,97.2], 29:[66.0,95.2], 28:[64.1,92.6], 27:[62.2,88.8], 26:[60.3,84.1],
+      25:[58.4,78.9], 24:[56.5,72.7], 23:[54.6,65.8], 22:[52.7,58.6], 21:[50.8,51.3],
+      20:[48.9,44.1], 19:[47.0,null], 18:[45.1,null], 17:[43.2,null], 15:[39.4,15.2]
+    },
+    eon_est: [15], chu_est: [15]
+  },
+
+  2019: {
+    items_eon: 30, items_chu: 40, era: 'old',
+    eon_mean: 17.1, chu_mean: 25.3,
+    eon: {
+      30:[81.2,100.0], 29:[78.7,100.0], 28:[76.3,99.9], 27:[73.9,99.6], 26:[71.4,98.9],
+      25:[69.0,97.6], 24:[66.6,95.4], 23:[64.1,92.0], 22:[61.7,87.5], 21:[59.3,81.7],
+      20:[56.9,74.8], 19:[54.4,66.5], 18:[52.2,null], 17:[50.1,null]
+    },
+    chu: {
+      40:[74.3,100.0], 39:[72.7,99.9], 38:[71.1,99.7], 37:[69.5,99.2], 36:[67.8,98.2],
+      35:[66.2,96.6], 34:[64.6,94.2], 33:[63.0,91.1], 32:[61.4,87.5], 31:[59.8,84.2],
+      30:[58.2,78.1], 29:[56.6,72.2], 28:[54.9,66.0], 27:[53.3,59.7], 26:[51.7,53.5],
+      25:[50.1,47.4], 24:[48.5,41.4]
+    },
+    eon_est: [30], chu_est: []
+  },
+
+  2020: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 16.8, chu_mean: 24,
+    eon: {
+      30:[71.9,100.0], 29:[69.9,null], 28:[67.9,99.9], 27:[65.9,99.6], 26:[63.8,98.9],
+      25:[61.7,97.7], 24:[59.6,95.7], 23:[57.5,92.2], 22:[55.4,87.3], 21:[53.4,81.2],
+      20:[51.3,74.1], 19:[49.2,66.1], 18:[47.1,57.4], 17:[45.0,48.5], 16:[42.9,40.0],
+      15:[40.9,32.0], 14:[38.8,25.0], 13:[36.7,null], 12:[34.6,14.6], 11:[32.5,null],
+      10:[30.4,null]
+    },
+    chu: {
+      40:[92.0,100.0], 39:[90.0,null], 38:[88.0,99.8], 37:[86.0,null], 36:[84.0,99.0],
+      35:[82.0,98.1], 34:[79.9,96.5], 33:[77.9,94.3], 32:[75.9,91.2], 31:[73.9,87.5],
+      30:[71.8,83.1], 29:[69.8,77.8], 28:[67.8,72.0], 27:[65.8,65.9], 26:[63.8,59.6],
+      25:[61.7,53.1], 24:[59.7,46.8], 23:[57.7,40.6], 22:[55.7,34.6], 21:[53.6,29.2],
+      20:[51.5,23.4]
+    },
+    eon_est: [12, 11, 10], chu_est: [20]
+  },
+
+  2021: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 15.2, chu_mean: 23,
+    eon: {
+      30:[77.1,100.0], 29:[75.9,100.0], 28:[73.6,100.0], 27:[71.4,99.9], 26:[69.1,99.8],
+      25:[66.9,99.4], 24:[64.6,98.8], 23:[62.4,97.6], 22:[60.1,95.3], 21:[57.9,92.1],
+      20:[55.6,87.6], 19:[53.4,81.6], 18:[51.1,74.4], 17:[48.9,66.1], 16:[46.6,57.0],
+      15:[44.4,47.2], 14:[42.1,37.6], 13:[39.9,28.7], 12:[37.6,20.8], 11:[null,null],
+      10:[null,null]
+    },
+    chu: {
+      40:[96.5,100.0], 39:[94.5,100.0], 38:[92.5,99.9], 37:[90.5,99.7], 36:[88.5,99.4],
+      35:[86.4,98.9], 34:[84.4,98.2], 33:[82.4,97.2], 32:[80.4,95.6], 31:[78.4,93.5],
+      30:[76.4,90.9], 29:[74.4,87.4], 28:[72.4,83.7], 27:[70.4,79.4], 26:[68.3,74.5],
+      25:[66.3,69.0], 24:[64.3,63.0], 23:[62.3,57.4], 22:[60.3,51.2], 21:[58.3,44.9],
+      20:[56.3,38.5]
+    },
+    eon_est: [30], chu_est: []
+  },
+
+  2022: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 17.0, chu_mean: 22.5,
+    eon: {
+      30:[72.4,null], 29:[70.3,null], 28:[68.3,null], 27:[66.2,99.6], 26:[64.1,99.1],
+      25:[62.1,98.1], 24:[60.1,null], 23:[58.1,93.2], 22:[56.0,88.9], 21:[54.0,83.3],
+      20:[52.0,76.7], 19:[49.9,69.1], 18:[47.9,60.8], 17:[45.9,51.9], 16:[43.8,43.2],
+      15:[41.8,35.3], 14:[39.8,28.1], 13:[37.7,null], 12:[35.7,16.2], 11:[33.7,11.6],
+      10:[31.7,7.9]
+    },
+    chu: {
+      40:[96.8,100.0], 39:[94.8,null], 38:[92.6,null], 37:[90.4,null], 36:[88.2,99.6],
+      35:[86.1,98.1], 34:[84.0,null], 33:[81.9,97.2], 32:[79.8,95.5], 31:[77.8,93.3],
+      30:[76.6,90.2], 29:[73.4,86.4], 28:[71.3,81.8], 27:[69.2,76.7], 26:[67.1,70.8],
+      25:[65.0,64.5], 24:[62.8,58.1], 23:[60.7,51.3], 22:[58.6,44.4], 21:[56.5,38.1],
+      20:[54.3,null]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2023: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 16.9, chu_mean: 23.15,
+    eon: {
+      30:[72.5,null], 29:[70.4,null], 28:[68.3,99.8], 27:[66.2,99.0], 26:[64.1,98.0],
+      25:[62.0,97.3], 24:[59.9,95.3], 23:[57.8,92.3], 22:[55.7,87.9], 21:[53.6,82.3],
+      20:[51.5,75.7], 19:[49.3,67.8], 18:[47.2,58.8], 17:[45.1,49.8], 16:[43.0,40.7],
+      15:[40.9,32.1], 14:[38.8,24.5]
+    },
+    chu: {
+      40:[94.8,null], 39:[92.7,null], 38:[90.7,null], 37:[88.6,null], 36:[86.5,99.3],
+      35:[84.5,98.0], 34:[82.4,97.7], 33:[80.4,96.0], 32:[78.3,94.3], 31:[76.2,91.6],
+      30:[74.1,88.1], 29:[72.1,83.9], 28:[70.0,78.8], 27:[68.0,73.1], 26:[65.9,66.9],
+      25:[63.8,60.5], 24:[61.8,53.9], 23:[59.7,47.3], 22:[57.7,40.9], 21:[55.6,34.8],
+      20:[53.5,29.3]
+    },
+    eon_est: [30, 29], chu_est: [40, 39, 38, 37]
+  },
+
+  2024: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 15.25, chu_mean: 22.20,
+    eon: {
+      30:[80.9,100.0], 29:[78.4,100.0], 28:[76.0,100.0], 27:[73.6,null], 26:[71.1,99.9],
+      25:[68.7,null], 24:[66.3,99.4], 23:[63.8,98.6], 22:[61.4,97.1], 21:[59.0,null],
+      20:[56.5,90.3], 19:[54.1,84.3], 18:[51.7,null], 17:[49.3,null], 16:[46.8,null],
+      15:[44.4,null], 14:[42.0,null], 13:[39.5,null], 12:[37.1,null], 11:[34.7,null],
+      10:[32.2,null]
+    },
+    chu: {
+      40:[97.5,100.0], 39:[95.4,100.0], 38:[93.3,null], 37:[91.2,99.9], 36:[89.1,99.8],
+      35:[86.9,null], 34:[84.8,99.1], 33:[82.7,98.3], 32:[80.6,96.9], 31:[78.5,null],
+      30:[76.4,null], 29:[74.3,88.7], 28:[72.2,null], 27:[70.1,null], 26:[68.0,73.3],
+      25:[65.9,66.7], 24:[63.8,null], 23:[61.7,null], 22:[59.6,null], 21:[57.5,null],
+      20:[55.4,null]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2025: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 17.03, chu_mean: 25.08,
+    eon: {
+      30:[73.5,100.0], 29:[71.3,100.0], 28:[69.1,99.9], 27:[66.9,99.7], 26:[64.7,99.1],
+      25:[62.5,98.0], 24:[60.3,96.2], 23:[58.1,93.3], 22:[55.9,89.0], 21:[53.7,83.1],
+      20:[51.5,75.5], 19:[49.3,null], 18:[47.1,57.3], 17:[44.9,null], 16:[42.7,null],
+      15:[40.5,null], 14:[38.3,null], 13:[36.2,null], 12:[34.0,null], 11:[31.8,null],
+      10:[29.6,null]
+    },
+    chu: {
+      40:[91.5,100.0], 39:[89.4,100.0], 38:[87.3,99.8], 37:[85.2,99.4], 36:[83.1,98.7],
+      35:[81.0,97.5], 34:[78.9,95.8], 33:[76.7,93.2], 32:[74.6,89.6], 31:[72.5,85.4],
+      30:[70.4,80.4], 29:[68.3,74.4], 28:[66.2,67.7], 27:[64.1,null], 26:[61.9,null],
+      25:[59.8,null], 24:[57.7,39.4], 23:[55.6,null], 22:[53.5,null], 21:[51.4,null],
+      20:[49.3,null]
+    },
+    eon_est: [], chu_est: []
+  },
+
+  2026: {
+    items_eon: 30, items_chu: 40, era: 'new',
+    eon_mean: 17.18, chu_mean: 22.83,
+    eon: {
+      30:[73.1,100.0], 29:[70.9,100.0], 28:[68.7,100.0], 27:[66.5,99.8], 26:[64.3,99.2],
+      25:[62.1,98.2], 24:[59.9,96.2], 23:[57.7,92.9], 22:[55.5,88.0], 21:[53.3,81.5],
+      20:[51.2,73.5], 19:[49.0,64.6], 18:[46.8,55.4], 17:[44.6,46.1], 16:[42.4,37.2],
+      15:[40.2,28.3], 14:[38.0,19.4], 13:[35.8,10.5], 12:[33.6,1.6], 11:[31.4,0.0],
+      10:[29.2,0.0]
+    },
+    chu: {
+      40:[97.6,100.0], 39:[95.5,100.0], 38:[93.4,100.0], 37:[92.6,100.0], 36:[90.3,99.9],
+      35:[88.0,99.7], 34:[85.7,99.3], 33:[83.4,98.6], 32:[81.1,97.3], 31:[78.8,95.3],
+      30:[76.5,92.5], 29:[74.2,88.7], 28:[71.9,83.6], 27:[69.6,77.5], 26:[67.3,70.9],
+      25:[65.0,63.8], 24:[62.7,56.7], 23:[60.4,49.6], 22:[58.1,42.5], 21:[55.8,35.4],
+      20:[53.5,28.3]
+    },
+    eon_est: [], chu_est: []
+  },
+};
+
+// ===========================================================================
+// 표준점수 체계
+// ===========================================================================
+function getStdParams(era, subject) {
+  if (era === 'old') return { mean: 50, sd: 10 };
+  if (subject === 'eon') return { mean: 45, sd: 9 };
+  return { mean: 60, sd: 12 };
+}
+
+// 만점-원평균-표점평균-표점SD로부터 원점수 SD 역산
+function deriveRawSD(maxItems, rawMean, topStd, stdMean, stdSD) {
+  if (topStd <= stdMean) return null;
+  return (maxItems - rawMean) * stdSD / (topStd - stdMean);
+}
+
+// ===========================================================================
+// 환산 함수: 표가 있으면 룩업, 없으면 평균/SD로 보정 계산
+// ===========================================================================
+function getStdScore(year, subject, raw) {
+  const d = LEET[year];
+  if (!d) return null;
+  if (raw === null || raw < 0) return null;
+  const items = subject === 'eon' ? d.items_eon : d.items_chu;
+  if (raw > items) return null;
+
+  const table = subject === 'eon' ? d.eon : d.chu;
+  const estList = subject === 'eon' ? d.eon_est : d.chu_est;
+
+  // 1) 표에 직접 있는 경우
+  if (table[raw] && table[raw][0] !== null) {
+    const isEst = (estList === 'all') || (Array.isArray(estList) && estList.includes(raw)) || d.isFullyEstimated;
+    return { std: table[raw][0], pct: table[raw][1], estimated: isEst, source: 'table' };
+  }
+
+  // 2) 표에 없는 경우 → 보정 계산
+  // 보정 방식: 표의 가장 가까운 두 점에서 선형 보간, 또는 평균-만점 기준 역산
+  const stdP = getStdParams(d.era, subject);
+  const rawMean = subject === 'eon' ? d.eon_mean : d.chu_mean;
+
+  // 만점 표준점수 찾기 (표에 있으면 사용, 2026이면 d.eon_top/chu_top 사용)
+  let topStd = null;
+  if (table[items] && table[items][0] !== null) {
+    topStd = table[items][0];
+  } else if (subject === 'eon' && d.eon_top !== undefined) {
+    topStd = d.eon_top;
+  } else if (subject === 'chu' && d.chu_top !== undefined) {
+    topStd = d.chu_top;
+  } else {
+    // 표에서 가장 높은 점수 사용
+    const keys = Object.keys(table).map(Number).filter(k => table[k][0] !== null);
+    if (keys.length > 0) {
+      const maxK = Math.max(...keys);
+      // (maxK, table[maxK][0]) ↔ (rawMean, stdP.mean) 두 점으로 직선 외삽
+      const slope = (table[maxK][0] - stdP.mean) / (maxK - rawMean);
+      topStd = stdP.mean + (items - rawMean) * slope;
+    } else {
+      return null;
+    }
+  }
+
+  const rawSD = deriveRawSD(items, rawMean, topStd, stdP.mean, stdP.sd);
+  if (!rawSD) return null;
+  const z = (raw - rawMean) / rawSD;
+  const std = z * stdP.sd + stdP.mean;
+  return { std: Math.max(0, std), pct: null, estimated: true, source: 'computed' };
+}
+
+function calcForYear(year, eonRaw, chuRaw) {
+  const d = LEET[year];
+  if (!d) return null;
+  const eon = (eonRaw !== null) ? getStdScore(year, 'eon', eonRaw) : null;
+  const chu = (chuRaw !== null) ? getStdScore(year, 'chu', chuRaw) : null;
+  return { year, era: d.era, eon, chu };
+}
+
+// ===========================================================================
+// localStorage: 입력값 자동 저장/복원
+// ===========================================================================
+const STORAGE_KEY = 'leet_calculator_state_v1';
+
+function saveState() {
+  try {
+    const data = {
+      eonRaw: state.eonRaw,
+      chuRaw: state.chuRaw,
+      selectedYears: [...state.selectedYears],
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) { /* localStorage 비활성화 환경 무시 */ }
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
+// ===========================================================================
+// State
+// ===========================================================================
+const saved = loadState();
+const state = {
+  selectedYears: new Set(saved?.selectedYears ?? [2023, 2024, 2025, 2026]),
+  eonRaw: saved?.eonRaw ?? null,
+  chuRaw: saved?.chuRaw ?? null,
+  detailYear: 2025,
+};
+
+// ===========================================================================
+// UI
+// ===========================================================================
+function buildYearChips() {
+  const wrap = document.getElementById('yearChips');
+  wrap.innerHTML = '';
+  const years = Object.keys(LEET).map(Number).sort((a,b) => a-b);
+  years.forEach(y => {
+    const chip = document.createElement('div');
+    chip.className = 'y-chip';
+    if (LEET[y].era === 'old') chip.classList.add('era-old');
+    if (state.selectedYears.has(y)) chip.classList.add('active');
+    chip.textContent = y;
+    chip.addEventListener('click', () => {
+      if (state.selectedYears.has(y)) state.selectedYears.delete(y);
+      else state.selectedYears.add(y);
+      chip.classList.toggle('active');
+      saveState();
+      render();
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+function buildYearTabs() {
+  const wrap = document.getElementById('yearTabs');
+  wrap.innerHTML = '';
+  const years = Object.keys(LEET).map(Number).sort((a,b) => a-b);
+  years.forEach(y => {
+    const tab = document.createElement('button');
+    tab.className = 'y-tab';
+    if (state.detailYear === y) tab.classList.add('active');
+    tab.textContent = y;
+    tab.addEventListener('click', () => {
+      state.detailYear = y;
+      buildYearTabs();
+      renderConvTables();
+    });
+    wrap.appendChild(tab);
+  });
+}
+
+function renderConvTables() {
+  const area = document.getElementById('convTablesArea');
+  const y = state.detailYear;
+  const d = LEET[y];
+  if (!d) { area.innerHTML = ''; return; }
+
+  if (d.isFullyEstimated) {
+    area.innerHTML = `
+      <div class="empty-state" style="padding: 20px;">
+        ${y}학년도는 공식 환산표가 아직 정리되지 않았습니다.<br>
+        법률저널 발표 데이터(언어 평균 ${d.eon_mean}·만점 표점 ${d.eon_top} / 추리 평균 ${d.chu_mean}·만점 표점 ${d.chu_top})를 기반으로 추정 계산만 가능합니다.
+      </div>`;
+    return;
+  }
+
+  const buildTable = (subject, table, est, items) => {
+    const subName = subject === 'eon' ? '언어이해' : '추리논증';
+    const keys = Object.keys(table).map(Number).sort((a,b) => b-a);
+    const userRaw = subject === 'eon' ? state.eonRaw : state.chuRaw;
+    let rows = '';
+    keys.forEach(k => {
+      const [s, p] = table[k];
+      const isEst = (Array.isArray(est) && est.includes(k));
+      const isHit = (userRaw !== null && userRaw === k);
+      rows += `<tr class="${isHit ? 'user-hit' : ''}">
+        <td class="r">${k}</td>
+        <td class="s ${isEst ? 'est' : ''}">${s !== null ? s.toFixed(1) : '—'}</td>
+        <td class="p">${p !== null ? p.toFixed(1) : '—'}</td>
+      </tr>`;
+    });
+    return `
+      <div class="conv-table">
+        <div class="ct-head">${subName} <span style="font-weight:400;color:var(--ink-mute);font-size:11px;">${items}문항</span></div>
+        <table class="conv">
+          <thead><tr><th>원점수</th><th>표점</th><th>백분위</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  };
+
+  area.innerHTML = `<div class="conv-tables">
+    ${buildTable('eon', d.eon, d.eon_est, d.items_eon)}
+    ${buildTable('chu', d.chu, d.chu_est, d.items_chu)}
+  </div>`;
+}
+
+// ===========================================================================
+// Render
+// ===========================================================================
+let chartInstance = null;
+
+function render() {
+  document.getElementById('eonRawDisplay').textContent = state.eonRaw !== null ? state.eonRaw : '—';
+  document.getElementById('chuRawDisplay').textContent = state.chuRaw !== null ? state.chuRaw : '—';
+  document.getElementById('eonHeadMax').textContent = state.eonRaw !== null ? `${state.eonRaw} / 30` : '— / 30';
+  document.getElementById('chuHeadMax').textContent = state.chuRaw !== null ? `${state.chuRaw} / 40` : '— / 40';
+
+  const years = [...state.selectedYears].sort((a,b) => a-b);
+  const results = years.map(y => calcForYear(y, state.eonRaw, state.chuRaw)).filter(r => r);
+
+  renderSubjectTable('eonTable', results, 'eon', state.eonRaw);
+  renderSubjectTable('chuTable', results, 'chu', state.chuRaw);
+  renderCombined(results);
+  renderChart(results);
+  renderConvTables();
+}
+
+function renderSubjectTable(tableId, results, key, raw) {
+  const tbody = document.querySelector(`#${tableId} tbody`);
+  tbody.innerHTML = '';
+  if (raw === null || results.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">원점수를 입력하고 학년도를 선택하세요</td></tr>';
+    return;
+  }
+  // 연도 오름차순
+  const sorted = [...results].sort((a,b) => a.year - b.year);
+  sorted.forEach(r => {
+    const v = r[key];
+    const eraLabel = r.era === 'new' ? '신리트' : '구리트';
+    const stdHtml = v && v.std !== null
+      ? `<td class="std ${v.estimated ? 'estimated' : ''}">${v.std.toFixed(1)}${v.estimated ? '<span class="badge-est">추정</span>' : ''}</td>`
+      : `<td class="std">—</td>`;
+    const pctHtml = v && v.pct !== null && v.pct !== undefined
+      ? `<td class="pct">${v.pct.toFixed(1)}</td>`
+      : `<td class="pct">—</td>`;
+    tbody.innerHTML += `
+      <tr>
+        <td class="year">${r.year}</td>
+        <td class="era">${eraLabel}</td>
+        ${stdHtml}
+        ${pctHtml}
+      </tr>`;
+  });
+}
+
+function renderCombined(results) {
+  const sec = document.getElementById('combinedSection');
+  const tbody = document.querySelector('#combinedTable tbody');
+  tbody.innerHTML = '';
+  const valid = results.filter(r => r.eon && r.chu && r.eon.std !== null && r.chu.std !== null);
+  if (valid.length === 0) { sec.style.display = 'none'; return; }
+  sec.style.display = 'grid';
+  const sorted = [...valid].sort((a,b) => a.year - b.year);
+  sorted.forEach(r => {
+    const total = r.eon.std + r.chu.std;
+    const isEst = r.eon.estimated || r.chu.estimated;
+    // 합계 백분위 추정: 두 영역 백분위가 모두 있을 때만 기하평균으로 근사
+    let pctCell = '<td style="color:var(--ink-mute)">—</td>';
+    if (r.eon.pct !== null && r.eon.pct !== undefined && r.chu.pct !== null && r.chu.pct !== undefined) {
+      // 백분위는 "내 아래에 있는 비율"이므로, 1-pct/100을 z-score처럼 다뤄서 결합
+      // 단순화: 두 영역 백분위의 기하평균 (보수적 추정)
+      const combined = Math.sqrt(r.eon.pct * r.chu.pct);
+      pctCell = `<td style="color:var(--blue);font-weight:600">${combined.toFixed(1)}%</td>`;
+    }
+    tbody.innerHTML += `
+      <tr>
+        <td class="year">${r.year}</td>
+        <td>${r.eon.std.toFixed(1)}${r.eon.estimated ? '*' : ''}</td>
+        <td>${r.chu.std.toFixed(1)}${r.chu.estimated ? '*' : ''}</td>
+        <td class="total">${total.toFixed(1)}${isEst ? '*' : ''}</td>
+        ${pctCell}
+      </tr>`;
+  });
+}
+
+function renderChart(results) {
+  const ctx = document.getElementById('chart').getContext('2d');
+  if (chartInstance) chartInstance.destroy();
+  if (results.length === 0) return;
+
+  const sorted = [...results].sort((a,b) => a.year - b.year);
+  const labels = sorted.map(r => r.year);
+  const totalData = sorted.map(r => (r.eon && r.chu && r.eon.std !== null && r.chu.std !== null) ? r.eon.std + r.chu.std : null);
+
+  // 합계 데이터 포인트별 상세 (툴팁용)
+  const eonStds = sorted.map(r => r.eon ? r.eon.std : null);
+  const chuStds = sorted.map(r => r.chu ? r.chu.std : null);
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '표준점수 합계',
+          data: totalData,
+          borderColor: '#8b1a1a',
+          backgroundColor: 'rgba(139,26,26,0.08)',
+          borderWidth: 4,
+          pointRadius: 7,
+          pointHoverRadius: 10,
+          pointBackgroundColor: '#8b1a1a',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          tension: 0.3,
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      layout: { padding: { top: 28, right: 12, bottom: 8, left: 8 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(26,26,26,0.95)',
+          titleFont: { family: "'JetBrains Mono', monospace", size: 13, weight: 'bold' },
+          bodyFont: { family: "'IBM Plex Sans KR', sans-serif", size: 12 },
+          padding: 14,
+          displayColors: false,
+          callbacks: {
+            title: items => items[0].label + '학년도',
+            label: ctx => {
+              const i = ctx.dataIndex;
+              const lines = [];
+              const total = ctx.parsed.y;
+              if (total !== null && !isNaN(total)) {
+                lines.push('합계: ' + total.toFixed(1));
+              }
+              if (eonStds[i] !== null) lines.push('  언어이해: ' + eonStds[i].toFixed(1));
+              if (chuStds[i] !== null) lines.push('  추리논증: ' + chuStds[i].toFixed(1));
+              return lines;
+            },
+          },
+        },
+        // 각 점 위에 점수 직접 표시
+        datalabels: false,
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#8a8a8a' },
+          title: {
+            display: true,
+            text: '표준점수 합계 (언어 + 추리)',
+            font: { family: "'IBM Plex Sans KR', sans-serif", size: 11, weight: '500' },
+            color: '#4a4a4a',
+          },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 12, weight: '600' }, color: '#1a1a1a' },
+        },
+      },
+    },
+    plugins: [{
+      // 각 데이터 포인트 위에 숫자 표시
+      id: 'pointLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const dataset = chart.data.datasets[0];
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = "600 13px 'JetBrains Mono', monospace";
+        ctx.fillStyle = '#1a1a1a';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        meta.data.forEach((point, i) => {
+          const v = dataset.data[i];
+          if (v === null || isNaN(v)) return;
+          ctx.fillText(v.toFixed(1), point.x, point.y - 14);
+        });
+        ctx.restore();
+      },
+    }],
+  });
+}
+
+// ===========================================================================
+// Events
+// ===========================================================================
+document.getElementById('eonInput').addEventListener('input', e => {
+  const v = e.target.value;
+  state.eonRaw = (v === '' || isNaN(parseInt(v))) ? null : Math.max(0, Math.min(40, parseInt(v)));
+  saveState();
+  render();
+});
+document.getElementById('chuInput').addEventListener('input', e => {
+  const v = e.target.value;
+  state.chuRaw = (v === '' || isNaN(parseInt(v))) ? null : Math.max(0, Math.min(40, parseInt(v)));
+  saveState();
+  render();
+});
+document.getElementById('selectAll').addEventListener('click', () => {
+  state.selectedYears = new Set(Object.keys(LEET).map(Number));
+  buildYearChips(); saveState(); render();
+});
+document.getElementById('selectNew').addEventListener('click', () => {
+  state.selectedYears = new Set(Object.keys(LEET).map(Number).filter(y => LEET[y].era === 'new'));
+  buildYearChips(); saveState(); render();
+});
+document.getElementById('selectRecent').addEventListener('click', () => {
+  state.selectedYears = new Set([2022, 2023, 2024, 2025, 2026]);
+  buildYearChips(); saveState(); render();
+});
+document.getElementById('selectClear').addEventListener('click', () => {
+  state.selectedYears = new Set();
+  buildYearChips(); saveState(); render();
+});
+
+// Init: 저장된 입력값이 있으면 입력 칸에 복원
+if (state.eonRaw !== null) document.getElementById('eonInput').value = state.eonRaw;
+if (state.chuRaw !== null) document.getElementById('chuInput').value = state.chuRaw;
+
+buildYearChips();
+buildYearTabs();
+render();
+
+// ===========================================================================
+// 탭 전환
+// ===========================================================================
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + target));
+    if (target === 'log') renderLog();
+  });
+});
+
+// ===========================================================================
+// Supabase 클라우드 연동
+// ===========================================================================
+const SUPABASE_URL = 'https://bokmpwwcjiqqzffxrxnk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJva21wd3djamlxcXpmZnhyeG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDAzOTUsImV4cCI6MjA5Mjc3NjM5NX0.xbRnEVxIiOZ1JwNJlcPl9WpkC8WmpgVQVzCnwfue5A8';
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentUser = null;  // null이면 게스트 모드
+
+// 동기화 인디케이터 업데이트
+function setSyncStatus(status, text) {
+  const ind = document.getElementById('syncIndicator');
+  const txt = document.getElementById('syncText');
+  if (!currentUser) { ind.style.display = 'none'; return; }
+  ind.style.display = 'inline-flex';
+  ind.className = 'sync-indicator ' + status;
+  txt.textContent = text;
+}
+
+// UI 업데이트 (로그인 상태에 따라)
+function updateAuthUI() {
+  const mode = document.getElementById('authMode');
+  const btn = document.getElementById('authBtn');
+  const info = document.getElementById('authInfo');
+
+  if (currentUser) {
+    mode.textContent = '☁️ 클라우드 동기화';
+    mode.classList.add('signed-in');
+    btn.textContent = '로그아웃';
+    btn.classList.add('signed-in');
+    const email = currentUser.email || '';
+    info.textContent = email ? `${email} · 모든 기기에서 동기화됨` : '모든 기기에서 동기화됨';
+  } else {
+    mode.textContent = '📱 게스트 모드';
+    mode.classList.remove('signed-in');
+    btn.textContent = '구글 로그인';
+    btn.classList.remove('signed-in');
+    info.textContent = '기록은 이 브라우저에만 저장됩니다';
+  }
+}
+
+// 구글 로그인
+async function signIn() {
+  try {
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.href },
+    });
+    if (error) throw error;
+  } catch (e) {
+    alert('로그인 실패: ' + e.message);
+  }
+}
+
+// 로그아웃
+async function signOut() {
+  if (!confirm('로그아웃하시겠어요?\n클라우드 데이터는 그대로 유지되고, 다음에 로그인하면 다시 보입니다.')) return;
+  try {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    updateAuthUI();
+    // 게스트 모드로 복귀: localStorage 데이터 다시 로드
+    logEntries = loadLog();
+    renderLog();
+  } catch (e) {
+    alert('로그아웃 실패: ' + e.message);
+  }
+}
+
+// 클라우드에서 기록 가져오기
+async function fetchCloudLogs() {
+  if (!currentUser) return [];
+  setSyncStatus('syncing', '불러오는 중...');
+  const { data, error } = await supabaseClient
+    .from('leet_logs')
+    .select('*')
+    .order('date', { ascending: true });
+  if (error) {
+    setSyncStatus('error', '동기화 실패');
+    console.error(error);
+    return [];
+  }
+  setSyncStatus('synced', '동기화됨');
+  // Supabase 데이터를 우리 포맷으로 변환
+  return data.map(row => ({
+    id: row.id,
+    year: row.year,
+    date: row.date,
+    eon: row.eon,
+    chu: row.chu,
+    memo: row.memo || '',
+    createdAt: row.created_at,
+  }));
+}
+
+// 클라우드에 기록 추가
+async function pushCloudLog(entry) {
+  if (!currentUser) return null;
+  setSyncStatus('syncing', '저장 중...');
+  const { data, error } = await supabaseClient
+    .from('leet_logs')
+    .insert({
+      user_id: currentUser.id,
+      year: entry.year,
+      date: entry.date,
+      eon: entry.eon,
+      chu: entry.chu,
+      memo: entry.memo || null,
+    })
+    .select()
+    .single();
+  if (error) {
+    setSyncStatus('error', '저장 실패');
+    console.error(error);
+    return null;
+  }
+  setSyncStatus('synced', '동기화됨');
+  return data;
+}
+
+// 클라우드에서 기록 삭제
+async function deleteCloudLog(id) {
+  if (!currentUser) return false;
+  setSyncStatus('syncing', '삭제 중...');
+  const { error } = await supabaseClient
+    .from('leet_logs')
+    .delete()
+    .eq('id', id);
+  if (error) {
+    setSyncStatus('error', '삭제 실패');
+    console.error(error);
+    return false;
+  }
+  setSyncStatus('synced', '동기화됨');
+  return true;
+}
+
+// 게스트 모드 → 로그인 시 로컬 데이터 마이그레이션
+async function migrateLocalToCloud() {
+  const localLogs = loadLog();
+  if (localLogs.length === 0) return;
+
+  const ok = confirm(
+    `이 브라우저에 저장된 ${localLogs.length}개의 게스트 기록이 있습니다.\n` +
+    `클라우드 계정으로 옮길까요?\n\n` +
+    `[확인] 옮기기 (게스트 기록 + 기존 클라우드 기록 모두 보임)\n` +
+    `[취소] 게스트 기록은 그대로 두고 클라우드 기록만 사용`
+  );
+  if (!ok) return;
+
+  setSyncStatus('syncing', '게스트 기록 옮기는 중...');
+  for (const e of localLogs) {
+    await supabaseClient.from('leet_logs').insert({
+      user_id: currentUser.id,
+      year: e.year,
+      date: e.date,
+      eon: e.eon,
+      chu: e.chu,
+      memo: e.memo || null,
+    });
+  }
+  // 마이그레이션 완료 후 로컬 클리어
+  localStorage.removeItem(LOG_STORAGE_KEY);
+  setSyncStatus('synced', '동기화됨');
+}
+
+// 로그인 상태 초기화 + 변화 감지
+async function initAuth() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await migrateLocalToCloud();
+    logEntries = await fetchCloudLogs();
+    renderLog();
+  }
+  updateAuthUI();
+
+  // 로그인 상태 변화 감지 (OAuth 콜백 후 등)
+  supabaseClient.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      const wasGuest = (currentUser === null);
+      currentUser = session.user;
+      if (wasGuest) await migrateLocalToCloud();
+      logEntries = await fetchCloudLogs();
+      updateAuthUI();
+      renderLog();
+    } else if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      logEntries = loadLog();
+      updateAuthUI();
+      renderLog();
+    }
+  });
+}
+
+document.getElementById('authBtn').addEventListener('click', () => {
+  if (currentUser) signOut();
+  else signIn();
+});
+
+initAuth();
+
+// ===========================================================================
+// 학교별 환산점수 탭
+// ===========================================================================
+
+// ===========================================================================
+// 25개 로스쿨 정량 환산 데이터 (2026학년도 기준)
+// 각 학교의 모집요강 1단계 전형 환산식을 직접 구현
+// 입력: { eonStd, chuStd, eonPct, chuPct, gpaPct, gpaScale, engType, engScore }
+// 반환: { leet, gpa, eng, total, leetMax, gpaMax, engMax, totalMax, engPF }
+// ===========================================================================
+
+// ===== 헬퍼: 영어 점수 → 학교별 등급 환산 =====
+// 학교별로 환산표가 모두 달라서 학교별 함수에서 직접 처리
+
+// 학부 백분위 → 환산점수 (선형 비례, 룩업 테이블이 있는 학교는 별도 처리)
+function gpaLinear(pct, base, max) {
+  if (pct === null) return null;
+  return base + (pct / 100) * (max - base);
+}
+
+// 영어 P/F 통과 여부만 반환 (점수반영 학교는 별도 환산)
+function engPass(school, engType, engScore) {
+  if (engScore === null) return null;
+  const std = school.engPF;
+  if (!std) return null;
+  return engScore >= (std[engType] || Infinity);
+}
+
+const LAW_SCHOOLS = [
+  // ========== 서울대 ==========
+  {
+    name: '서울대', group: '서울', leetRatio: 30.0,
+    leetMax: 60, gpaMax: 60, engMax: null, engType: 'pf',
+    totalMax: 200,  // LEET 60 + 학부 60 + 정성평가 80
+    note: 'LEET는 백분위 기반 (표점 아님). 정성평가 80점은 별도.',
+    engPF: { toeic: 1, teps: 387, toefl: 107 },  // toeic 기준 없음 (TEPS/TOEFL만)
+    calc(input) {
+      // LEET: (언어 백분위 × 0.4 + 추리 백분위 × 0.6) × 0.6
+      let leet = null;
+      if (input.eonPct !== null && input.chuPct !== null) {
+        leet = (input.eonPct * 0.4 + input.chuPct * 0.6) * 0.6;
+      }
+      // 학부: 백분위 × 0.6
+      const gpa = input.gpaPct !== null ? input.gpaPct * 0.6 : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 연세대 ==========
+  // 별첨 환산표1(LEET 표점합 → 50~150) + 환산표2(백분위 → 50~150)
+  {
+    name: '연세대', group: '서울', leetRatio: 35.7,
+    leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
+    totalMax: 400,
+    engPF: { toeic: 800, teps: 309, toefl: 90 },  // 일반적 기준 (모집요강 기반)
+    calc(input) {
+      // LEET 환산표1: 168 이상 150, ..., 85 이하 50
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        leet = yonseiLeetTable(sum);
+      }
+      // 학부 환산표2: 100% → 150, 백분위 비례 감소 (대략 80% → 130, 60% → 110, 40% → 95 정도)
+      const gpa = input.gpaPct !== null ? yonseiGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 고려대 ==========
+  // 별첨1 학부 환산표 + 별첨2 LEET 환산표 (모두 백분위 기반)
+  {
+    name: '고려대', group: '서울', leetRatio: 41.74,
+    leetMax: 200, gpaMax: 150, engMax: null, engType: 'pf',
+    totalMax: 500,
+    engPF: { toeic: 815, teps: 316, toefl: 94 },
+    calc(input) {
+      // LEET: 별첨2 환산표 기반 (백분위 → 환산점수)
+      let leet = null;
+      if (input.eonPct !== null && input.chuPct !== null) {
+        leet = koreaLeetEon(input.eonPct) + koreaLeetChu(input.chuPct);
+      }
+      // 학부: 별첨1 환산표 (4.5만점 평점 + 백분위 → 환산점수)
+      // 백분위 100 → 150, 91 → 146, 89 → 141, 85 → 137, 80 → 134
+      const gpa = input.gpaPct !== null ? koreaGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 성균관대 ==========
+  {
+    name: '성균관대', group: '서울', leetRatio: 35.3,
+    leetMax: 30, gpaMax: 25, engMax: null, engType: 'pf',
+    totalMax: 85,
+    engPF: { toeic: 830, teps: 325, toefl: 96 },
+    calc(input) {
+      // LEET: 표점 합산 → 별첨1 환산점수표
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        leet = sungkyunLeetTable(sum);
+      }
+      // 학부: 백분위 → 별첨2 환산점수표
+      const gpa = input.gpaPct !== null ? sungkyunGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 한양대 (나군) ==========
+  {
+    name: '한양대', group: '서울', leetRatio: 50.0,
+    leetMax: 40, gpaMax: 20, engMax: null, engType: 'pf',
+    totalMax: 80,
+    engPF: { toeic: 800, teps: 309, toefl: 91 },
+    calc(input) {
+      // LEET: 언어/추리 각각 최상위 급간 상한점수로 나눠 비율 산출 후 평균(C)
+      // 언어 최상위: 표점 약 90 (신리트 기준), 추리 최상위: 약 120
+      // 정확한 값은 매년 협회 발표, 여기서는 90/120 추정
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const A = Math.min(1, input.eonStd / 90);
+        const B = Math.min(1, input.chuStd / 120);
+        const C = (A + B) / 2;
+        if (C >= 0.95) leet = 40;
+        else if (C >= 0.45) leet = 12 + (C - 0.45) * 56;
+        else leet = 12;
+      }
+      // 학부: x = 학부성적 백점만점 환산점수
+      // x ≥ 60 → 6 + (x-60) × 0.35, x < 60 → 6
+      const gpa = input.gpaPct !== null
+        ? (input.gpaPct >= 60 ? 6 + (input.gpaPct - 60) * 0.35 : 6)
+        : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 이화여대 ==========
+  {
+    name: '이화여대', group: '서울', leetRatio: 35.0,
+    leetMax: 70, gpaMax: 40, engMax: 20, engType: 'score',
+    totalMax: 200,
+    engPF: null,
+    calc(input) {
+      // LEET: (언어 표점 + 추리 표점) × 0.7 - 30 (130 이상 시 70)
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        leet = sum >= 130 ? 70 : Math.max(0, sum * 0.7 - 30);
+      }
+      // 학부: 백분위 비례 (가중평균 방식이지만 단순 비례로 근사)
+      const gpa = input.gpaPct !== null ? (input.gpaPct / 100) * 40 : null;
+      // 영어: 21등급 환산표
+      const eng = ewhaEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 경희대 ==========
+  {
+    name: '경희대', group: '서울', leetRatio: 50.9,
+    leetMax: 100, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 400,
+    engPF: { toeic: 800, teps: 309, toefl: 90 },
+    calc(input) {
+      // LEET: 0.28 × (언어 표점 + 추리 표점) + 58.5
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = 0.28 * (input.eonStd + input.chuStd) + 58.5;
+        leet = Math.min(100, Math.max(0, leet));
+      }
+      // 학부: 11등급 환산표 (백분위)
+      const gpa = input.gpaPct !== null ? kyungheeGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 한국외대 ==========
+  {
+    name: '한국외대', group: '서울', leetRatio: 45.8,
+    leetMax: 100, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 450,
+    engPF: null,
+    calc(input) {
+      // LEET: (언어 표점 + 추리 표점) × 2/3
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) * 2 / 3;
+        leet = Math.min(100, Math.max(0, leet));
+      }
+      // 학부: 4.5만점 평점 → 10등급 환산표 (기본점수 80 포함)
+      // GPA 점수가 있으면 그걸로, 없으면 백분위로 근사
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = hufsGpaTable(conv);
+      } else if (input.gpaPct !== null) {
+        // 백분위 → 4.5만점 평점 추정 (단순 비례)
+        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;  // 백분위 100 → 4.5
+        gpa = hufsGpaTable(estGpa);
+      }
+      // 영어: 6등급 환산표
+      const eng = hufsEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 서강대 ==========
+  {
+    name: '서강대', group: '서울', leetRatio: 50.0,
+    leetMax: 30, gpaMax: 20, engMax: null, engType: 'pf',
+    totalMax: 70,
+    engPF: { toeic: 700, teps: 300, toefl: 79 },
+    calc(input) {
+      // LEET: 기본점수 10 + (언어 표점 + 추리 표점) × 0.1
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = 10 + (input.eonStd + input.chuStd) * 0.1;
+        leet = Math.min(30, Math.max(10, leet));
+      }
+      // 학부: 기본점수 15 + 백분위 × 0.05
+      const gpa = input.gpaPct !== null ? 15 + input.gpaPct * 0.05 : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 중앙대 ==========
+  {
+    name: '중앙대', group: '서울', leetRatio: 38.4,
+    leetMax: 100, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 400,
+    engPF: null,
+    calc(input) {
+      // LEET: 표점합 구간별 환산표 (130 이상 100, 85 미만 75)
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        leet = chungangLeetTable(sum);
+      }
+      // 학부: 4.5만점 평점 구간별 환산표
+      // 평점 정보가 있으면 그걸로, 없으면 백분위로 근사
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = chungangGpaTable(conv);
+      } else if (input.gpaPct !== null) {
+        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;
+        gpa = chungangGpaTable(estGpa);
+      }
+      // 영어: TOEIC 기준 환산표
+      const eng = chungangEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 서울시립대 ==========
+  {
+    name: '서울시립대', group: '서울', leetRatio: 50.0,
+    leetMax: 35, gpaMax: 15, engMax: 10, engType: 'score',
+    totalMax: 80,
+    engPF: null,
+    calc(input) {
+      // LEET: (언어 표점 × 0.2) + (추리 표점 × 0.2)
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = input.eonStd * 0.2 + input.chuStd * 0.2;
+        leet = Math.min(35, Math.max(0, leet));
+      }
+      // 학부: (100점만점 환산점수 × 0.10) + 5
+      const gpa = input.gpaPct !== null ? input.gpaPct * 0.10 + 5 : null;
+      // 영어: TOEIC 935 이상 만점 10, 미만 (토익점수 × 0.005) + 5
+      let eng = null;
+      if (input.engScore !== null) {
+        let toeic = input.engScore;
+        if (input.engType === 'teps') toeic = uosTepsToToeic(input.engScore);
+        else if (input.engType === 'toefl') toeic = uosToeflToToeic(input.engScore);
+        if (toeic >= 935) eng = 10;
+        else eng = toeic * 0.005 + 5;
+        eng = Math.min(10, Math.max(0, eng));
+      }
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 건국대 ==========
+  {
+    name: '건국대', group: '서울', leetRatio: 34.97,
+    leetMax: 200, gpaMax: 200, engMax: null, engType: 'pf',
+    totalMax: 600,
+    engPF: { toeic: 800, teps: 310, toefl: 91 },
+    calc(input) {
+      // LEET: (언어 표점 - 45) × 1.45 + (추리 표점 - 60) × 1.55 + 125
+      // 100 미만 100, 200 초과 200
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd - 45) * 1.45 + (input.chuStd - 60) * 1.55 + 125;
+        leet = Math.min(200, Math.max(100, leet));
+      }
+      // 학부: 백분위 구간별 환산표
+      const gpa = input.gpaPct !== null ? konkukGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 아주대 ==========
+  {
+    name: '아주대', group: '경기/인천', leetRatio: 45.5,
+    leetMax: 30, gpaMax: 20, engMax: 20, engType: 'score',
+    totalMax: 80,
+    engPF: null,
+    calc(input) {
+      // LEET: {(언어표점×0.4 + 추리표점×0.6)×0.8 + (언어백분위×0.4 + 추리백분위×0.6)×0.2} × 0.25 + 5
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const stdPart = (input.eonStd * 0.4 + input.chuStd * 0.6) * 0.8;
+        const pctPart = (input.eonPct !== null && input.chuPct !== null)
+          ? (input.eonPct * 0.4 + input.chuPct * 0.6) * 0.2
+          : 0;
+        leet = (stdPart + pctPart) * 0.25 + 5;
+        leet = Math.min(30, Math.max(0, leet));
+      }
+      // 학부: 백분위환산점수 × 0.1 + 10
+      const gpa = input.gpaPct !== null ? input.gpaPct * 0.1 + 10 : null;
+      // 영어: 13등급 환산표
+      const eng = ajouEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 인하대 ==========
+  {
+    name: '인하대', group: '경기/인천', leetRatio: 35.0,
+    leetMax: 250, gpaMax: 200, engMax: 100, engType: 'score',
+    totalMax: 750,
+    engPF: null,
+    calc(input) {
+      // LEET: 30 + (언어×0.4 + 추리×0.6) × 220/90
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = 30 + (input.eonStd * 0.4 + input.chuStd * 0.6) * 220 / 90;
+        leet = Math.min(250, Math.max(30, leet));
+      }
+      // 학부: 4.5만점 환산표 (90 기본 + 110 실질)
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = inhaGpaTable(conv);
+      } else if (input.gpaPct !== null) {
+        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;
+        gpa = inhaGpaTable(estGpa);
+      }
+      // 영어: TOEIC 기준 환산표 (50 기본 + 50 실질)
+      const eng = inhaEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 강원대 ==========
+  {
+    name: '강원대', group: '지방', leetRatio: 44.0,
+    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 350,
+    engPF: { toeic: 720, teps: 308, toefl: 75 },
+    calc(input) {
+      // LEET: 표점합 구간별
+      // 80 미만 → 40, 80~100 → 50 + (표점합-80), 100~140 → 70 + (표점합-100)×2, 140 이상 → 150
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        if (sum < 80) leet = 40;
+        else if (sum < 100) leet = 50 + (sum - 80);
+        else if (sum < 140) leet = 70 + (sum - 100) * 2;
+        else leet = 150;
+      }
+      // 학부: 백분위 구간별
+      // 70 미만 → 40, 70~80 → 60 + (백분위-70), 80~100 → 70 + (백분위-80)×1.5
+      let gpa = null;
+      if (input.gpaPct !== null) {
+        const p = input.gpaPct;
+        if (p < 70) gpa = 40;
+        else if (p < 80) gpa = 60 + (p - 70);
+        else gpa = 70 + (p - 80) * 1.5;
+        gpa = Math.min(100, Math.max(40, gpa));
+      }
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 충남대 ==========
+  {
+    name: '충남대', group: '지방', leetRatio: 69.77,
+    leetMax: 120, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 350,
+    engPF: null,
+    calc(input) {
+      // LEET: [(언어 표점 + 추리 표점) × 0.7] - 20
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) * 0.7 - 20;
+        leet = Math.min(120, Math.max(0, leet));
+      }
+      // 학부: 백분율 그대로 100점 만점
+      const gpa = input.gpaPct !== null ? Math.min(100, input.gpaPct) : null;
+      // 영어: 16등급 환산표
+      const eng = cnuEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 충북대 ==========
+  {
+    name: '충북대', group: '지방', leetRatio: 89.3,
+    leetMax: 200, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 330,
+    engPF: { toeic: 750, teps: 286, toefl: 85 },
+    note: '학부 백분율 81.00 미만 지원 불가',
+    calc(input) {
+      // LEET: (언어 표점 + 추리 표점) × 1.3, 200 초과 시 200
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) * 1.3;
+        leet = Math.min(200, Math.max(0, leet));
+      }
+      // 학부: 3등급 환산표 (93 이상 100, 87 이상 98, 81 이상 96, 81 미만 지원불가)
+      let gpa = null;
+      if (input.gpaPct !== null) {
+        if (input.gpaPct >= 93) gpa = 100;
+        else if (input.gpaPct >= 87) gpa = 98;
+        else if (input.gpaPct >= 81) gpa = 96;
+        else gpa = 0;  // 지원불가지만 일단 0으로 표시
+      }
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 경북대 ==========
+  {
+    name: '경북대', group: '지방', leetRatio: 46.4,
+    leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
+    totalMax: 300,
+    engPF: { toeic: 800, teps: 310, toefl: 91 },
+    calc(input) {
+      // LEET: 85 + {85 × (언어+추리) / (최고값 × 2)}
+      // 최고값 = 협회 발표 최상위 급간 상한점수, 신리트 기준 언어 ~90, 추리 ~120
+      // 합 환산: 85 + 65 × (sum / 210) 정도로 근사
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        // 모집요강: 85 + 85 × 표점합 / (최고합 × 2... 식이 모호함, 정확히는 (표점합/(최고합×2)) × 85?)
+        // 여기서는 보수적으로 85 + 65×(sum/210) 적용 (만점 150)
+        // 단, 모집요강 텍스트 그대로면 85 + 85×sum/(2×최고)이고 최고를 90+120/2=105로 보면
+        leet = 85 + 65 * (sum / 210);
+        leet = Math.min(150, Math.max(85, leet));
+      }
+      // 학부: 65 + (35 × 백분위 / 100)
+      const gpa = input.gpaPct !== null ? 65 + 35 * input.gpaPct / 100 : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 부산대 ==========
+  {
+    name: '부산대', group: '지방', leetRatio: 40.0,
+    leetMax: 30, gpaMax: 30, engMax: null, engType: 'pf',
+    totalMax: 80,
+    engPF: { toeic: 700, teps: 285, toefl: 80 },
+    calc(input) {
+      // LEET: {(언어/90×40 + 추리/120×60)×0.8 + (언어백분위×0.4 + 추리백분위×0.6)×0.2} × 0.3
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const stdPart = (input.eonStd / 90 * 40 + input.chuStd / 120 * 60) * 0.8;
+        const pctPart = (input.eonPct !== null && input.chuPct !== null)
+          ? (input.eonPct * 0.4 + input.chuPct * 0.6) * 0.2
+          : 0;
+        leet = (stdPart + pctPart) * 0.30;
+        leet = Math.min(30, Math.max(0, leet));
+      }
+      // 학부: 백분위 × 0.25 + 5
+      const gpa = input.gpaPct !== null ? input.gpaPct * 0.25 + 5 : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 영남대 ==========
+  {
+    name: '영남대', group: '지방', leetRatio: 58.8,
+    leetMax: 300, gpaMax: 100, engMax: 100, engType: 'score',
+    totalMax: 700,
+    engPF: null,
+    calc(input) {
+      // LEET: (언어 표점 + 추리 표점) ÷ 2 ... 근데 이렇게 하면 만점이 100점대 → 300이 안됨
+      // 모집요강 그대로: ÷2 → 그러면 만점 약 100점 → 300점에 부족
+      // → 실제로는 (언어+추리)/2 × 3 정도 비례 환산일 것 (원본 그대로 ÷ 2 사용)
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd + input.chuStd) / 2;
+        // 만점 300으로 스케일 조정 (원본 식 ÷2 후 × 3 추정)
+        leet = leet * 3;
+        leet = Math.min(300, Math.max(0, leet));
+      }
+      // 학부: 4등급 환산표
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        if (conv >= 4.0) gpa = 100;
+        else if (conv >= 3.5) gpa = 95;
+        else if (conv >= 3.0) gpa = 90;
+        else gpa = 80;
+      } else if (input.gpaPct !== null) {
+        // 백분위로 근사
+        const estGpa = 1.5 + (input.gpaPct / 100) * 3.0;
+        if (estGpa >= 4.0) gpa = 100;
+        else if (estGpa >= 3.5) gpa = 95;
+        else if (estGpa >= 3.0) gpa = 90;
+        else gpa = 80;
+      }
+      // 영어: 3등급 환산표
+      const eng = yuEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 동아대 (가·나군) ==========
+  {
+    name: '동아대', group: '지방', leetRatio: 51.3,
+    leetMax: 300, gpaMax: 100, engMax: 200, engType: 'score',
+    totalMax: 800,
+    engPF: null,
+    note: '영어 명목 200점이지만 실질 0점 (사실상 P/F)',
+    calc(input) {
+      // LEET: 표점합 구간별 + (언어+추리)/2
+      // 합 90 미만: 200 + (eon+chu)/2
+      // 합 90~100: 210 + (eon+chu)/2
+      // 합 100 이상: 220 + (eon+chu)/2
+      // 상한 80 (자료에는 80인데 만점 300이라 모순) → 280으로 추정
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const sum = input.eonStd + input.chuStd;
+        let base = 200;  // 기본점수 추정 (실제로는 모집요강의 base 값)
+        if (sum >= 100) base = 220;
+        else if (sum >= 90) base = 210;
+        leet = base + sum / 2;
+        leet = Math.min(300, Math.max(0, leet));
+      }
+      // 학부: 85 + (평점/4.5 × 15)
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = 85 + (conv / 4.5) * 15;
+      } else if (input.gpaPct !== null) {
+        gpa = 85 + (input.gpaPct / 100) * 15;
+      }
+      // 영어: 명목 200 만점이지만 기본점수 200이라 사실상 통과만 하면 만점
+      let eng = null;
+      if (input.engScore !== null) {
+        const std = { toefl: 68, toeic: 600, teps: 255 };
+        if (input.engScore >= (std[input.engType] || Infinity)) eng = 200;
+        else eng = 0;
+      }
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 전남대 ==========
+  {
+    name: '전남대', group: '지방', leetRatio: 42.6,
+    leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
+    totalMax: 500,  // 1단계 350 + 2단계 100 + ... 실제 1단계 350
+    engPF: { toeic: 750, teps: 285, toefl: 85 },
+    calc(input) {
+      // LEET: (언어 표점 + 추리 표점) + 5, 150 초과 시 150, 75 미만 시 75
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = input.eonStd + input.chuStd + 5;
+        leet = Math.min(150, Math.max(75, leet));
+      }
+      // 학부: 77.5 × 백분율 / 100 + 72.5, 119 미만 시 119
+      let gpa = null;
+      if (input.gpaPct !== null) {
+        gpa = 77.5 * input.gpaPct / 100 + 72.5;
+        gpa = Math.max(119, gpa);
+        gpa = Math.min(150, gpa);
+      }
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 전북대 ==========
+  {
+    name: '전북대', group: '지방', leetRatio: 53.3,
+    leetMax: 40, gpaMax: 15, engMax: null, engType: 'pf',
+    totalMax: 75,
+    engPF: { toeic: 700, teps: 300, toefl: 80 },
+    note: 'LEET 환산이 시그모이드 함수',
+    calc(input) {
+      // LEET: 18.6 / [1 + e^(-0.13×(x-110))] + 21.5
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const x = input.eonStd + input.chuStd;
+        if (x >= 150) leet = 40;
+        else if (x < 75) leet = 21.5;
+        else leet = 18.6 / (1 + Math.exp(-0.13 * (x - 110))) + 21.5;
+      }
+      // 학부: 100점 만점 환산 → 구간별 (98~100 15, ..., 70~74 6, 69 이하 0)
+      const gpa = input.gpaPct !== null ? jbnuGpaTable(input.gpaPct) : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+
+  // ========== 원광대 ==========
+  {
+    name: '원광대', group: '지방', leetRatio: 54.5,
+    leetMax: 40, gpaMax: 20, engMax: 20, engType: 'score',
+    totalMax: 100,
+    engPF: null,
+    calc(input) {
+      // LEET: (평균점수 + 72) × 2 / 7, 환산점수 28~40
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const avg = (input.eonStd + input.chuStd) / 2;
+        leet = (avg + 72) * 2 / 7;
+        leet = Math.min(40, Math.max(28, leet));
+      }
+      // 학부: (평점/4.5 × 2) + 18
+      let gpa = null;
+      if (input.gpaScore !== null && input.gpaScale) {
+        const conv = parseFloat(input.gpaScore) * (4.5 / parseFloat(input.gpaScale));
+        gpa = (conv / 4.5) * 2 + 18;
+      } else if (input.gpaPct !== null) {
+        gpa = (input.gpaPct / 100) * 2 + 18;
+      }
+      // 영어: 점수반영 (TOEIC 750~950 등)
+      const eng = wonkwangEngTable(input.engType, input.engScore);
+      return { leet, gpa, eng };
+    },
+  },
+
+  // ========== 제주대 ==========
+  {
+    name: '제주대', group: '지방', leetRatio: 66.7,
+    leetMax: 40, gpaMax: 20, engMax: null, engType: 'pf',
+    totalMax: 60,
+    engPF: { toeic: 710, teps: 334, toefl: 75 },
+    calc(input) {
+      // LEET: (언어×0.4 + 추리×0.6) × 0.40
+      let leet = null;
+      if (input.eonStd !== null && input.chuStd !== null) {
+        leet = (input.eonStd * 0.4 + input.chuStd * 0.6) * 0.40;
+        leet = Math.min(40, Math.max(0, leet));
+      }
+      // 학부: 20 × (환산점수/100), 환산점수는 학교별 평점평균표 (백분위로 근사)
+      const gpa = input.gpaPct !== null ? 20 * input.gpaPct / 100 : null;
+      return { leet, gpa, eng: null };
+    },
+  },
+];
+
+// ===========================================================================
+// 학교별 환산표 헬퍼 함수들
+// ===========================================================================
+
+// ========== 연세대 ==========
+function yonseiLeetTable(sum) {
+  // 168 이상 150, 167 149.7, ..., 85 이하 50
+  if (sum >= 168) return 150;
+  if (sum <= 85) return 50;
+  // 표 데이터 (간략 보간)
+  const tbl = [
+    [168, 150], [167, 149.7], [165, 149.1], [160, 147.6], [155, 146.1],
+    [150, 144.6], [145, 143.1], [140, 141.6], [135, 140.1], [130, 138.1],
+    [125, 136.1], [120, 133.6], [115, 131.1], [110, 128.6], [105, 125.1],
+    [100, 110], [95, 95], [90, 72.5], [86, 54.5], [85, 50],
+  ];
+  for (let i = 0; i < tbl.length - 1; i++) {
+    if (sum >= tbl[i+1][0] && sum < tbl[i][0]) {
+      const [x1, y1] = tbl[i+1];
+      const [x2, y2] = tbl[i];
+      return y1 + (y2 - y1) * (sum - x1) / (x2 - x1);
+    }
+  }
+  return tbl[tbl.length - 1][1];
+}
+
+function yonseiGpaTable(pct) {
+  // 백분위 → 학부 환산점수 (50~150)
+  // 표가 길어서 핵심 구간만, 백분위 100→150, 0→50 가정으로 보간
+  if (pct >= 100) return 150;
+  if (pct <= 0) return 50;
+  // 정확한 표는 100→150, 90→140 정도, 50→100, 0→50 식
+  return 50 + (pct / 100) * 100;  // 단순 비례 (표 정확도 부족)
+}
+
+// ========== 고려대 ==========
+function koreaLeetEon(pct) {
+  // 백분위 → 언어 환산점수 (별첨2)
+  if (pct >= 100) return 80;
+  if (pct < 21) return 35;
+  // 단순 보간
+  // 100→80, 90→78, 80→77.4, 70→76, 50→74, 30→72, 22→70.7, 21→35
+  if (pct >= 90) return 78 + (pct - 90) * 0.2;
+  if (pct >= 80) return 77.4 + (pct - 80) * 0.06;
+  if (pct >= 70) return 76 + (pct - 70) * 0.14;
+  if (pct >= 50) return 74 + (pct - 50) * 0.1;
+  if (pct >= 30) return 72 + (pct - 30) * 0.1;
+  if (pct >= 22) return 70 + (pct - 22) * 0.25;
+  return 35;  // 21 이하
+}
+
+function koreaLeetChu(pct) {
+  // 백분위 → 추리 환산점수
+  if (pct >= 100) return 120;
+  if (pct < 21) return 69;
+  if (pct >= 90) return 117 + (pct - 90) * 0.3;
+  if (pct >= 80) return 113.2 + (pct - 80) * 0.38;
+  if (pct >= 70) return 108.4 + (pct - 70) * 0.48;
+  if (pct >= 50) return 102.4 + (pct - 50) * 0.3;
+  if (pct >= 30) return 95.2 + (pct - 30) * 0.36;
+  if (pct >= 22) return 70.2 + (pct - 22) * 3.125;
+  return 69;
+}
+
+function koreaGpaTable(pct) {
+  // 백분위 → 학부 환산점수
+  if (pct >= 100) return 150;
+  if (pct < 70) return 130;  // 추정 하한
+  // 100→150, 95→147.8, 91→146.1, 89→141, 85→137, 80→134
+  if (pct >= 95) return 147.8 + (pct - 95) * 0.44;
+  if (pct >= 91) return 146.1 + (pct - 91) * 0.425;
+  if (pct >= 89) return 141 + (pct - 89) * 2.55;
+  if (pct >= 85) return 137 + (pct - 85) * 1.0;
+  if (pct >= 80) return 134 + (pct - 80) * 0.6;
+  return 130 + (pct - 70) * 0.4;
+}
+
+// ========== 성균관대 ==========
+// 모집요강 별첨1 (LEET 환산점수표) 그대로 반영
+function sungkyunLeetTable(sum) {
+  // 표점합 → 환산점수 (만점 30)
+  if (sum >= 160) return 30;
+  if (sum <= 50) return 0;
+  // 명시 구간 (160 이상 30, 159~146 까지 0.04씩 감소, 그 후 점진적 감소)
+  const tbl = [
+    [160, 30.00], [159, 29.96], [158, 29.92], [157, 29.88], [156, 29.84],
+    [155, 29.80], [154, 29.76], [153, 29.72], [152, 29.68], [151, 29.64],
+    [150, 29.60], [149, 29.56], [148, 29.52], [147, 29.48], [146, 29.44],
+    [145, 29.40], [144, 29.36], [143, 29.32], [142, 29.28], [141, 29.24],
+    [140, 29.20], [139, 29.16], [138, 29.12], [137, 29.08], [136, 29.04],
+    [135, 29.00], [134, 28.96], [133, 28.92], [132, 28.88], [131, 28.84],
+    [130, 28.74], [129, 28.64], [128, 28.54], [127, 28.44], [126, 28.34],
+    [125, 28.24], [124, 28.14], [123, 28.04], [122, 27.88], [121, 27.72],
+    [120, 27.56], [119, 27.40], [118, 27.24], [117, 27.08], [116, 26.92],
+    [115, 26.76], [114, 26.60], [113, 26.44], [112, 26.28], [111, 26.12],
+    [110, 25.96], [100, 22.00], [90, 18.00], [80, 14.00], [70, 8.00],
+    [60, 2.00], [50, 0.00],
+  ];
+  // 정수 점수면 직접 룩업, 아니면 선형 보간
+  for (let i = 0; i < tbl.length; i++) {
+    if (sum === tbl[i][0]) return tbl[i][1];
+    if (sum > tbl[i+1][0] && sum < tbl[i][0]) {
+      // 선형 보간
+      const [x1, y1] = tbl[i+1];
+      const [x2, y2] = tbl[i];
+      return y1 + (y2 - y1) * (sum - x1) / (x2 - x1);
+    }
+  }
+  return 0;
+}
+
+// 모집요강 별첨2 (학부성적 환산점수표)
+function sungkyunGpaTable(pct) {
+  // 백분위 → 환산점수 (만점 25)
+  if (pct >= 100) return 25;
+  if (pct <= 0) return 0;
+  // 명시 구간 (1%당 0.05점 감소가 기본, 80~30 구간은 가속 감소)
+  const tbl = [
+    [100, 25.00], [99, 24.95], [98, 24.90], [97, 24.85], [96, 24.80],
+    [95, 24.75], [94, 24.70], [93, 24.65], [92, 24.60], [91, 24.55],
+    [90, 24.50], [89, 24.25], [88, 24.00], [87, 23.60], [86, 23.20],
+    [85, 22.80], [84, 22.20], [83, 21.60], [82, 21.00], [81, 20.40],
+    [80, 19.80], [70, 18.50], [60, 17.00], [50, 15.00], [40, 12.00],
+    [30, 9.00], [20, 6.00], [10, 3.00], [0, 0.00],
+  ];
+  for (let i = 0; i < tbl.length; i++) {
+    if (pct === tbl[i][0]) return tbl[i][1];
+    if (pct > tbl[i+1][0] && pct < tbl[i][0]) {
+      const [x1, y1] = tbl[i+1];
+      const [x2, y2] = tbl[i];
+      return y1 + (y2 - y1) * (pct - x1) / (x2 - x1);
+    }
+  }
+  return 0;
+}
+
+// ========== 경희대 ==========
+function kyungheeGpaTable(pct) {
+  if (pct >= 90) return 100;
+  if (pct >= 87) return 99;
+  if (pct >= 84) return 98;
+  if (pct >= 81) return 97;
+  if (pct >= 78) return 96;
+  if (pct >= 75) return 95;
+  if (pct >= 72) return 94;
+  if (pct >= 69) return 93;
+  if (pct >= 66) return 92;
+  if (pct >= 63) return 91;
+  return 90;
+}
+
+// ========== 한국외대 ==========
+function hufsGpaTable(gpa45) {
+  if (gpa45 >= 4.0) return 100;
+  if (gpa45 >= 3.8) return 99;
+  if (gpa45 >= 3.6) return 98;
+  if (gpa45 >= 3.4) return 96;
+  if (gpa45 >= 3.2) return 94;
+  if (gpa45 >= 3.0) return 92;
+  if (gpa45 >= 2.8) return 89;
+  if (gpa45 >= 2.6) return 86;
+  if (gpa45 >= 2.4) return 83;
+  return 80;
+}
+
+function hufsEngTable(engType, score) {
+  if (score === null) return null;
+  // 6등급 (90~100)
+  if (engType === 'toeic') {
+    if (score >= 900) return 100;
+    if (score >= 860) return 98;
+    if (score >= 820) return 96;
+    if (score >= 780) return 94;
+    if (score >= 740) return 92;
+    if (score >= 700) return 90;
+    return 90;
+  }
+  if (engType === 'teps') {
+    if (score >= 374) return 100;
+    if (score >= 344) return 98;
+    if (score >= 321) return 96;
+    if (score >= 300) return 94;
+    if (score >= 282) return 92;
+    if (score >= 265) return 90;
+    return 90;
+  }
+  if (engType === 'toefl') {
+    if (score >= 105) return 100;
+    if (score >= 99) return 98;
+    if (score >= 94) return 96;
+    if (score >= 88) return 94;
+    if (score >= 83) return 92;
+    if (score >= 79) return 90;
+    return 90;
+  }
+  return null;
+}
+
+// ========== 중앙대 ==========
+function chungangLeetTable(sum) {
+  // 130 이상 100, 125~130 99, 85 미만 75 등
+  if (sum >= 130) return 100;
+  if (sum >= 125) return 99;
+  if (sum >= 120) return 98;
+  if (sum >= 115) return 96;
+  if (sum >= 110) return 94;
+  if (sum >= 105) return 92;
+  if (sum >= 100) return 90;
+  if (sum >= 95) return 87;
+  if (sum >= 90) return 83;
+  if (sum >= 85) return 79;
+  return 75;
+}
+
+function chungangGpaTable(gpa45) {
+  if (gpa45 >= 4.10) return 100;
+  if (gpa45 >= 3.80) return 99;
+  if (gpa45 >= 3.50) return 98;
+  if (gpa45 >= 3.10) return 97;
+  if (gpa45 >= 2.40) return 90;
+  return 85;
+}
+
+function chungangEngTable(engType, score) {
+  if (score === null) return null;
+  // TOEIC 기준 환산
+  let toeic = score;
+  if (engType === 'teps') toeic = uosTepsToToeic(score);
+  else if (engType === 'toefl') toeic = uosToeflToToeic(score);
+  if (toeic >= 965) return 100;
+  if (toeic >= 900) return 99;
+  if (toeic >= 850) return 97;
+  if (toeic >= 800) return 96;
+  if (toeic >= 700) return 95;
+  return 95;
+}
+
+// ========== 시립대 ==========
+function uosTepsToToeic(teps) {
+  // 대략적 환산 (실제 환산표 단순화)
+  if (teps >= 555) return 990;
+  if (teps >= 387) return 800;
+  if (teps >= 309) return 700;
+  if (teps >= 268) return 600;
+  return 500;
+}
+
+function uosToeflToToeic(toefl) {
+  if (toefl >= 110) return 990;
+  if (toefl >= 95) return 900;
+  if (toefl >= 87) return 800;
+  if (toefl >= 76) return 700;
+  return 600;
+}
+
+// ========== 건국대 ==========
+function konkukGpaTable(pct) {
+  if (pct >= 96) return 200;
+  if (pct >= 93) return 195;
+  if (pct >= 90) return 190;
+  if (pct >= 87) return 185;
+  if (pct >= 84) return 180;
+  if (pct >= 81) return 175;
+  if (pct >= 78) return 165;
+  if (pct >= 75) return 155;
+  if (pct >= 72) return 135;
+  if (pct >= 69) return 115;
+  return 110;
+}
+
+// ========== 이화여대 영어 환산표 ==========
+function ewhaEngTable(engType, score) {
+  if (score === null) return null;
+  // 21등급, 0~20점
+  if (engType === 'toeic') {
+    if (score >= 975) return 20;
+    if (score >= 950) return 19;
+    if (score >= 925) return 18;
+    if (score >= 900) return 17;
+    if (score >= 875) return 16;
+    if (score >= 850) return 15;
+    if (score >= 840) return 14;
+    if (score >= 830) return 13;
+    if (score >= 820) return 12;
+    if (score >= 810) return 11;
+    if (score >= 800) return 10;
+    if (score >= 790) return 9;
+    if (score >= 780) return 8;
+    if (score >= 770) return 7;
+    if (score >= 760) return 6;
+    if (score >= 750) return 5;
+    if (score >= 740) return 4;
+    if (score >= 730) return 3;
+    if (score >= 720) return 2;
+    if (score >= 710) return 1;
+    return 0;
+  }
+  if (engType === 'teps') {
+    if (score >= 486) return 20;
+    if (score >= 428) return 19;
+    if (score >= 394) return 18;
+    if (score >= 370) return 17;
+    if (score >= 352) return 16;
+    if (score >= 336) return 15;
+    if (score >= 330) return 14;
+    if (score >= 324) return 13;
+    if (score >= 319) return 12;
+    if (score >= 314) return 11;
+    if (score >= 309) return 10;
+    if (score >= 304) return 9;
+    if (score >= 299) return 8;
+    if (score >= 294) return 7;
+    if (score >= 290) return 6;
+    if (score >= 285) return 5;
+    if (score >= 281) return 4;
+    if (score >= 277) return 3;
+    if (score >= 272) return 2;
+    if (score >= 268) return 1;
+    return 0;
+  }
+  if (engType === 'toefl') {
+    if (score >= 111) return 20;
+    if (score >= 108) return 19;
+    if (score >= 105) return 18;
+    if (score >= 103) return 17;
+    if (score >= 101) return 16;
+    if (score >= 99) return 15;
+    if (score >= 97) return 14;
+    if (score >= 95) return 13;
+    if (score >= 93) return 12;
+    if (score >= 91) return 11;
+    if (score >= 89) return 10;
+    if (score >= 87) return 9;
+    if (score >= 85) return 8;
+    if (score >= 83) return 7;
+    if (score >= 81) return 6;
+    if (score >= 79) return 5;
+    if (score >= 78) return 4;
+    if (score >= 77) return 3;
+    if (score >= 76) return 2;
+    if (score >= 75) return 1;
+    return 0;
+  }
+  return null;
+}
+
+// ========== 아주대 영어 환산표 (13등급) ==========
+function ajouEngTable(engType, score) {
+  if (score === null) return null;
+  // 1등급(만점) → 100점, 13등급 → 40점, 미만 → 40점
+  // 환산점수 = 성적반영점수 × 0.12 + 8 (만점 기준 100×0.12+8 = 20)
+  let raw = null;
+  if (engType === 'toefl') {
+    if (score >= 105) raw = 100;
+    else if (score >= 100) raw = 95;
+    else if (score >= 95) raw = 90;
+    else if (score >= 90) raw = 85;
+    else if (score >= 85) raw = 80;
+    else if (score >= 80) raw = 75;
+    else if (score >= 75) raw = 70;
+    else if (score >= 70) raw = 65;
+    else if (score >= 65) raw = 60;
+    else if (score >= 60) raw = 55;
+    else if (score >= 55) raw = 50;
+    else if (score >= 50) raw = 45;
+    else raw = 40;
+  } else if (engType === 'toeic') {
+    if (score >= 900) raw = 100;
+    else if (score >= 850) raw = 95;
+    else if (score >= 800) raw = 90;
+    else if (score >= 750) raw = 85;
+    else if (score >= 700) raw = 80;
+    else if (score >= 650) raw = 75;
+    else if (score >= 600) raw = 70;
+    else if (score >= 550) raw = 65;
+    else if (score >= 500) raw = 60;
+    else if (score >= 450) raw = 55;
+    else if (score >= 400) raw = 50;
+    else if (score >= 350) raw = 45;
+    else raw = 40;
+  } else if (engType === 'teps') {
+    if (score >= 370) raw = 100;
+    else if (score >= 340) raw = 95;
+    else if (score >= 310) raw = 90;
+    else if (score >= 280) raw = 85;
+    else if (score >= 250) raw = 80;
+    else if (score >= 220) raw = 75;
+    else raw = 40;
+  }
+  if (raw === null) return null;
+  return raw * 0.12 + 8;
+}
+
+// ========== 인하대 학부/영어 환산표 ==========
+function inhaGpaTable(gpa45) {
+  if (gpa45 >= 4.30) return 200;
+  if (gpa45 >= 4.0) return 195;
+  if (gpa45 >= 3.7) return 190;
+  if (gpa45 >= 3.4) return 185;
+  if (gpa45 >= 3.0) return 180;
+  if (gpa45 >= 2.5) return 170;
+  if (gpa45 >= 2.0) return 150;
+  if (gpa45 >= 1.5) return 120;
+  return 90;  // 기본점수
+}
+
+function inhaEngTable(engType, score) {
+  if (score === null) return null;
+  let toeic = score;
+  if (engType === 'teps') toeic = uosTepsToToeic(score);
+  else if (engType === 'toefl') toeic = uosToeflToToeic(score);
+  // TOEIC 기준 환산표 (50 기본 + 50 실질)
+  // 990→100, 765이하→50
+  if (toeic >= 990) return 100;
+  if (toeic <= 765) return 50;
+  return 50 + ((toeic - 765) / 225) * 50;
+}
+
+// ========== 충남대 영어 ==========
+function cnuEngTable(engType, score) {
+  if (score === null) return null;
+  // 16등급 (85~100)
+  if (engType === 'toeic') {
+    if (score >= 850) return 100;
+    if (score >= 830) return 99;
+    if (score >= 810) return 98;
+    if (score >= 790) return 97;
+    if (score >= 770) return 96;
+    if (score >= 750) return 95;
+    if (score >= 730) return 94;
+    if (score >= 710) return 93;
+    if (score >= 690) return 92;
+    if (score >= 670) return 91;
+    if (score >= 650) return 90;
+    if (score >= 630) return 89;
+    if (score >= 610) return 88;
+    if (score >= 590) return 87;
+    if (score >= 570) return 86;
+    return 85;
+  }
+  if (engType === 'teps') {
+    if (score >= 336) return 100;
+    if (score >= 324) return 99;
+    if (score >= 314) return 98;
+    if (score >= 304) return 97;
+    if (score >= 294) return 96;
+    if (score >= 285) return 95;
+    if (score >= 277) return 94;
+    if (score >= 268) return 93;
+    if (score >= 260) return 92;
+    if (score >= 252) return 91;
+    if (score >= 245) return 90;
+    if (score >= 237) return 89;
+    if (score >= 230) return 88;
+    if (score >= 224) return 87;
+    if (score >= 217) return 86;
+    return 85;
+  }
+  if (engType === 'toefl') {
+    if (score >= 98) return 100;
+    if (score >= 95) return 99;
+    if (score >= 93) return 98;
+    if (score >= 90) return 97;
+    if (score >= 87) return 96;
+    if (score >= 85) return 95;
+    if (score >= 83) return 94;
+    if (score >= 81) return 93;
+    if (score >= 79) return 92;
+    if (score >= 77) return 91;
+    if (score >= 75) return 90;
+    if (score >= 72) return 89;
+    if (score >= 70) return 88;
+    if (score >= 69) return 87;
+    if (score >= 68) return 86;
+    return 85;
+  }
+  return null;
+}
+
+// ========== 영남대 영어 ==========
+function yuEngTable(engType, score) {
+  if (score === null) return null;
+  if (engType === 'toeic') {
+    if (score >= 950) return 100;
+    if (score >= 900) return 95;
+    if (score >= 600) return 90;
+    return 90;
+  }
+  if (engType === 'teps') {
+    if (score >= 428) return 100;
+    if (score >= 370) return 95;
+    if (score >= 227) return 90;
+    return 90;
+  }
+  if (engType === 'toefl') {
+    if (score >= 112) return 100;
+    if (score >= 105) return 95;
+    if (score >= 69) return 90;
+    return 90;
+  }
+  return null;
+}
+
+// ========== 전북대 학부 환산표 ==========
+function jbnuGpaTable(pct) {
+  if (pct >= 98) return 15;
+  if (pct >= 95) return 14.5;
+  if (pct >= 93) return 14;
+  if (pct >= 90) return 13;
+  if (pct >= 85) return 12;
+  if (pct >= 80) return 10;
+  if (pct >= 75) return 8;
+  if (pct >= 70) return 6;
+  return 0;
+}
+
+// ========== 원광대 영어 ==========
+function wonkwangEngTable(engType, score) {
+  if (score === null) return null;
+  // 단순 비례 환산 (만점 20점)
+  // TOEIC 750~950, TEPS 285~436, TOEFL 85~112
+  if (engType === 'toeic') {
+    if (score >= 950) return 20;
+    if (score < 750) return 0;
+    return 5 + ((score - 750) / 200) * 15;
+  }
+  if (engType === 'teps') {
+    if (score >= 436) return 20;
+    if (score < 285) return 0;
+    return 5 + ((score - 285) / 151) * 15;
+  }
+  if (engType === 'toefl') {
+    if (score >= 112) return 20;
+    if (score < 85) return 0;
+    return 5 + ((score - 85) / 27) * 15;
+  }
+  return null;
+}
+
+// 입력 상태
+const SCH_STORAGE_KEY = 'leet_schools_input_v1';
+function loadSchInput() {
+  try {
+    const r = localStorage.getItem(SCH_STORAGE_KEY);
+    return r ? JSON.parse(r) : {};
+  } catch (e) { return {}; }
+}
+function saveSchInput(data) {
+  try { localStorage.setItem(SCH_STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+const schState = Object.assign({
+  eonStd: null,
+  chuStd: null,
+  eonPct: null,
+  chuPct: null,
+  gpaPct: null,
+  gpaScore: null,
+  gpaScale: '4.5',
+  engType: 'toeic',
+  engScore: null,
+  sortBy: 'leet',
+  selectedSchools: null,  // null = 전체 표시, 배열이면 해당 학교만 표시
+}, loadSchInput());
+
+// 입력칸 초기 복원
+function restoreSchInputs() {
+  if (schState.eonStd !== null) document.getElementById('schEonStd').value = schState.eonStd;
+  if (schState.chuStd !== null) document.getElementById('schChuStd').value = schState.chuStd;
+  if (schState.eonPct !== null) {
+    const el = document.getElementById('schEonPct');
+    if (el) el.value = schState.eonPct;
+  }
+  if (schState.chuPct !== null) {
+    const el = document.getElementById('schChuPct');
+    if (el) el.value = schState.chuPct;
+  }
+  if (schState.gpaPct !== null) document.getElementById('schGpaPct').value = schState.gpaPct;
+  if (schState.gpaScore !== null) document.getElementById('schGpaScore').value = schState.gpaScore;
+  if (schState.gpaScale) document.getElementById('schGpaScale').value = schState.gpaScale;
+  if (schState.engType) document.getElementById('schEngType').value = schState.engType;
+  if (schState.engScore !== null) document.getElementById('schEngScore').value = schState.engScore;
+}
+
+// ===== 학교별 종합 정량점수 계산 (각 학교 calc 함수 사용) =====
+function calcSchool(school) {
+  const input = {
+    eonStd: schState.eonStd,
+    chuStd: schState.chuStd,
+    eonPct: schState.eonPct,
+    chuPct: schState.chuPct,
+    gpaPct: schState.gpaPct,
+    gpaScore: schState.gpaScore,
+    gpaScale: schState.gpaScale,
+    engType: schState.engType,
+    engScore: schState.engScore,
+  };
+
+  const r = school.calc(input);
+  const leet = r.leet;
+  const gpa = r.gpa;
+  const eng = r.eng;
+
+  // 합산 만점 (LEET + 학부 + 점수반영 영어)
+  let totalDenom = school.leetMax + school.gpaMax;
+  if (school.engType === 'score' && school.engMax) totalDenom += school.engMax;
+
+  // 총점: LEET + GPA + (점수반영 영어)
+  const parts = [leet, gpa];
+  if (school.engType === 'score') parts.push(eng);
+
+  let totalSum = 0;
+  let totalValid = true;
+  for (const p of parts) {
+    if (p === null || p === undefined) { totalValid = false; break; }
+    totalSum += p;
+  }
+
+  return {
+    leet, gpa, eng,
+    total: totalValid ? totalSum : null,
+    totalDenom,
+    leetDenom: school.leetMax,
+    gpaDenom: school.gpaMax,
+    engDenom: school.engMax,
+  };
+}
+
+// ===== 학교 카드 렌더링 =====
+function renderSchools() {
+  const grid = document.getElementById('schoolsGrid');
+
+  // 필터: 선택된 학교만 표시 (null이면 전체)
+  let filteredSchools = LAW_SCHOOLS;
+  if (Array.isArray(schState.selectedSchools) && schState.selectedSchools.length > 0) {
+    const selSet = new Set(schState.selectedSchools);
+    filteredSchools = LAW_SCHOOLS.filter(s => selSet.has(s.name));
+  } else if (Array.isArray(schState.selectedSchools) && schState.selectedSchools.length === 0) {
+    filteredSchools = [];
+  }
+
+  // 학교 선택 카운트 표시
+  const countEl = document.getElementById('schoolFilterCount');
+  if (countEl) {
+    if (!Array.isArray(schState.selectedSchools)) {
+      countEl.textContent = `전체 ${LAW_SCHOOLS.length}개 표시 중`;
+    } else {
+      countEl.textContent = `${filteredSchools.length} / ${LAW_SCHOOLS.length}개 표시 중`;
+    }
+  }
+
+  // 정렬
+  let schools = filteredSchools.map(s => ({ school: s, calc: calcSchool(s) }));
+  if (schState.sortBy === 'leet') {
+    schools.sort((a, b) => b.school.leetRatio - a.school.leetRatio);
+  } else if (schState.sortBy === 'alpha') {
+    schools.sort((a, b) => a.school.name.localeCompare(b.school.name, 'ko'));
+  } else if (schState.sortBy === 'myscore') {
+    schools.sort((a, b) => {
+      const ar = a.calc.total !== null ? a.calc.total / a.calc.totalDenom : -1;
+      const br = b.calc.total !== null ? b.calc.total / b.calc.totalDenom : -1;
+      return br - ar;
+    });
+  }
+
+  if (schools.length === 0) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.</div>`;
+    return;
+  }
+
+  grid.innerHTML = schools.map(({ school: s, calc: c }) => {
+    // tier 색상: LEET 실질반영비율에 따라
+    let tier = '';
+    if (s.leetRatio >= 50) tier = '';  // 빨강 (default)
+    else if (s.leetRatio >= 40) tier = 'tier-mid';  // 골드
+    else tier = 'tier-low';  // 블루
+
+    // 총점 표시
+    const totalHtml = c.total !== null
+      ? `<span class="sc-total-val">${c.total.toFixed(1)}<span class="denom">/${c.totalDenom}</span></span>`
+      : `<span class="sc-total-val empty">— 점수 입력 필요</span>`;
+
+    const totalPctHtml = c.total !== null
+      ? `<div class="sc-pct-mini">정량 만점 대비 ${(c.total / c.totalDenom * 100).toFixed(1)}%</div>`
+      : '';
+
+    // 각 영역 행
+    const leetVal = c.leet !== null
+      ? `${c.leet.toFixed(1)}<span class="denom"> / ${c.leetDenom}</span>`
+      : '<span class="empty">—</span>';
+    const leetBarPct = c.leet !== null ? (c.leet / c.leetDenom * 100) : 0;
+
+    const gpaVal = c.gpa !== null
+      ? `${c.gpa.toFixed(1)}<span class="denom"> / ${c.gpaDenom}</span>`
+      : '<span class="empty">—</span>';
+    const gpaBarPct = c.gpa !== null ? (c.gpa / c.gpaDenom * 100) : 0;
+
+    let engHtml;
+    if (s.engType === 'pf') {
+      engHtml = `<div class="sc-row">
+        <div class="sc-area">영어</div>
+        <div class="sc-bar"></div>
+        <div class="sc-val"><span class="sc-eng-pf">P/F</span></div>
+      </div>`;
+    } else {
+      const engVal = c.eng !== null
+        ? `${c.eng.toFixed(1)}<span class="denom"> / ${c.engDenom}</span>`
+        : '<span class="empty">—</span>';
+      const engBarPct = c.eng !== null ? (c.eng / c.engDenom * 100) : 0;
+      engHtml = `<div class="sc-row">
+        <div class="sc-area">영어</div>
+        <div class="sc-bar"><div class="sc-bar-fill eng" style="width:${engBarPct}%"></div></div>
+        <div class="sc-val">${engVal}</div>
+      </div>`;
+    }
+
+    const noteHtml = s.note ? `<div class="sc-note">${s.note}</div>` : '';
+
+    return `
+      <div class="school-card ${tier}">
+        <div class="sc-head">
+          <div class="sc-name">${s.name}</div>
+          <div class="sc-leet-pct">LEET 실질반영 <span class="num">${s.leetRatio.toFixed(1)}%</span></div>
+        </div>
+        <div class="sc-total-row">
+          <div>
+            <span class="sc-total-label">정량 환산점수</span>
+            ${totalPctHtml}
+          </div>
+          ${totalHtml}
+        </div>
+        <div class="sc-rows">
+          <div class="sc-row">
+            <div class="sc-area">LEET</div>
+            <div class="sc-bar"><div class="sc-bar-fill" style="width:${leetBarPct}%"></div></div>
+            <div class="sc-val">${leetVal}</div>
+          </div>
+          <div class="sc-row">
+            <div class="sc-area">학점</div>
+            <div class="sc-bar"><div class="sc-bar-fill gpa" style="width:${gpaBarPct}%"></div></div>
+            <div class="sc-val">${gpaVal}</div>
+          </div>
+          ${engHtml}
+        </div>
+        ${noteHtml}
+      </div>`;
+  }).join('');
+}
+
+// 입력 이벤트 연결
+function attachSchoolEvents() {
+  const inputs = [
+    ['schEonStd', 'eonStd', 'float'],
+    ['schChuStd', 'chuStd', 'float'],
+    ['schEonPct', 'eonPct', 'float'],
+    ['schChuPct', 'chuPct', 'float'],
+    ['schGpaPct', 'gpaPct', 'float'],
+    ['schGpaScore', 'gpaScore', 'float'],
+    ['schEngScore', 'engScore', 'float'],
+  ];
+  inputs.forEach(([id, key, type]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', e => {
+      const v = e.target.value;
+      schState[key] = (v === '' || isNaN(parseFloat(v))) ? null : parseFloat(v);
+      saveSchInput(schState);
+      renderSchools();
+    });
+  });
+  document.getElementById('schGpaScale').addEventListener('change', e => {
+    schState.gpaScale = e.target.value;
+    saveSchInput(schState);
+    renderSchools();
+  });
+  document.getElementById('schEngType').addEventListener('change', e => {
+    schState.engType = e.target.value;
+    saveSchInput(schState);
+    renderSchools();
+  });
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const sort = btn.dataset.sort;
+      schState.sortBy = sort;
+      saveSchInput(schState);
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderSchools();
+    });
+  });
+  // 정렬 버튼 active 상태 복원
+  document.querySelectorAll('.sort-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.sort === schState.sortBy);
+  });
+
+  // 학교 선택 칩 빌드 + 이벤트
+  buildSchoolChips();
+}
+
+// ===== 학교 선택 칩 (그룹별 칩) =====
+function buildSchoolChips() {
+  const wrap = document.getElementById('schoolChips');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  // 현재 선택 상태 계산:
+  // - selectedSchools가 null이면 전체 선택으로 간주 (모든 학교 active)
+  // - 빈 배열 []이면 아무것도 선택 안 됨
+  // - 배열에 값이 있으면 해당 학교만 선택됨
+  const selSet = (schState.selectedSchools === null)
+    ? new Set(LAW_SCHOOLS.map(s => s.name))
+    : new Set(schState.selectedSchools);
+
+  // 그룹별로 나누기
+  const groups = { '서울': [], '경기/인천': [], '지방': [] };
+  LAW_SCHOOLS.forEach(s => {
+    const g = s.group || '지방';
+    if (!groups[g]) groups[g] = [];
+    groups[g].push(s);
+  });
+
+  Object.entries(groups).forEach(([gName, gSchools]) => {
+    if (gSchools.length === 0) return;
+    const groupDiv = document.createElement('div');
+    groupDiv.className = 'sch-chip-group';
+    groupDiv.innerHTML = `<div class="sch-chip-glabel">${gName}</div><div class="sch-chip-row"></div>`;
+    const row = groupDiv.querySelector('.sch-chip-row');
+    gSchools.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'sch-chip';
+      if (selSet.has(s.name)) chip.classList.add('active');
+      chip.textContent = s.name;
+      chip.addEventListener('click', () => {
+        // 현재 선택 상태를 정확히 계산
+        // null = 전체 선택, [] = 아무것도 선택 안 함, [...] = 해당 항목들만
+        const cur = (schState.selectedSchools === null)
+          ? new Set(LAW_SCHOOLS.map(x => x.name))
+          : new Set(schState.selectedSchools);
+
+        if (cur.has(s.name)) cur.delete(s.name);
+        else cur.add(s.name);
+
+        // 전체 선택과 같으면 null 처리 (모든 학교 표시)
+        if (cur.size === LAW_SCHOOLS.length) {
+          schState.selectedSchools = null;
+        } else {
+          schState.selectedSchools = [...cur];
+        }
+        chip.classList.toggle('active');
+        saveSchInput(schState);
+        renderSchools();
+      });
+      row.appendChild(chip);
+    });
+    wrap.appendChild(groupDiv);
+  });
+
+  // 빠른 선택 버튼
+  const actions = document.getElementById('schoolChipsActions');
+  if (actions) {
+    actions.innerHTML = `
+      <button data-action="all">전체 선택</button>
+      <button data-action="seoul">서울권만</button>
+      <button data-action="metro">서울/경기·인천</button>
+      <button data-action="clear">선택 해제</button>
+    `;
+    actions.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const a = btn.dataset.action;
+        if (a === 'all') {
+          schState.selectedSchools = null;
+        } else if (a === 'clear') {
+          schState.selectedSchools = [];
+        } else if (a === 'seoul') {
+          schState.selectedSchools = LAW_SCHOOLS.filter(s => s.group === '서울').map(s => s.name);
+        } else if (a === 'metro') {
+          schState.selectedSchools = LAW_SCHOOLS.filter(s => s.group === '서울' || s.group === '경기/인천').map(s => s.name);
+        }
+        saveSchInput(schState);
+        buildSchoolChips();
+        renderSchools();
+      });
+    });
+  }
+}
+
+// 계산기 탭에서 입력한 LEET 점수와 자동 동기화 (편의)
+// 계산기 탭 입력값이 있으면 자동으로 학교별 탭의 LEET 표점 칸도 채워줌
+// 단, 학교별 탭에서 직접 입력한 값이 우선
+function syncFromCalcTab() {
+  // 계산기 탭의 가장 최근 선택된 학년도 결과 활용은 복잡하므로,
+  // 사용자가 직접 입력하도록 두는 게 안전함. 별도 동기화 로직은 생략.
+}
+
+restoreSchInputs();
+attachSchoolEvents();
+renderSchools();
+
+// ===========================================================================
+// 기출 풀이 기록 기능
+// ===========================================================================
+const LOG_STORAGE_KEY = 'leet_log_v1';
+
+function loadLog() {
+  try {
+    const raw = localStorage.getItem(LOG_STORAGE_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch (e) { return []; }
+}
+
+function saveLog(entries) {
+  try {
+    localStorage.setItem(LOG_STORAGE_KEY, JSON.stringify(entries));
+  } catch (e) {}
+}
+
+let logEntries = loadLog();
+let logChartInstance = null;
+
+// 학년도 셀렉트 채우기
+function buildLogYearSelect() {
+  const sel = document.getElementById('logYear');
+  const years = Object.keys(LEET).map(Number).sort((a,b) => b-a);  // 최신 연도부터
+  sel.innerHTML = years.map(y => `<option value="${y}">${y}학년도 (제${y - 2008}회)</option>`).join('');
+  sel.value = years[0];  // 기본값: 가장 최근 연도
+  updateLogMaxLabels();
+}
+
+function updateLogMaxLabels() {
+  const y = parseInt(document.getElementById('logYear').value);
+  const d = LEET[y];
+  if (!d) return;
+  document.getElementById('logEonMax').textContent = `/ ${d.items_eon}`;
+  document.getElementById('logChuMax').textContent = `/ ${d.items_chu}`;
+  document.getElementById('logEon').max = d.items_eon;
+  document.getElementById('logChu').max = d.items_chu;
+}
+
+// 미리보기 업데이트
+function updateLogPreview() {
+  const y = parseInt(document.getElementById('logYear').value);
+  const eonV = document.getElementById('logEon').value;
+  const chuV = document.getElementById('logChu').value;
+  const eonRaw = (eonV === '' || isNaN(parseInt(eonV))) ? null : parseInt(eonV);
+  const chuRaw = (chuV === '' || isNaN(parseInt(chuV))) ? null : parseInt(chuV);
+
+  const preview = document.getElementById('logPreview');
+  if (eonRaw === null && chuRaw === null) {
+    preview.style.display = 'none';
+    return;
+  }
+  preview.style.display = 'block';
+
+  const eonResult = eonRaw !== null ? getStdScore(y, 'eon', eonRaw) : null;
+  const chuResult = chuRaw !== null ? getStdScore(y, 'chu', chuRaw) : null;
+  document.getElementById('prevEon').textContent = eonResult ? eonResult.std.toFixed(1) : '—';
+  document.getElementById('prevChu').textContent = chuResult ? chuResult.std.toFixed(1) : '—';
+  if (eonResult && chuResult) {
+    document.getElementById('prevTotal').textContent = (eonResult.std + chuResult.std).toFixed(1);
+  } else {
+    document.getElementById('prevTotal').textContent = '—';
+  }
+}
+
+// 기록 추가
+async function addLogEntry() {
+  const y = parseInt(document.getElementById('logYear').value);
+  const date = document.getElementById('logDate').value;
+  const eonV = document.getElementById('logEon').value;
+  const chuV = document.getElementById('logChu').value;
+  const memo = document.getElementById('logMemo').value.trim();
+
+  if (!date) { alert('날짜를 입력해주세요.'); return; }
+  const eonRaw = (eonV === '' || isNaN(parseInt(eonV))) ? null : parseInt(eonV);
+  const chuRaw = (chuV === '' || isNaN(parseInt(chuV))) ? null : parseInt(chuV);
+  if (eonRaw === null && chuRaw === null) {
+    alert('언어 또는 추리 점수 중 하나는 입력해주세요.');
+    return;
+  }
+
+  const addBtn = document.getElementById('logAdd');
+  addBtn.disabled = true;
+
+  try {
+    if (currentUser) {
+      // 클라우드 모드
+      const cloud = await pushCloudLog({ year: y, date, eon: eonRaw, chu: chuRaw, memo });
+      if (cloud) {
+        logEntries.push({
+          id: cloud.id,
+          year: cloud.year,
+          date: cloud.date,
+          eon: cloud.eon,
+          chu: cloud.chu,
+          memo: cloud.memo || '',
+          createdAt: cloud.created_at,
+        });
+      }
+    } else {
+      // 게스트 모드 (localStorage)
+      const entry = {
+        id: Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        year: y,
+        date: date,
+        eon: eonRaw,
+        chu: chuRaw,
+        memo: memo,
+        createdAt: new Date().toISOString(),
+      };
+      logEntries.push(entry);
+      saveLog(logEntries);
+    }
+
+    // 입력 초기화
+    document.getElementById('logEon').value = '';
+    document.getElementById('logChu').value = '';
+    document.getElementById('logMemo').value = '';
+    document.getElementById('logPreview').style.display = 'none';
+
+    renderLog();
+  } finally {
+    addBtn.disabled = false;
+  }
+}
+
+// 기록 삭제
+async function deleteLogEntry(id) {
+  if (!confirm('이 기록을 삭제할까요?')) return;
+  if (currentUser) {
+    const ok = await deleteCloudLog(id);
+    if (!ok) return;
+  } else {
+    saveLog(logEntries.filter(e => e.id !== id));
+  }
+  logEntries = logEntries.filter(e => e.id !== id);
+  renderLog();
+}
+
+// 기록 렌더링
+function renderLog() {
+  const list = document.getElementById('logList');
+  const stats = document.getElementById('logStats');
+  const chartCard = document.getElementById('logChartCard');
+
+  if (logEntries.length === 0) {
+    list.innerHTML = `<div class="empty-state" style="padding: 40px 20px;">
+      아직 기록이 없습니다.<br>위쪽에서 첫 기출 풀이 기록을 추가해보세요.
+    </div>`;
+    stats.style.display = 'none';
+    chartCard.style.display = 'none';
+    return;
+  }
+
+  // 각 기록 환산 결과 계산
+  const enriched = logEntries.map(e => {
+    const eon = e.eon !== null ? getStdScore(e.year, 'eon', e.eon) : null;
+    const chu = e.chu !== null ? getStdScore(e.year, 'chu', e.chu) : null;
+    const total = (eon && chu) ? eon.std + chu.std : null;
+    return { ...e, eonStd: eon?.std ?? null, chuStd: chu?.std ?? null, total };
+  });
+
+  // 통계
+  const validTotals = enriched.filter(e => e.total !== null).map(e => e.total);
+  const sortedByDate = [...enriched].sort((a,b) => a.date.localeCompare(b.date));
+  const recent = sortedByDate.length > 0 ? sortedByDate[sortedByDate.length - 1] : null;
+
+  if (validTotals.length > 0) {
+    stats.style.display = 'grid';
+    document.getElementById('statCount').textContent = enriched.length;
+    document.getElementById('statAvg').textContent = (validTotals.reduce((a,b) => a+b, 0) / validTotals.length).toFixed(1);
+    document.getElementById('statMax').textContent = Math.max(...validTotals).toFixed(1);
+    document.getElementById('statRecent').textContent = recent.total !== null ? recent.total.toFixed(1) : '—';
+  } else {
+    stats.style.display = 'none';
+  }
+
+  // 그래프
+  if (validTotals.length >= 2) {
+    chartCard.style.display = 'block';
+    renderLogChart(sortedByDate);
+  } else {
+    chartCard.style.display = 'none';
+  }
+
+  // 목록 (최신 날짜부터)
+  const sortedByDateDesc = [...enriched].sort((a,b) => b.date.localeCompare(a.date));
+  list.innerHTML = sortedByDateDesc.map(e => {
+    const dateFormatted = e.date.replace(/-/g, '.');
+    const eonText = e.eon !== null ? `언어 ${e.eon}→${e.eonStd !== null ? e.eonStd.toFixed(1) : '—'}` : '';
+    const chuText = e.chu !== null ? `추리 ${e.chu}→${e.chuStd !== null ? e.chuStd.toFixed(1) : '—'}` : '';
+    const detailParts = [eonText, chuText].filter(s => s).join(' · ');
+    const memoHtml = e.memo ? `<div class="e-memo">"${escapeHtml(e.memo)}"</div>` : '';
+    const totalText = e.total !== null ? e.total.toFixed(1) : '—';
+    return `
+      <div class="log-entry">
+        <div class="e-date">${dateFormatted}</div>
+        <div class="e-info">
+          <div class="e-year">${e.year}학년도 기출</div>
+          <div class="e-detail">${detailParts}</div>
+          ${memoHtml}
+        </div>
+        <div class="e-scores">
+          <div class="e-total">${totalText}</div>
+          <div class="e-sub">표점 합계</div>
+        </div>
+        <button class="e-delete" onclick="deleteLogEntry('${e.id}')" title="삭제">×</button>
+      </div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderLogChart(sortedByDate) {
+  const ctx = document.getElementById('logChart').getContext('2d');
+  if (logChartInstance) logChartInstance.destroy();
+
+  const valid = sortedByDate.filter(e => e.total !== null);
+  if (valid.length === 0) return;
+
+  const labels = valid.map(e => e.date.slice(5).replace('-', '/') + ` (${e.year})`);
+  const data = valid.map(e => e.total);
+  const eonStds = valid.map(e => e.eonStd);
+  const chuStds = valid.map(e => e.chuStd);
+  const memos = valid.map(e => e.memo);
+
+  logChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: '표점 합계',
+        data,
+        borderColor: '#8b1a1a',
+        backgroundColor: 'rgba(139,26,26,0.08)',
+        borderWidth: 4,
+        pointRadius: 7,
+        pointHoverRadius: 10,
+        pointBackgroundColor: '#8b1a1a',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        tension: 0.3,
+        fill: true,
+      }],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      layout: { padding: { top: 28, right: 12, bottom: 8, left: 8 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(26,26,26,0.95)',
+          titleFont: { family: "'JetBrains Mono', monospace", size: 13, weight: 'bold' },
+          bodyFont: { family: "'IBM Plex Sans KR', sans-serif", size: 12 },
+          padding: 14,
+          displayColors: false,
+          callbacks: {
+            label: ctx => {
+              const i = ctx.dataIndex;
+              const lines = ['합계: ' + data[i].toFixed(1)];
+              if (eonStds[i] !== null) lines.push('  언어이해: ' + eonStds[i].toFixed(1));
+              if (chuStds[i] !== null) lines.push('  추리논증: ' + chuStds[i].toFixed(1));
+              if (memos[i]) lines.push('  메모: ' + memos[i]);
+              return lines;
+            },
+          },
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#8a8a8a' },
+          title: { display: true, text: '표준점수 합계', font: { family: "'IBM Plex Sans KR', sans-serif", size: 11, weight: '500' }, color: '#4a4a4a' },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#1a1a1a', maxRotation: 45, minRotation: 0 },
+        },
+      },
+    },
+    plugins: [{
+      id: 'pointLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const dataset = chart.data.datasets[0];
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = "600 12px 'JetBrains Mono', monospace";
+        ctx.fillStyle = '#1a1a1a';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        meta.data.forEach((point, i) => {
+          const v = dataset.data[i];
+          if (v === null || isNaN(v)) return;
+          ctx.fillText(v.toFixed(1), point.x, point.y - 14);
+        });
+        ctx.restore();
+      },
+    }],
+  });
+}
+
+// 기록 탭 이벤트 연결
+buildLogYearSelect();
+// 오늘 날짜 기본값
+document.getElementById('logDate').valueAsDate = new Date();
+
+document.getElementById('logYear').addEventListener('change', () => {
+  updateLogMaxLabels();
+  updateLogPreview();
+});
+document.getElementById('logEon').addEventListener('input', updateLogPreview);
+document.getElementById('logChu').addEventListener('input', updateLogPreview);
+document.getElementById('logAdd').addEventListener('click', addLogEntry);
+
+// 전역 노출 (onclick 핸들러용)
+window.deleteLogEntry = deleteLogEntry;
+</script>
+</body>
+</html>
