@@ -3,7 +3,53 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LEET 표준점수 계산기 · 2009–2026</title>
+<title>LEET 표준점수 계산기 · 법학적성시험 환산 · 2009–2026</title>
+
+<!-- SEO 기본 -->
+<meta name="description" content="LEET 법학적성시험 표준점수 계산기. 2009~2026학년도 원점수→표준점수→백분위 환산, 25개 로스쿨 학교별 환산점수 비교, 2026학년도 입시결과(합격자 상위50%/75%) 커트라인 대비 분석, 기출 풀이 기록 관리까지.">
+<meta name="keywords" content="LEET,법학적성시험,표준점수,계산기,로스쿨,법학전문대학원,환산점수,입시결과,커트라인,언어이해,추리논증,2026학년도,법전원">
+<meta name="author" content="LEET Calculator">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://leet-calculator.site/" />
+
+<!-- Open Graph (카카오톡, 에타, 페이스북 공유 미리보기) -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="LEET 표준점수 계산기 · 25개 로스쿨 환산 비교" />
+<meta property="og:description" content="2009~2026학년도 LEET 원점수→표준점수→백분위 환산. 25개 로스쿨 학교별 환산점수, 2026 입시결과 커트라인 비교, 기출 풀이 기록까지." />
+<meta property="og:url" content="https://leet-calculator.site/" />
+<meta property="og:site_name" content="LEET 표준점수 계산기" />
+<meta property="og:locale" content="ko_KR" />
+
+<!-- 트위터 카드 -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="LEET 표준점수 계산기 · 25개 로스쿨 환산 비교" />
+<meta name="twitter:description" content="2009~2026학년도 LEET 환산, 25개 로스쿨 커트라인 비교, 기출 기록 관리" />
+
+<!-- 네이버 검색 등록 확인용 (네이버 서치어드바이저에서 발급받아 교체) -->
+<!-- <meta name="naver-site-verification" content="발급받은코드" /> -->
+
+<!-- 구조화 데이터 (JSON-LD) — 구글 검색 결과 강화 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "LEET 표준점수 계산기",
+  "url": "https://leet-calculator.site/",
+  "description": "법학적성시험(LEET) 표준점수 환산 계산기. 2009~2026학년도 원점수→표준점수→백분위 환산, 25개 로스쿨 학교별 환산점수 비교, 입시결과 커트라인 분석.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Web",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+  },
+  "inLanguage": "ko",
+  "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "student"
+  }
+}
+</script>
 <script>
 // 인앱 브라우저 감지 → 외부 브라우저로 이동
 // 카카오톡, 에브리타임, 인스타그램, 페이스북, 네이버, 밴드 등
@@ -1093,13 +1139,13 @@
     min-width: 640px;
     table-layout: fixed;
   }
-  table.adm-table colgroup .col-name { width: 19%; }
+  table.adm-table colgroup .col-name { width: 18%; }
   table.adm-table colgroup .col-enrolled { width: 7%; }
   table.adm-table colgroup .col-leet { width: 14%; }
-  table.adm-table colgroup .col-diff { width: 10%; }
   table.adm-table colgroup .col-leet75 { width: 14%; }
-  table.adm-table colgroup .col-gpa { width: 14%; }
-  table.adm-table colgroup .col-eng { width: 10%; }
+  table.adm-table colgroup .col-diff { width: 11%; }
+  table.adm-table colgroup .col-gpa { width: 16%; }
+  table.adm-table colgroup .col-eng { width: 12%; }
   table.adm-table th {
     position: sticky;
     top: 0;
@@ -1829,7 +1875,7 @@
 
     <section class="input-area">
       <div class="section-label">2026학년도 입시결과 비교</div>
-      <div class="section-desc">25개 로스쿨 합격자 상위50%(중위값) 기준. 학교별 환산점수 탭에 입력한 LEET·학부·영어 점수가 자동 연동됩니다. 학교별 환산 체계가 동일한 경우만 ± 비교하고, 표점합만 공개한 학교는 참고값으로 표시합니다.</div>
+      <div class="section-desc">25개 로스쿨 합격자 상위50%(중위값) 기준. 학교별 환산점수 탭에 입력한 LEET·학점·영어 점수가 자동 연동됩니다.</div>
     </section>
 
     <!-- 내 점수 요약 -->
@@ -2871,6 +2917,9 @@ function renderAdmission() {
         leet50Text = `${ad.leet.val.toFixed(1)}`;
       }
     }
+
+    // LEET 분포 데이터 (25%, 50%, 75%)
+    const leet75Val = (ad.leet75 && ad.leet75.val !== null) ? ad.leet75.val : null;
 
     // LEET 75% 표시값
     let leet75Text = '—';
@@ -4677,6 +4726,7 @@ const ADMISSION_2026 = {
   '건국대': {
     year: 2026, enrolled: 44,
     leet: { val: 129.7, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 131.8, max: null },
     leet75: { val: 131.9, max: null },
     gpa:  { val: null, max: null, label: '학부', unit: '', note: '97.7%' },
     ref: '언어 55.5 + 추리 74.2',
@@ -4684,6 +4734,7 @@ const ADMISSION_2026 = {
   '아주대': {
     year: 2026, enrolled: 55,
     leet: { val: 134.0, max: null, label: 'LEET 가군 (표점합)', unit: '' },
+    leet25: { val: 129.8, max: null },
     leet75: { val: 129.7, max: null },
     gpa:  { val: null, max: null, label: '학점', unit: '', note: '97.8%' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: '890' },
@@ -4692,6 +4743,7 @@ const ADMISSION_2026 = {
   '인하대': {
     year: 2026, enrolled: 54,
     leet: { val: 125.2, max: null, label: 'LEET 가군 (표점합)', unit: '' },
+    leet25: { val: 127.8, max: null },
     leet75: { val: 122.9, max: null },
     gpa:  { val: null, max: null, label: '학점 GPA', unit: '', note: '4.01 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: '970' },
@@ -4700,6 +4752,7 @@ const ADMISSION_2026 = {
   '부산대': {
     year: 2026, enrolled: 132,
     leet: { val: 19.74, max: 30, label: 'LEET 가군 환산', unit: '/ 30' },
+    leet25: { val: 20.15, max: 30 },
     leet75: { val: 19.53, max: 30 },
     gpa:  { val: 29.45, max: 30, label: '학부 가군 환산', unit: '/ 30' },
     ref: '나군 LEET 50%=19.67, 학점 50%=29.50',
@@ -4707,12 +4760,14 @@ const ADMISSION_2026 = {
   '경북대': {
     year: 2026, enrolled: 132,
     leet: { val: 127.5, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 129.7, max: null },
     leet75: { val: 125.2, max: null },
     gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.7%' },
   },
   '전남대': {
     year: 2026, enrolled: 126,
     leet: { val: 125.2, max: null, label: 'LEET 나군 (표점합)', unit: '' },
+    leet25: { val: 127.5, max: null },
     leet75: { val: 123.2, max: null },
     gpa:  { val: null, max: null, label: '학점', unit: '', note: '97.8%' },
     ref: '가군일반 LEET 50%=125.5 · 학점 가군 97.0%',
@@ -4720,12 +4775,14 @@ const ADMISSION_2026 = {
   '전북대': {
     year: 2026, enrolled: 88,
     leet: { val: 123.1, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 125.1, max: null },
     leet75: { val: 122.6, max: null },
     gpa:  { val: null, max: null, label: '학부', unit: '', note: '96.6%' },
   },
   '충남대': {
     year: 2026, enrolled: 110,
     leet: { val: 66.24, max: 120, label: 'LEET 환산', unit: '/ 120' },
+    leet25: { val: 67.78, max: 120 },
     leet75: { val: 64.63, max: 120 },
     gpa:  { val: null, max: null, label: '학부', unit: '', note: '98.1%' },
     eng:  { val: 100, max: 100, label: '영어 환산', unit: '/ 100' },
@@ -4733,18 +4790,21 @@ const ADMISSION_2026 = {
   '충북대': {
     year: 2026, enrolled: 77,
     leet: { val: 168.61, max: 200, label: 'LEET 환산', unit: '/ 200' },
+    leet25: { val: 171.47, max: 200 },
     leet75: { val: 167.75, max: 200 },
     gpa:  { val: null, max: null, label: '학부', unit: '', note: '98.0%' },
   },
   '강원대': {
     year: 2026, enrolled: 41,
     leet: { val: 125.4, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 127.4, max: null },
     leet75: { val: 125.0, max: null },
     gpa:  { val: null, max: null, label: '학점', unit: '', note: '95.9%' },
   },
   '제주대': {
     year: 2026, enrolled: 44,
     leet: { val: 25.096, max: 40, label: 'LEET 가군 환산', unit: '/ 40' },
+    leet25: { val: 25.496, max: 40 },
     leet75: { val: 24.744, max: 40 },
     gpa:  { val: 19.220, max: 20, label: '학부 가군 환산', unit: '/ 20' },
     ref: '나군 LEET 50%=25.096, 학점 50%=19.219',
@@ -4752,6 +4812,7 @@ const ADMISSION_2026 = {
   '동아대': {
     year: 2026, enrolled: 86,
     leet: { val: 120.9, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 123.5, max: null },
     leet75: { val: 118.5, max: null },
     gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.03 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 900' },
@@ -4759,6 +4820,7 @@ const ADMISSION_2026 = {
   '원광대': {
     year: 2026, enrolled: 62,
     leet: { val: 116.2, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 120.4, max: null },
     leet75: { val: 112.0, max: null },
     gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.12 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 935' },
@@ -4766,6 +4828,7 @@ const ADMISSION_2026 = {
   '영남대': {
     year: 2026, enrolled: 76,
     leet: { val: 120.5, max: null, label: 'LEET (표점합)', unit: '' },
+    leet25: { val: 122.8, max: null },
     leet75: { val: 116.2, max: null },
     gpa:  { val: null, max: null, label: '학부 GPA', unit: '', note: '4.18 / 4.5' },
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 965' },
