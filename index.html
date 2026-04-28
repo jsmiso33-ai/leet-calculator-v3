@@ -5441,6 +5441,15 @@ function renderLogChart(sortedByDate) {
   const chuStds = valid.map(e => e.chuStd);
   const memos = valid.map(e => e.memo);
 
+  // y축 범위 동적 계산
+  const dataMin = Math.min(...data);
+  const dataMax = Math.max(...data);
+  const range = dataMax - dataMin;
+  const padTop = Math.max(range * 0.25, 4);
+  const padBottom = Math.max(range * 0.15, 2);
+  const yMin = Math.floor((dataMin - padBottom) * 2) / 2;
+  const yMax = Math.ceil((dataMax + padTop) * 2) / 2;
+
   logChartInstance = new Chart(ctx, {
     type: 'line',
     data: {
@@ -5448,12 +5457,12 @@ function renderLogChart(sortedByDate) {
       datasets: [{
         label: '표점 합계',
         data,
-        borderColor: '#8b1a1a',
-        backgroundColor: 'rgba(139,26,26,0.08)',
-        borderWidth: 4,
-        pointRadius: 7,
-        pointHoverRadius: 10,
-        pointBackgroundColor: '#8b1a1a',
+        borderColor: '#7a1515',
+        backgroundColor: 'rgba(122,21,21,0.08)',
+        borderWidth: 3,
+        pointRadius: 6,
+        pointHoverRadius: 9,
+        pointBackgroundColor: '#7a1515',
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
         tension: 0.3,
@@ -5464,11 +5473,11 @@ function renderLogChart(sortedByDate) {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
-      layout: { padding: { top: 28, right: 12, bottom: 8, left: 8 } },
+      layout: { padding: { top: 36, right: 32, bottom: 12, left: 24 } },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(26,26,26,0.95)',
+          backgroundColor: 'rgba(17,17,17,0.95)',
           titleFont: { family: "'JetBrains Mono', monospace", size: 13, weight: 'bold' },
           bodyFont: { family: "'IBM Plex Sans KR', sans-serif", size: 12 },
           padding: 14,
@@ -5488,31 +5497,53 @@ function renderLogChart(sortedByDate) {
       scales: {
         y: {
           beginAtZero: false,
+          min: yMin,
+          max: yMax,
           grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#8a8a8a' },
-          title: { display: true, text: '표준점수 합계', font: { family: "'IBM Plex Sans KR', sans-serif", size: 11, weight: '500' }, color: '#4a4a4a' },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#555555' },
+          title: { display: true, text: '표준점수 합계', font: { family: "'IBM Plex Sans KR', sans-serif", size: 11, weight: '500' }, color: '#333333' },
         },
         x: {
           grid: { display: false },
-          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#1a1a1a', maxRotation: 45, minRotation: 0 },
+          offset: true,
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 }, color: '#111111', maxRotation: 45, minRotation: 0 },
         },
       },
     },
     plugins: [{
       id: 'pointLabels',
       afterDatasetsDraw(chart) {
-        const { ctx } = chart;
+        const { ctx, chartArea } = chart;
         const dataset = chart.data.datasets[0];
         const meta = chart.getDatasetMeta(0);
         ctx.save();
-        ctx.font = "600 12px 'JetBrains Mono', monospace";
-        ctx.fillStyle = '#1a1a1a';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
+        ctx.font = "700 12px 'JetBrains Mono', monospace";
+        ctx.fillStyle = '#111111';
+        ctx.textBaseline = 'middle';
         meta.data.forEach((point, i) => {
           const v = dataset.data[i];
           if (v === null || isNaN(v)) return;
-          ctx.fillText(v.toFixed(1), point.x, point.y - 14);
+          const text = v.toFixed(1);
+          const textWidth = ctx.measureText(text).width;
+
+          let labelY = point.y - 16;
+          if (labelY - 6 < chartArea.top) {
+            labelY = point.y + 16;
+          }
+
+          let labelX = point.x;
+          let textAlign = 'center';
+          if (point.x - textWidth/2 < chartArea.left + 2) {
+            textAlign = 'left';
+          } else if (point.x + textWidth/2 > chartArea.right - 2) {
+            textAlign = 'right';
+          }
+          ctx.textAlign = textAlign;
+
+          ctx.strokeStyle = 'rgba(255,255,255,0.9)';
+          ctx.lineWidth = 3;
+          ctx.strokeText(text, labelX, labelY);
+          ctx.fillText(text, labelX, labelY);
         });
         ctx.restore();
       },
