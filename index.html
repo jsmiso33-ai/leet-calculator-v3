@@ -51,6 +51,7 @@
   "description": "법학적성시험(LEET) 표준점수 환산 계산기. 2009~2026학년도 원점수→표준점수→백분위 환산, 25개 로스쿨 학교별 환산점수 비교, 입시결과 커트라인 분석.",
   "applicationCategory": "EducationalApplication",
   "operatingSystem": "Web",
+  "browserRequirements": "Requires JavaScript",
   "offers": {
     "@type": "Offer",
     "price": "0",
@@ -60,7 +61,16 @@
   "audience": {
     "@type": "EducationalAudience",
     "educationalRole": "student"
-  }
+  },
+  "featureList": [
+    "2009~2026학년도 원점수 → 표준점수 → 백분위 환산",
+    "25개 로스쿨 학교별 환산점수 비교",
+    "기출 풀이 기록 관리 (게스트/클라우드 동기화)",
+    "약점 진단 (카테고리·난이도별 정답률)",
+    "2026학년도 입시결과 커트라인 분석"
+  ],
+  "keywords": "LEET, 법학적성시험, 표준점수, 계산기, 로스쿨, 법학전문대학원, 환산점수, 백분위, 커트라인",
+  "dateModified": "2026-05-03"
 }
 </script>
 <script>
@@ -194,6 +204,28 @@
   }
   html { scroll-behavior: smooth; }
   body { min-height: 100vh; padding: 32px 24px 80px; }
+
+  /* 접근성: 키보드 사용자가 헤더/탭을 건너뛰고 본문으로 점프 */
+  .skip-link {
+    position: absolute;
+    left: 8px;
+    top: -40px;
+    background: var(--ink);
+    color: var(--ink-on-dark);
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    z-index: 9999;
+    transition: top var(--motion-fast) var(--ease-out);
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   .container {
     max-width: 1080px;
     margin: 0 auto;
@@ -1853,7 +1885,7 @@
     font-size: 11px;
     border-radius: var(--radius-sm);
     margin-left: 8px;
-    animation: fadeIn 0.3s;
+    animation: fadeIn var(--motion-medium) var(--ease-out-soft);
   }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -2793,7 +2825,8 @@
 </style>
 </head>
 <body>
-<div class="container">
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+<div class="container" id="main">
 
   <header class="masthead">
     <div class="title-block">
@@ -2862,11 +2895,11 @@
     <div class="input-grid">
       <div class="field">
         <label>언어이해 원점수 <span class="max">최대 40</span></label>
-        <input type="number" id="eonInput" min="0" max="40" step="1" placeholder="예: 22" />
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="eonInput" min="0" max="40" step="1" placeholder="예: 22" />
       </div>
       <div class="field">
         <label>추리논증 원점수 <span class="max">최대 40</span></label>
-        <input type="number" id="chuInput" min="0" max="40" step="1" placeholder="예: 28" />
+        <input type="number" inputmode="numeric" pattern="[0-9]*" id="chuInput" min="0" max="40" step="1" placeholder="예: 28" />
       </div>
     </div>
 
@@ -2959,11 +2992,11 @@
         </div>
         <div class="field">
           <label>언어이해 원점수 <span class="max" id="logEonMax">/ 30</span></label>
-          <input type="number" id="logEon" min="0" max="40" step="1" placeholder="0" />
+          <input type="number" inputmode="numeric" pattern="[0-9]*" id="logEon" min="0" max="40" step="1" placeholder="0" />
         </div>
         <div class="field">
           <label>추리논증 원점수 <span class="max" id="logChuMax">/ 40</span></label>
-          <input type="number" id="logChu" min="0" max="40" step="1" placeholder="0" />
+          <input type="number" inputmode="numeric" pattern="[0-9]*" id="logChu" min="0" max="40" step="1" placeholder="0" />
         </div>
       </div>
       <div class="field" style="margin-top:12px;">
@@ -3147,34 +3180,34 @@
       <div class="schools-input-grid">
         <div class="field">
           <label>LEET 언어이해 표준점수</label>
-          <input type="number" id="schEonStd" min="0" max="100" step="0.1" placeholder="예: 62.5" />
+          <input type="number" inputmode="decimal" id="schEonStd" min="0" max="100" step="0.1" placeholder="예: 62.5" />
         </div>
         <div class="field">
           <label>LEET 추리논증 표준점수</label>
-          <input type="number" id="schChuStd" min="0" max="100" step="0.1" placeholder="예: 78.9" />
+          <input type="number" inputmode="decimal" id="schChuStd" min="0" max="100" step="0.1" placeholder="예: 78.9" />
         </div>
       </div>
 
       <div class="schools-input-grid" style="margin-top:12px;">
         <div class="field">
           <label>LEET 언어이해 백분위 <span class="max">(서울대·고려대·아주대·부산대용)</span></label>
-          <input type="number" id="schEonPct" min="0" max="100" step="0.1" placeholder="예: 88.5" />
+          <input type="number" inputmode="decimal" id="schEonPct" min="0" max="100" step="0.1" placeholder="예: 88.5" />
         </div>
         <div class="field">
           <label>LEET 추리논증 백분위 <span class="max">(서울대·고려대·아주대·부산대용)</span></label>
-          <input type="number" id="schChuPct" min="0" max="100" step="0.1" placeholder="예: 95.2" />
+          <input type="number" inputmode="decimal" id="schChuPct" min="0" max="100" step="0.1" placeholder="예: 95.2" />
         </div>
       </div>
 
       <div class="schools-input-grid" style="margin-top:12px;">
         <div class="field">
           <label>GPA 백분위 <span class="max">(0–100)</span></label>
-          <input type="number" id="schGpaPct" min="0" max="100" step="0.01" placeholder="예: 95.5" />
+          <input type="number" inputmode="decimal" id="schGpaPct" min="0" max="100" step="0.01" placeholder="예: 95.5" />
         </div>
         <div class="field">
           <label>GPA <span class="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
           <div style="display:flex;gap:6px;">
-            <input type="number" id="schGpaScore" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style="flex:1;" />
+            <input type="number" inputmode="decimal" id="schGpaScore" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style="flex:1;" />
             <select id="schGpaScale" class="log-select" style="width:90px;">
               <option value="4.5">4.5만점</option>
               <option value="4.3">4.3만점</option>
@@ -3195,7 +3228,7 @@
         </div>
         <div class="field">
           <label>영어 점수</label>
-          <input type="number" id="schEngScore" min="0" max="990" step="1" placeholder="예: 950" />
+          <input type="number" inputmode="numeric" pattern="[0-9]*" id="schEngScore" min="0" max="990" step="1" placeholder="예: 950" />
         </div>
       </div>
 
@@ -3410,7 +3443,7 @@
 
           <div class="admin-field">
             <label>지문 묶음 ID (언어이해, 선택)</label>
-            <input type="number" id="adminPassageGroup" min="1" placeholder="같은 지문 문항끼리 같은 숫자" />
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="adminPassageGroup" min="1" placeholder="같은 지문 문항끼리 같은 숫자" />
           </div>
 
           <div class="admin-field">
