@@ -1501,7 +1501,7 @@
     white-space: nowrap;
   }
   table.adm-table td.diff.plus { color: #2e7d32; }
-  table.adm-table td.diff.minus { color: var(--accent); }
+  table.adm-table td.diff.minus { color: var(--danger); }
   table.adm-table td.diff.even { color: var(--ink-mute); }
   table.adm-table td.diff.na { color: var(--ink-mute); font-weight: 400; font-size: 11px; }
   .adm-region-badge {

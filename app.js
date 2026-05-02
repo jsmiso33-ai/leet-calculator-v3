@@ -630,9 +630,16 @@ function renderAdmission() {
       if (c.leet !== null) {
         const diff = c.leet - ad.leet.val;
         leetDiffVal = diff;
-        const sign = diff > 0.05 ? '+' : (diff < -0.05 ? '' : '±');
-        leetDiffClass = diff > 0.05 ? 'plus' : (diff < -0.05 ? 'minus' : 'even');
-        leetDiffText = `${sign}${Math.abs(diff).toFixed(1)}`;
+        if (diff > 0.05) {
+          leetDiffClass = 'plus';
+          leetDiffText = `▲ ${diff.toFixed(1)}`;
+        } else if (diff < -0.05) {
+          leetDiffClass = 'minus';
+          leetDiffText = `▼ ${Math.abs(diff).toFixed(1)}`;
+        } else {
+          leetDiffClass = 'even';
+          leetDiffText = '±0.0';
+        }
       } else {
         leetDiffText = '—';
       }
@@ -640,9 +647,16 @@ function renderAdmission() {
       // 표점합 기준 → 내 표점합과 직접 비교
       const diff = leetSum - ad.leet.val;
       leetDiffVal = diff;
-      const sign = diff > 0.05 ? '+' : (diff < -0.05 ? '' : '±');
-      leetDiffClass = diff > 0.05 ? 'plus' : (diff < -0.05 ? 'minus' : 'even');
-      leetDiffText = `${sign}${Math.abs(diff).toFixed(1)}`;
+      if (diff > 0.05) {
+        leetDiffClass = 'plus';
+        leetDiffText = `▲ ${diff.toFixed(1)}`;
+      } else if (diff < -0.05) {
+        leetDiffClass = 'minus';
+        leetDiffText = `▼ ${Math.abs(diff).toFixed(1)}`;
+      } else {
+        leetDiffClass = 'even';
+        leetDiffText = '±0.0';
+      }
     } else {
       leetDiffText = '—';
     }
