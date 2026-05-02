@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LEET 표준점수 계산법 완벽 정리 · 표점·백분위·표점합 · LEET 표준점수 계산기</title>
+
+<meta name="description" content="LEET 표준점수가 무엇이고 어떻게 계산되는지, 백분위·표점합과 어떻게 다른지, 구리트와 신리트의 평균·표준편차 차이까지 한 번에 정리." />
+<meta name="keywords" content="LEET 표준점수,리트 표점,표점합,리트 백분위,법학적성시험 표준점수,Z-score,구리트 신리트,리트 평균,리트 표준편차" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://leet-calculator.site/guide/standard-score/" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="LEET 표준점수 계산법 완벽 정리 — 표점·백분위·표점합" />
+<meta property="og:description" content="원점수가 같아도 표준점수가 다른 이유, 구리트와 신리트의 평균·표준편차 차이, 학교가 표점합을 쓰는 이유까지." />
+<meta property="og:url" content="https://leet-calculator.site/guide/standard-score/" />
+<meta property="og:site_name" content="LEET 표준점수 계산기" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content="https://leet-calculator.site/og-image.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="LEET 표준점수 계산법 완벽 정리" />
+<meta name="twitter:description" content="표점·백분위·표점합의 차이와 계산 방식을 한 페이지에." />
+<meta name="twitter:image" content="https://leet-calculator.site/og-image.png" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "LEET 표준점수 계산법 완벽 정리 — 표점·백분위·표점합",
+  "description": "LEET 표준점수가 무엇이고 어떻게 계산되는지, 백분위·표점합과 어떻게 다른지, 구리트(2009-2019)와 신리트(2020~)의 평균·표준편차 차이까지 한 번에 정리.",
+  "datePublished": "2026-05-03",
+  "dateModified": "2026-05-03",
+  "author": { "@type": "Organization", "name": "LEET 표준점수 계산기" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LEET 표준점수 계산기",
+    "url": "https://leet-calculator.site/"
+  },
+  "mainEntityOfPage": "https://leet-calculator.site/guide/standard-score/",
+  "image": "https://leet-calculator.site/og-image.png",
+  "inLanguage": "ko"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "LEET 표준점수와 백분위 중 무엇이 더 중요한가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "학교마다 다릅니다. 대부분의 로스쿨(연세대·고려대·성균관대·한양대 등 20개교 이상)은 표준점수를 직접 사용하고, 서울대만 백분위를 사용합니다. 일부 학교(아주대·부산대)는 표준점수 80%와 백분위 20%를 혼합해 씁니다. 본인이 지원할 학교의 환산식을 확인하는 것이 우선입니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "원점수가 같으면 표준점수도 항상 같나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아니요. 표준점수는 매년 응시자 집단의 평균과 표준편차에 따라 달라지므로, 원점수가 같아도 연도에 따라 표준점수는 달라집니다. 같은 원점수 30점이라도 시험이 어려웠던 해(평균이 낮은 해)에는 표준점수가 높게, 쉬웠던 해에는 낮게 나옵니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "구리트와 신리트의 차이가 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "2020학년도부터 표준점수 산출 방식이 변경되었습니다. 구리트(2009-2019)는 언어이해와 추리논증 모두 평균 50·표준편차 10을 사용했지만, 신리트(2020년 이후)는 언어이해 평균 45·SD 9, 추리논증 평균 60·SD 12를 사용합니다. 이 때문에 신리트 점수에서 추리논증 점수가 언어보다 더 높게 나오는 것이 정상입니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "표점합이란 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표점합은 언어이해 표준점수와 추리논증 표준점수를 단순히 더한 값입니다. 많은 로스쿨이 환산점수표의 입력값으로 표점합을 사용합니다. 예를 들어 연세대는 표점합 168 이상에서 만점 150점을, 85 이하에서 50점을 부여합니다. 신리트의 이론상 만점 표점합은 약 170점입니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "표준점수 만점은 몇 점인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표준점수에는 고정된 만점이 없습니다. 응시자 분포에 따라 매년 달라지지만, 신리트 기준 대략적으로 언어이해 만점은 70-75점, 추리논증 만점은 95-100점 부근에서 형성됩니다. 2026학년도 만점 표준점수는 언어 73.1점, 추리 97.6점이었습니다."
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+<style>
+:root {
+  --bg: #FAFAF9;
+  --bg-card: #FFFFFF;
+  --bg-tint: #F1F5F9;
+  --bg-subtle: #F4F4F5;
+  --ink: #18181B;
+  --ink-soft: #27272A;
+  --ink-mute: #71717A;
+  --ink-tertiary: #A1A1AA;
+  --line: rgba(24, 24, 27, 0.06);
+  --line-strong: rgba(24, 24, 27, 0.12);
+  --accent: #1A56DB;
+  --accent-hover: #1747B8;
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.04), 0 0 0 1px rgba(24, 24, 27, 0.05);
+  --shadow-md: 0 1px 3px rgba(24, 24, 27, 0.05), 0 0 0 1px rgba(24, 24, 27, 0.05);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  padding: 32px 24px 80px;
+}
+.container { max-width: 760px; margin: 0 auto; }
+
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+.topnav a {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 150ms;
+}
+.topnav a:hover { color: var(--accent); }
+.topnav .brand {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+header.page-header { margin-bottom: 40px; }
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.lede {
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.meta-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-tertiary);
+}
+
+/* 목차 */
+.toc {
+  background: var(--bg-tint);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 48px;
+}
+.toc h2 {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+}
+.toc li {
+  counter-increment: toc;
+  margin-bottom: 6px;
+  padding-left: 28px;
+  position: relative;
+}
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-tertiary);
+  font-weight: 600;
+  top: 4px;
+}
+.toc a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: color 150ms;
+}
+.toc a:hover { color: var(--accent); }
+
+/* 섹션 */
+section.content {
+  margin-bottom: 48px;
+  scroll-margin-top: 24px;
+}
+section.content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 16px;
+  padding-top: 12px;
+}
+section.content h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+section.content p {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+section.content p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+section.content ul {
+  list-style: none;
+  margin-bottom: 16px;
+}
+section.content ul li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 1.75;
+  margin-bottom: 6px;
+}
+section.content ul li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  width: 4px;
+  height: 4px;
+  background: var(--ink-tertiary);
+  border-radius: 50%;
+}
+
+/* 강조 박스 */
+.callout {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  padding: 18px 22px;
+  border-radius: var(--radius-md);
+  margin: 20px 0;
+  box-shadow: var(--shadow-sm);
+}
+.callout-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.callout p { font-size: 15px; margin-bottom: 0; }
+
+.formula-box {
+  background: var(--ink);
+  color: white;
+  padding: 20px 24px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 16px 0;
+  overflow-x: auto;
+}
+.formula-box .label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+/* 비교 테이블 */
+.cmp-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 20px;
+  font-size: 15px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.cmp-table th, .cmp-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.cmp-table th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-mute);
+}
+.cmp-table td {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.cmp-table tr:last-child th, .cmp-table tr:last-child td { border-bottom: none; }
+
+/* 예시 카드 */
+.example-card {
+  background: var(--bg-tint);
+  padding: 18px 22px;
+  border-radius: var(--radius-md);
+  margin: 16px 0;
+}
+.example-card .ex-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+.example-card p { font-size: 15px; margin-bottom: 8px; }
+.example-card p:last-child { margin-bottom: 0; }
+
+/* FAQ */
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.faq-q {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.faq-q::before {
+  content: 'Q';
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--accent);
+  color: white;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+.faq-a {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.75;
+  padding-left: 30px;
+}
+
+/* CTA */
+.cta-section {
+  margin-top: 64px;
+  padding: 40px 32px;
+  background: var(--ink);
+  color: white;
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.cta-section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.cta-section p {
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+.cta-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 150ms;
+}
+.cta-btn:hover { background: var(--accent-hover); }
+
+/* 관련 가이드 */
+.related {
+  margin-top: 48px;
+  padding: 24px 28px;
+  background: var(--bg-tint);
+  border-radius: var(--radius-lg);
+}
+.related-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.related a {
+  display: block;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.related .desc {
+  font-size: 14px;
+  color: var(--ink-mute);
+}
+
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  text-align: center;
+}
+footer a { color: var(--ink-mute); text-decoration: none; }
+
+@media (max-width: 640px) {
+  body { padding: 20px 16px 60px; }
+  h1 { font-size: 26px; }
+  section.content h2 { font-size: 21px; }
+  .formula-box { font-size: 13px; padding: 16px 18px; }
+  .cta-section { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="/">← 메인으로</a>
+    <span class="brand">LEET 표준점수 계산기</span>
+  </nav>
+
+  <header class="page-header">
+    <span class="eyebrow">LEET 입시 가이드</span>
+    <h1>LEET 표준점수 계산법 완벽 정리</h1>
+    <p class="lede">
+      "원점수는 같은데 왜 표준점수가 매년 다르지?", "표점합이 뭐고 백분위랑 뭐가 달라?" 같은 질문에 한 번에 답하는 가이드. LEET 표준점수가 어떻게 계산되는지, 구리트와 신리트가 왜 다른지, 학교들이 표점을 어떻게 활용하는지를 정리했습니다.
+    </p>
+    <div class="meta-row">
+      <span>읽는 데 약 7분</span>
+      <span>·</span>
+      <span>최종 업데이트: 2026-05-03</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="목차">
+    <h2>목차</h2>
+    <ol>
+      <li><a href="#why-std">왜 원점수가 아닌 표준점수를 쓸까</a></li>
+      <li><a href="#what-is-std">표준점수란 무엇인가</a></li>
+      <li><a href="#leet-formula">LEET 표준점수 계산 공식</a></li>
+      <li><a href="#old-vs-new">구리트 vs 신리트 (2020년 변경)</a></li>
+      <li><a href="#percentile">백분위와 표준점수의 관계</a></li>
+      <li><a href="#sum">표점합이 무엇인가</a></li>
+      <li><a href="#faq">자주 묻는 질문</a></li>
+    </ol>
+  </nav>
+
+  <section class="content" id="why-std">
+    <h2>1. 왜 원점수가 아닌 표준점수를 쓸까</h2>
+    <p>LEET는 매년 시험 난이도가 다릅니다. 어떤 해는 추리논증이 어렵게 출제되어 평균이 낮고, 어떤 해는 쉽게 출제되어 평균이 높습니다. 이 상황에서 <strong>원점수만으로 합격자를 가르면 형평성에 문제가 생깁니다</strong>. 어려운 해에 25점 받은 사람과 쉬운 해에 30점 받은 사람 중 누가 더 잘한 걸까요?</p>
+    <p>이 문제를 해결하기 위해 <strong>표준점수(Standardized Score)</strong>를 도입합니다. 표준점수는 "전체 응시자 중 내가 어디쯤에 있는지"를 통계적으로 환산한 점수입니다. 시험 난이도 차이를 자동으로 보정해주기 때문에, 다른 해에 본 시험을 비교할 때도 공정성이 유지됩니다.</p>
+    <div class="callout">
+      <div class="callout-label">핵심</div>
+      <p>표준점수는 <strong>"내 점수 자체"</strong>가 아니라 <strong>"전체 응시자 분포 안에서 내 위치"</strong>를 표현하는 점수입니다.</p>
+    </div>
+  </section>
+
+  <section class="content" id="what-is-std">
+    <h2>2. 표준점수란 무엇인가</h2>
+    <p>통계학에서 표준점수는 <strong>Z-점수(Z-score)</strong>라고도 불립니다. 어떤 점수가 평균에서 표준편차의 몇 배만큼 떨어져 있는지를 나타내죠.</p>
+    <div class="formula-box">
+      <span class="label">Z-점수 (개념식)</span>
+      Z = (내 원점수 − 평균) / 표준편차
+    </div>
+    <p>예를 들어 평균이 30점, 표준편차가 5점인 시험에서 내가 35점을 받았다면 Z = (35−30)/5 = 1.0. "평균보다 표준편차 1배만큼 위에 있다"는 뜻입니다.</p>
+    <p>그런데 Z-점수는 보통 −3에서 +3 사이의 작은 숫자라서 직관적이지 않습니다. 그래서 LEET는 Z-점수에 표준편차를 곱하고 평균을 더해서 <strong>0~100점대의 점수로 변환</strong>합니다.</p>
+    <div class="formula-box">
+      <span class="label">LEET 표준점수 일반식</span>
+      표준점수 = (Z × 영역별 표준편차) + 영역별 평균
+    </div>
+    <p>이때 "평균"과 "표준편차"는 <strong>실제 응시자들의 분포가 아니라, 미리 정해진 고정값</strong>을 사용합니다. 이 값이 영역마다 다르고, 또 시기에 따라 한 번 바뀌었습니다.</p>
+  </section>
+
+  <section class="content" id="leet-formula">
+    <h2>3. LEET 표준점수 계산 공식</h2>
+    <p>법학전문대학원협의회는 매년 시험 후 응시자 전체의 원점수 평균과 표준편차를 계산한 뒤, 위 공식에 대입해 표준점수를 산출합니다. 이 결과는 모든 응시자에게 개별 통지됩니다.</p>
+    <p>예시로 살펴보면:</p>
+    <div class="example-card">
+      <div class="ex-label">예시 — 신리트 추리논증 30/40</div>
+      <p>가정: 어떤 해 추리논증 응시자 평균 28점, 표준편차 5.5점</p>
+      <p>1단계 (Z-점수): (30 − 28) / 5.5 ≈ 0.364</p>
+      <p>2단계 (표준점수): 0.364 × 12 + 60 = <strong>약 64.4점</strong></p>
+      <p>다른 해: 평균 25점, SD 6점이라면 Z = 0.833 → 표준점수 약 70점</p>
+    </div>
+    <p>같은 30/40이라도 시험이 어려웠던 해(평균 25)에서는 표준점수 70점, 쉬웠던 해(평균 28)에서는 64점이 나옵니다. 난이도 보정이 자동으로 이루어지는 것이죠.</p>
+    <div class="callout">
+      <div class="callout-label">중요</div>
+      <p>응시자는 직접 표준점수를 계산할 필요가 없습니다. 협의회가 공식 환산표를 제공하므로, 본 사이트의 <a href="/" style="color:var(--accent);">계산기</a>나 협의회 발표 환산표에서 원점수를 입력하면 표준점수를 바로 확인할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <section class="content" id="old-vs-new">
+    <h2>4. 구리트 vs 신리트 (2020년 변경)</h2>
+    <p>2020학년도부터 표준점수 산출 기준이 바뀌었습니다. 그 전을 <strong>구리트(2009-2019)</strong>, 그 후를 <strong>신리트(2020~)</strong>라고 부릅니다.</p>
+    <table class="cmp-table">
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th>구리트 (2009-2019)</th>
+          <th>신리트 (2020~)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>언어이해 평균 / SD</td>
+          <td>50 / 10</td>
+          <td>45 / 9</td>
+        </tr>
+        <tr>
+          <td>추리논증 평균 / SD</td>
+          <td>50 / 10</td>
+          <td>60 / 12</td>
+        </tr>
+        <tr>
+          <td>이론적 표점합 만점 (대략)</td>
+          <td>약 160</td>
+          <td>약 170</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>이 변경의 가장 큰 효과는 <strong>추리논증의 점수 비중이 커진 것</strong>입니다. 평균이 60·SD가 12로 설정되어 있어, 같은 백분위라도 추리논증 표점이 언어이해 표점보다 높게 나옵니다.</p>
+    <div class="callout">
+      <div class="callout-label">자주 하는 오해</div>
+      <p>"내 추리논증 표점이 언어이해보다 10점이나 더 높은데, 추리를 더 잘한 건가?" — <strong>아닙니다.</strong> 신리트는 두 영역의 평균과 표준편차가 다르므로, <strong>표점의 절대값을 직접 비교하면 안 됩니다.</strong> 백분위로 비교해야 정확합니다.</p>
+    </div>
+    <p>또 한 가지 주의할 점: 2020년 변경 후에도 협의회가 영역별 평균·SD를 명시한 환산표를 매년 발표하므로, 정확한 환산은 그 해의 공식 환산표를 따릅니다. 본 사이트의 데이터도 협의회 환산표를 직접 반영합니다.</p>
+  </section>
+
+  <section class="content" id="percentile">
+    <h2>5. 백분위와 표준점수의 관계</h2>
+    <p>표준점수와 함께 자주 사용되는 지표가 <strong>백분위</strong>입니다. 백분위는 "내 아래에 몇 %가 있는지"를 나타냅니다. 예를 들어 백분위 95라면, 나보다 점수가 낮은 응시자가 전체의 95%라는 뜻이죠.</p>
+    <p>둘은 다음과 같은 관계가 있습니다:</p>
+    <ul>
+      <li><strong>표준점수</strong>는 시험 난이도가 보정된 절대적 위치 — 다른 해 시험과도 비교 가능</li>
+      <li><strong>백분위</strong>는 그 해 응시자 안에서의 상대적 위치 — 그 해 안에서만 의미 있음</li>
+    </ul>
+    <p>중요한 점은 <strong>표준점수가 같아도 백분위는 매년 다르다</strong>는 것입니다. 어떤 해는 응시자 분포가 한쪽으로 몰리고, 다른 해는 더 평평할 수 있기 때문이죠.</p>
+    <div class="callout">
+      <div class="callout-label">학교별 사용 차이</div>
+      <p>대부분의 로스쿨은 <strong>표준점수</strong>를 환산식의 입력으로 씁니다. 단 <strong>서울대</strong>만 백분위를 사용하고, <strong>아주대·부산대</strong>는 표준점수 80%와 백분위 20%를 혼합합니다. 본인이 지원할 학교가 어느 쪽인지 확인이 필요합니다. <a href="/guide/conversion-formulas/" style="color:var(--accent);">25개 학교 환산식 정리 →</a></p>
+    </div>
+  </section>
+
+  <section class="content" id="sum">
+    <h2>6. 표점합이란 무엇인가</h2>
+    <p><strong>표점합</strong>은 언어이해 표준점수와 추리논증 표준점수를 단순히 더한 값입니다. 매우 단순한 개념이지만, 로스쿨 입시에서 자주 등장합니다.</p>
+    <div class="formula-box">
+      <span class="label">표점합</span>
+      표점합 = 언어이해 표준점수 + 추리논증 표준점수
+    </div>
+    <p>왜 학교들이 표점합을 사용할까요? 두 가지 이유입니다.</p>
+    <ul>
+      <li><strong>편의성</strong>: 환산표가 1차원으로 단순해집니다. 두 영역을 따로 처리하면 환산표가 2차원이 되어 복잡해지죠.</li>
+      <li><strong>총점 위주의 평가</strong>: 학교 입장에서는 "두 영역의 합으로 얼마나 잘했는지"가 핵심이므로, 굳이 영역을 나눠 볼 필요가 없습니다.</li>
+    </ul>
+    <p>예를 들어 <strong>연세대</strong>는 표점합 168 이상이면 만점 150점, 85 이하이면 50점을 부여하는 환산표를 사용합니다. <strong>중앙대</strong>는 표점합 130 이상에서 만점 100점이 됩니다.</p>
+    <div class="callout">
+      <div class="callout-label">참고</div>
+      <p>신리트의 이론적 표점합 만점은 <strong>약 170점</strong>입니다 (언어 75 + 추리 95 정도). 다만 만점은 매년 응시자 분포에 따라 달라집니다. 2026학년도의 경우 언어 만점 73.1점 + 추리 만점 97.6점 = 표점합 170.7점이었습니다.</p>
+    </div>
+  </section>
+
+  <section class="content" id="faq">
+    <h2>7. 자주 묻는 질문</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">LEET 표준점수와 백분위 중 무엇이 더 중요한가요?</div>
+      <div class="faq-a">학교마다 다릅니다. 대부분의 로스쿨(연세대·고려대·성균관대·한양대 등 20개교 이상)은 표준점수를 직접 사용하고, 서울대만 백분위를 사용합니다. 일부 학교(아주대·부산대)는 표준점수 80%와 백분위 20%를 혼합해 씁니다. 본인이 지원할 학교의 환산식을 확인하는 것이 우선입니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">원점수가 같으면 표준점수도 항상 같나요?</div>
+      <div class="faq-a">아니요. 표준점수는 매년 응시자 집단의 평균과 표준편차에 따라 달라지므로, 원점수가 같아도 연도에 따라 표준점수는 달라집니다. 같은 원점수 30점이라도 시험이 어려웠던 해(평균이 낮은 해)에는 표준점수가 높게, 쉬웠던 해에는 낮게 나옵니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">구리트와 신리트의 차이가 무엇인가요?</div>
+      <div class="faq-a">2020학년도부터 표준점수 산출 방식이 변경되었습니다. 구리트(2009-2019)는 언어이해와 추리논증 모두 평균 50·표준편차 10을 사용했지만, 신리트(2020년 이후)는 언어이해 평균 45·SD 9, 추리논증 평균 60·SD 12를 사용합니다. 이 때문에 신리트 점수에서 추리논증 점수가 언어보다 더 높게 나오는 것이 정상입니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">표점합이란 무엇인가요?</div>
+      <div class="faq-a">표점합은 언어이해 표준점수와 추리논증 표준점수를 단순히 더한 값입니다. 많은 로스쿨이 환산점수표의 입력값으로 표점합을 사용합니다. 예를 들어 연세대는 표점합 168 이상에서 만점 150점을, 85 이하에서 50점을 부여합니다. 신리트의 이론상 만점 표점합은 약 170점입니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">표준점수 만점은 몇 점인가요?</div>
+      <div class="faq-a">표준점수에는 고정된 만점이 없습니다. 응시자 분포에 따라 매년 달라지지만, 신리트 기준 대략적으로 언어이해 만점은 70-75점, 추리논증 만점은 95-100점 부근에서 형성됩니다. 2026학년도 만점 표준점수는 언어 73.1점, 추리 97.6점이었습니다.</div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>내 원점수로 표준점수 환산해보기</h2>
+    <p>원점수와 학년도만 입력하면 표준점수, 백분위, 표점합까지 한 번에.</p>
+    <a class="cta-btn" href="/">계산기로 이동 →</a>
+  </section>
+
+  <div class="related">
+    <div class="related-label">관련 가이드</div>
+    <a href="/guide/conversion-formulas/">25개 로스쿨 LEET 환산식 총정리 →</a>
+    <div class="desc">서울대·고려대·연세대 등 학교별 환산공식과 영어 P/F 기준을 한 페이지에.</div>
+  </div>
+
+  <footer>
+    <p>본 가이드는 법학전문대학원협의회의 공식 환산표와 25개 로스쿨 모집요강을 기반으로 작성되었습니다.</p>
+    <p style="margin-top: 8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
