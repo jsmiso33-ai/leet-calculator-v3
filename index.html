@@ -7498,9 +7498,35 @@ window.adminForceInit = function() {
   console.log('Admin force re-initialized');
 };
 
+// LocalStorage의 메타데이터 작업물을 지우고 코드에 박힌 메타데이터를 사용
+window.metaResetToCode = function() {
+  if (!confirm('LocalStorage의 메타데이터 작업물을 모두 삭제하고 코드에 내장된 데이터만 사용합니다. 진행할까요?')) return;
+  try {
+    localStorage.removeItem('leet_meta_draft_v1');
+    console.log('LocalStorage cleared. Reloading page...');
+    location.reload();
+  } catch (e) { console.error(e); }
+};
+
+// 현재 LEET_META 상태 확인 (분석 안 떴을 때 디버깅용)
+window.metaStatus = function() {
+  const years = Object.keys(LEET_META).sort();
+  console.log('=== LEET_META 현재 상태 ===');
+  years.forEach(y => {
+    const d = LEET_META[y];
+    const eonCount = (d.eon || []).filter(q => q.answer != null).length;
+    const chuCount = (d.chu || []).filter(q => q.answer != null).length;
+    console.log(`${y}학년도: 언어 ${eonCount}문항, 추리 ${chuCount}문항`);
+  });
+  console.log('===========================');
+  console.log('LocalStorage 키 leet_meta_draft_v1:', localStorage.getItem('leet_meta_draft_v1') ? '있음 (작업물)' : '없음');
+  console.log('Reset 명령: metaResetToCode()');
+};
+
 // ===========================================================================
 // 메타데이터 통합: 관리자가 입력한 draft를 LEET_META에 머지
 // 기존 코드(qgRenderStats 등)가 LEET_META를 참조하므로, 페이지 로드 시 통합
+// 단, 코드에 하드코딩된 데이터가 더 완성도 높으면 보존
 // ===========================================================================
 (function mergeAdminDraftIntoMeta() {
   try {
@@ -7508,9 +7534,33 @@ window.adminForceInit = function() {
     if (!raw) return;
     const draft = JSON.parse(raw);
     Object.keys(draft).forEach(y => {
-      LEET_META[y] = draft[y];
+      const draftYear = draft[y];
+      const codeYear = LEET_META[y];
+      if (!draftYear) return;
+
+      // 코드에 데이터가 없으면 draft 사용
+      if (!codeYear) {
+        LEET_META[y] = draftYear;
+        return;
+      }
+
+      // 둘 다 있으면 더 완성도 높은 쪽 선택 (영역별로 별개 판단)
+      ['eon', 'chu'].forEach(sec => {
+        const codeArr = (codeYear[sec] || []);
+        const draftArr = (draftYear[sec] || []);
+        // "완성도": 정답이 채워진 항목 수
+        const codeFilled = codeArr.filter(q => q && q.answer != null).length;
+        const draftFilled = draftArr.filter(q => q && q.answer != null).length;
+        if (draftFilled > codeFilled) {
+          if (!LEET_META[y]) LEET_META[y] = {};
+          LEET_META[y][sec] = draftArr;
+        }
+        // 코드 쪽이 같거나 더 완성도 높으면 코드 데이터 유지
+      });
     });
-  } catch {}
+  } catch (e) {
+    console.warn('[meta merge] error:', e);
+  }
 })();
 
 // ===========================================================================
