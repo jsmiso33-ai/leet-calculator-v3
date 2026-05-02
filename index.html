@@ -6859,6 +6859,21 @@ window.deleteLogEntry = deleteLogEntry;
 // ===========================================================================
 // 관리자 모드 (메타데이터 입력)
 // ===========================================================================
+// 메타데이터 작업 상태 (LocalStorage) - 다른 함수보다 먼저 선언
+const ADMIN_KEY = 'leet_meta_draft_v1';
+let adminDraft = {}; // { 2026: { eon: [...], chu: [...] }, ... }
+let adminCurrent = null; // { year, sec, no } 현재 편집 중인 문항
+
+function loadAdminDraft() {
+  try {
+    const raw = localStorage.getItem(ADMIN_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+function saveAdminDraft() {
+  try { localStorage.setItem(ADMIN_KEY, JSON.stringify(adminDraft)); } catch {}
+}
+
 // 진입: URL ?admin=1 또는 헤더 로고 5번 빠르게 클릭
 (function setupAdminAccess() {
   const params = new URLSearchParams(location.search);
@@ -6907,21 +6922,6 @@ function enableAdminMode() {
     window._adminEventsBound = true;
     window._adminInited = true; // 셀렉트와 데이터는 준비됨, 탭 클릭 시 adminRender만 호출
   }
-}
-
-// 메타데이터 작업 상태 (LocalStorage)
-const ADMIN_KEY = 'leet_meta_draft_v1';
-let adminDraft = {}; // { 2026: { eon: [...], chu: [...] }, ... }
-let adminCurrent = null; // { year, sec, no } 현재 편집 중인 문항
-
-function loadAdminDraft() {
-  try {
-    const raw = localStorage.getItem(ADMIN_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
-}
-function saveAdminDraft() {
-  try { localStorage.setItem(ADMIN_KEY, JSON.stringify(adminDraft)); } catch {}
 }
 
 function adminInit() {
