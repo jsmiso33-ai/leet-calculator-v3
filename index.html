@@ -178,6 +178,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
+    -webkit-text-size-adjust: 100%; /* iOS 가로모드에서 폰트 자동 확대 방지 */
+    overflow-x: hidden; /* 가로 스크롤 완전 차단 */
   }
   html { scroll-behavior: smooth; }
   body { min-height: 100vh; padding: 32px 24px 80px; }
@@ -419,7 +421,7 @@
     .hero-stats { min-width: 0; }
     .hero-headline { font-size: 26px; }
   }
-  @media (max-width: 560px) {
+  @media (max-width: 480px) {
     .hero-stats { grid-template-columns: 1fr; }
     .hero-headline { font-size: 22px; }
     .hero-sub { font-size: 13px; }
@@ -793,7 +795,7 @@
     color: var(--gold);
     border: 1px solid #e8dab2;
     border-radius: var(--radius-sm);
-    font-size: 9px;
+    font-size: 10px;
     font-style: normal;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -943,7 +945,7 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 12px;
   }
-  @media (max-width: 800px) {
+  @media (max-width: 640px) {
     .log-input-grid { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 480px) {
@@ -1065,7 +1067,7 @@
     gap: 16px;
     margin-bottom: 32px;
   }
-  @media (max-width: 800px) { .log-stats { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .log-stats { grid-template-columns: repeat(2, 1fr); } }
   .stat-card {
     background: var(--bg-card);
     border: none;
@@ -1173,7 +1175,7 @@
     border-color: var(--accent);
     color: var(--accent);
   }
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .log-entry { grid-template-columns: 1fr auto; gap: 8px; }
     .log-entry .e-date { grid-column: 1 / -1; min-width: 0; }
     .log-entry .e-delete { grid-row: 2; grid-column: 2; align-self: start; }
@@ -1185,7 +1187,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     .schools-input-grid { grid-template-columns: 1fr; }
   }
   .info-callout {
@@ -1541,7 +1543,7 @@
   .adm-school-sub {
     display: block;
     font-family: var(--font-mono);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 400;
     color: var(--ink-mute);
     line-height: 1.4;
@@ -1573,7 +1575,7 @@
     display: inline-block;
     padding: 1px 6px;
     border-radius: var(--radius-sm);
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     letter-spacing: 0.05em;
     margin-left: 6px;
@@ -1590,7 +1592,7 @@
     table.adm-table td.diff { font-size: 12px; }
     .adm-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
     .adm-summary-item .as-val { font-size: 16px; }
-    .adm-school-sub { font-size: 8px; }
+    .adm-school-sub { font-size: 10px; }
   }
   @media (max-width: 480px) {
     table.adm-table { font-size: 10px; min-width: 460px; }
@@ -1851,19 +1853,68 @@
   @media (max-width: 640px) {
     .container { padding: 0 12px; }
     body { padding: 16px 12px 60px; }
-    .masthead { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
-    .masthead h1 { font-size: 19px; }
+    .masthead { padding: 16px 18px; flex-wrap: wrap; gap: 12px; }
+    .masthead h1 { font-size: 18px; }
     .title-block::before { width: 38px; height: 38px; font-size: 17px; }
     .title-block { gap: 12px; }
-    .masthead { padding: 18px 18px; }
     .masthead .subtitle { font-size: 11px; }
     .masthead .meta { font-size: 10px; text-align: left; flex-basis: 100%; }
+    /* 모바일 auth 영역 컴팩트 */
+    .auth-status { justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
+    .auth-mode { font-size: 11px; }
+    .auth-btn { padding: 6px 10px; font-size: 12px; }
+    .auth-btn svg { width: 14px !important; height: 14px !important; margin-right: 4px !important; }
+    .auth-info { text-align: left; font-size: 10px; margin-top: 4px; }
+  }
+
+  /* 더 작은 화면 (아이폰 mini, 갤럭시 미니 등) */
+  @media (max-width: 380px) {
+    .container { padding: 0 8px; }
+    body { padding: 12px 8px 60px; }
+    .masthead { padding: 14px 14px; }
+    .masthead h1 { font-size: 17px; }
+    .title-block::before { width: 34px; height: 34px; font-size: 15px; }
   }
 
   /* 탭 메뉴 */
   @media (max-width: 640px) {
     nav.tab-nav { width: 100%; }
     .tab-btn { padding: 8px 12px; font-size: 12px; flex: 1; text-align: center; min-width: 0; }
+  }
+
+  /* 모바일 터치 타겟 — 손가락이 닿기 좋도록 */
+  @media (max-width: 640px) {
+    /* 학년도 칩 — 한 줄에 너무 많이 들어가지 않게 패딩 살짝 키움 */
+    .y-chip { padding: 8px 14px; font-size: 13px; }
+    /* 학교 칩 */
+    .sch-chip { padding: 8px 14px; min-height: 36px; }
+    /* 작은 버튼들도 최소 36px 높이 */
+    .quick-actions button { padding: 8px 14px; }
+    .sf-quick-actions button { padding: 8px 14px; font-size: 12px; }
+    .sort-btn { padding: 8px 14px; }
+    /* 채점 셀은 그리드라 자동으로 화면 폭에 맞춰지지만 최소 사이즈 유지 */
+    .qg-cell { font-size: 13px; }
+    .qg-cell .qg-num { font-size: 14px; }
+    /* 폼 입력 — iOS 자동 줌 방지를 위해 16px 이상 유지 */
+    input[type="number"], input[type="text"], input[type="date"], select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
+  /* iPhone 노치/홈 인디케이터 영역 — safe area 대응 */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
+      padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
+    }
+    @media (max-width: 640px) {
+      body {
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+        padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom)));
+      }
+    }
   }
 
   /* 학교 카드 그리드: 모바일에서 1열 */
@@ -1898,7 +1949,7 @@
     .sf-quick-actions { gap: 4px; }
     .sf-quick-actions button { padding: 6px 8px; font-size: 10px; flex: 1; }
     .sch-chip { padding: 6px 8px; font-size: 11px; }
-    .sch-chip-glabel { font-size: 9px; }
+    .sch-chip-glabel { font-size: 10px; }
   }
 
   /* 기출 기록 불러오기 드롭다운 */
@@ -1906,7 +1957,7 @@
     .import-log-dropdown { width: 100%; left: 0; right: 0; }
     .import-log-item { padding: 10px 12px; flex-wrap: wrap; gap: 4px; }
     .import-log-item .ili-scores { font-size: 10px; margin-left: 0; }
-    .import-log-item .ili-date { font-size: 9px; }
+    .import-log-item .ili-date { font-size: 10px; }
   }
 
   /* 점수 입력 영역 */
@@ -1989,6 +2040,9 @@
   }
   @media (max-width: 640px) {
     .qgrade-grid { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  }
+  @media (max-width: 380px) {
+    .qgrade-grid { grid-template-columns: repeat(5, 1fr); gap: 3px; }
   }
   .qg-cell {
     aspect-ratio: 1;
@@ -2124,7 +2178,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 28px;
   }
-  @media (max-width: 800px) {
+  @media (max-width: 640px) {
     .qstats-grid { grid-template-columns: 1fr; }
   }
   .qstats-block-title {
@@ -2346,7 +2400,7 @@
     border-bottom-right-radius: 4px;
   }
   .admin-cell-ans {
-    font-size: 9px;
+    font-size: 10px;
     color: var(--ink-muted, #6b6256);
     margin-top: 1px;
   }
@@ -2486,7 +2540,7 @@
     border-bottom-right-radius: 12px;
   }
 
-  @media (max-width: 700px) {
+  @media (max-width: 640px) {
     .admin-controls { grid-template-columns: 1fr; }
     .admin-grid { grid-template-columns: repeat(6, 1fr); }
     .admin-cell-num { font-size: 12px; }
@@ -2572,6 +2626,17 @@
     color: var(--ink-on-dark-mute);
     font-family: var(--font-mono);
     margin-top: 3px;
+  }
+  /* 모바일 약점 카드: 좁아지면 점수가 아래로 */
+  @media (max-width: 480px) {
+    .weakness-card { padding: 18px 16px; }
+    .weakness-item {
+      grid-template-columns: 20px 1fr auto;
+      gap: 10px;
+      padding: 10px 12px;
+    }
+    .weakness-name { font-size: 13px; }
+    .weakness-detail { font-size: 10px; }
   }
 
   .qs-bar-overlay {
