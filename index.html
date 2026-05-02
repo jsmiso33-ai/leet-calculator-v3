@@ -6885,10 +6885,27 @@ window.deleteLogEntry = deleteLogEntry;
 
 function enableAdminMode() {
   document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
-  // 자동 초기화
-  if (!window._adminInited) {
-    adminInit();
-    window._adminInited = true;
+  // 자동 초기화는 탭 클릭 시 hookAdminTabSwitch가 처리.
+  // 다만 이벤트 바인딩은 미리 해둬야 모달 등이 동작함.
+  if (!window._adminEventsBound) {
+    // 학년도 셀렉트만 미리 채워두기 (탭 클릭 시 즉시 보이도록)
+    const sel = document.getElementById('adminYear');
+    if (sel && !sel.options.length) {
+      Object.keys(LEET).map(Number).sort((a,b) => b-a).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y + '학년도';
+        sel.appendChild(opt);
+      });
+      sel.value = '2026';
+    }
+    adminDraft = loadAdminDraft();
+    Object.keys(LEET_META).forEach(y => {
+      if (!adminDraft[y]) adminDraft[y] = LEET_META[y];
+    });
+    adminBindEvents();
+    window._adminEventsBound = true;
+    window._adminInited = true; // 셀렉트와 데이터는 준비됨, 탭 클릭 시 adminRender만 호출
   }
 }
 
@@ -6929,7 +6946,11 @@ function adminInit() {
   });
 
   adminRender();
-  adminBindEvents();
+  // 이벤트 바인딩은 한 번만
+  if (!window._adminEventsBound) {
+    adminBindEvents();
+    window._adminEventsBound = true;
+  }
 }
 
 function adminGetYearData(year) {
@@ -6975,13 +6996,38 @@ function adminItemStatus(item) {
 }
 
 function adminRender() {
-  const year = parseInt(document.getElementById('adminYear').value);
+  const yearEl = document.getElementById('adminYear');
+  if (!yearEl) {
+    console.error('[admin] adminYear element not found');
+    return;
+  }
+  let year = parseInt(yearEl.value);
+  if (isNaN(year) || !LEET[year]) {
+    // 셀렉트가 비어있으면 채우고 기본값 설정
+    if (!yearEl.options.length) {
+      Object.keys(LEET).map(Number).sort((a,b) => b-a).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y + '학년도';
+        yearEl.appendChild(opt);
+      });
+    }
+    yearEl.value = '2026';
+    year = 2026;
+  }
   const yearData = LEET[year];
-  if (!yearData) return;
+  if (!yearData) {
+    console.error('[admin] No data for year', year);
+    return;
+  }
 
   ['eon', 'chu'].forEach(sec => {
     const count = sec === 'eon' ? yearData.items_eon : yearData.items_chu;
     const grid = document.getElementById('adminGrid' + (sec === 'eon' ? 'Eon' : 'Chu'));
+    if (!grid) {
+      console.error('[admin] Grid element not found for', sec);
+      return;
+    }
     grid.innerHTML = '';
 
     let completeCount = 0;
@@ -7320,17 +7366,51 @@ function adminBindEvents() {
   });
 }
 
-// 탭 전환 시 관리자 탭이면 자동 초기화
+// 탭 전환 시 관리자 탭이면 자동 초기화 (visible해진 후 렌더해야 정확함)
 (function hookAdminTabSwitch() {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.tab === 'admin' && !window._adminInited) {
-        adminInit();
-        window._adminInited = true;
+      if (btn.dataset.tab === 'admin') {
+        // 탭 전환은 다른 핸들러가 처리하므로, 약간 지연 후 렌더
+        setTimeout(() => {
+          if (!window._adminInited) {
+            adminInit();
+            window._adminInited = true;
+          } else {
+            // 이미 초기화됨 - 그리드만 다시 렌더 (display:block 직후 정확한 크기 확보)
+            adminRender();
+          }
+        }, 50);
       }
     });
   });
 })();
+
+// 디버그 헬퍼 (콘솔에서 호출 가능)
+window.adminDebug = function() {
+  const sel = document.getElementById('adminYear');
+  console.log('=== Admin Debug ===');
+  console.log('LEET keys:', Object.keys(LEET));
+  console.log('adminYear element:', sel);
+  console.log('adminYear options:', sel ? Array.from(sel.options).map(o => o.value) : 'no element');
+  console.log('adminYear value:', sel ? sel.value : 'no element');
+  console.log('LEET[selected]:', sel ? LEET[parseInt(sel.value)] : 'no element');
+  console.log('Grid eon:', document.getElementById('adminGridEon'));
+  console.log('Grid chu:', document.getElementById('adminGridChu'));
+  console.log('Tab panel:', document.getElementById('tab-admin'));
+  console.log('Tab panel display:', document.getElementById('tab-admin')?.style.display, getComputedStyle(document.getElementById('tab-admin'))?.display);
+  console.log('_adminInited:', window._adminInited, '_adminEventsBound:', window._adminEventsBound);
+  console.log('adminDraft:', adminDraft);
+  console.log('==================');
+  console.log('Try: adminRender() to force re-render');
+};
+window.adminForceInit = function() {
+  window._adminInited = false;
+  window._adminEventsBound = false;
+  adminInit();
+  window._adminInited = true;
+  console.log('Admin force re-initialized');
+};
 
 // ===========================================================================
 // 메타데이터 통합: 관리자가 입력한 draft를 LEET_META에 머지
