@@ -5001,68 +5001,100 @@ async function signOut() {
 async function fetchCloudLogs() {
   if (!currentUser) return [];
   setSyncStatus('syncing', '불러오는 중...');
-  const { data, error } = await supabaseClient
-    .from('leet_logs')
-    .select('*')
-    .order('date', { ascending: true });
-  if (error) {
+  try {
+    const { data, error } = await withTimeout(
+      supabaseClient.from('leet_logs').select('*').order('date', { ascending: true }),
+      30000,
+      '불러오기'
+    );
+    if (error) {
+      setSyncStatus('error', '동기화 실패');
+      console.error(error);
+      return [];
+    }
+    setSyncStatus('synced', '동기화됨');
+    // Supabase 데이터를 우리 포맷으로 변환
+    return data.map(row => ({
+      id: row.id,
+      year: row.year,
+      date: row.date,
+      eon: row.eon,
+      chu: row.chu,
+      memo: row.memo || '',
+      createdAt: row.created_at,
+    }));
+  } catch (e) {
     setSyncStatus('error', '동기화 실패');
-    console.error(error);
+    console.error('fetchCloudLogs timeout/error:', e);
     return [];
   }
-  setSyncStatus('synced', '동기화됨');
-  // Supabase 데이터를 우리 포맷으로 변환
-  return data.map(row => ({
-    id: row.id,
-    year: row.year,
-    date: row.date,
-    eon: row.eon,
-    chu: row.chu,
-    memo: row.memo || '',
-    createdAt: row.created_at,
-  }));
+}
+
+// 30초 타임아웃 래퍼 (Supabase 응답이 영원히 안 오는 상황 방지)
+function withTimeout(promise, ms, label) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error(`${label || '네트워크'} 응답 없음 (${ms / 1000}초 초과)`)), ms)
+  );
+  return Promise.race([promise, timeout]);
 }
 
 // 클라우드에 기록 추가
 async function pushCloudLog(entry) {
   if (!currentUser) return null;
   setSyncStatus('syncing', '저장 중...');
-  const { data, error } = await supabaseClient
-    .from('leet_logs')
-    .insert({
-      user_id: currentUser.id,
-      year: entry.year,
-      date: entry.date,
-      eon: entry.eon,
-      chu: entry.chu,
-      memo: entry.memo || null,
-    })
-    .select()
-    .single();
-  if (error) {
+  try {
+    const { data, error } = await withTimeout(
+      supabaseClient
+        .from('leet_logs')
+        .insert({
+          user_id: currentUser.id,
+          year: entry.year,
+          date: entry.date,
+          eon: entry.eon,
+          chu: entry.chu,
+          memo: entry.memo || null,
+        })
+        .select()
+        .single(),
+      30000,
+      '저장'
+    );
+    if (error) {
+      setSyncStatus('error', '저장 실패');
+      console.error(error);
+      return null;
+    }
+    setSyncStatus('synced', '동기화됨');
+    return data;
+  } catch (e) {
     setSyncStatus('error', '저장 실패');
-    console.error(error);
+    console.error('pushCloudLog timeout/error:', e);
     return null;
   }
-  setSyncStatus('synced', '동기화됨');
-  return data;
 }
 
 // 클라우드에서 기록 삭제
 async function deleteCloudLog(id) {
   if (!currentUser) return false;
   setSyncStatus('syncing', '삭제 중...');
-  const { error } = await supabaseClient
-    .from('leet_logs')
-    .delete()
-    .eq('id', id);
-  if (error) {
+  try {
+    const { error } = await withTimeout(
+      supabaseClient.from('leet_logs').delete().eq('id', id),
+      30000,
+      '삭제'
+    );
+    if (error) {
+      setSyncStatus('error', '삭제 실패');
+      console.error(error);
+      return false;
+    }
+    setSyncStatus('synced', '동기화됨');
+    return true;
+  } catch (e) {
     setSyncStatus('error', '삭제 실패');
-    console.error(error);
+    console.error('deleteCloudLog timeout/error:', e);
     return false;
   }
-  setSyncStatus('synced', '동기화됨');
-  return true;
 }
 
 // 게스트 모드 → 로그인 시 로컬 데이터 마이그레이션
@@ -7160,32 +7192,36 @@ function updateLogPreview() {
   }
 }
 
-// 기록 추가
+// 기록 추가 — boolean 반환 (true=저장됨, false=저장 안 됨)
 let _addingLog = false;
 async function addLogEntry() {
-  if (_addingLog) return;  // 이전 추가가 진행 중이면 무시
-  _addingLog = true;
+  if (_addingLog) return false;  // 이전 추가가 진행 중이면 무시
 
+  // 검증을 잠금 설정 앞에서 수행 (검증 실패가 잠금에 영향 없도록)
   const y = parseInt(document.getElementById('logYear').value);
   const date = document.getElementById('logDate').value;
   const eonV = document.getElementById('logEon').value;
   const chuV = document.getElementById('logChu').value;
   const memo = document.getElementById('logMemo').value.trim();
 
-  if (!date) { showFieldError('logDate', '날짜를 입력해주세요.'); _addingLog = false; return; }
+  if (!date) { showFieldError('logDate', '날짜를 입력해주세요.'); return false; }
   const eonRaw = (eonV === '' || isNaN(parseInt(eonV))) ? null : parseInt(eonV);
   const chuRaw = (chuV === '' || isNaN(parseInt(chuV))) ? null : parseInt(chuV);
   if (eonRaw === null && chuRaw === null) {
     toast('언어 또는 추리 점수 중 하나는 입력해주세요.', { type: 'warning' });
     document.getElementById('logEon')?.focus();
-    _addingLog = false;
-    return;
+    return false;
   }
 
+  // 잠금 + 버튼 상태 변경 (반드시 try/finally로 보장)
+  _addingLog = true;
   const addBtn = document.getElementById('logAdd');
-  addBtn.disabled = true;
-  addBtn.textContent = '저장 중…';
+  if (addBtn) {
+    addBtn.disabled = true;
+    addBtn.textContent = '저장 중…';
+  }
 
+  let saved = false;
   try {
     if (currentUser) {
       // 클라우드 모드
@@ -7200,6 +7236,10 @@ async function addLogEntry() {
           memo: cloud.memo || '',
           createdAt: cloud.created_at,
         });
+        saved = true;
+      } else {
+        // 클라우드 저장 실패 — 입력값 보존
+        toast('저장 실패. 잠시 후 다시 시도해주세요.', { type: 'error' });
       }
     } else {
       // 게스트 모드 (localStorage)
@@ -7214,20 +7254,28 @@ async function addLogEntry() {
       };
       logEntries.push(entry);
       saveLog(logEntries);
+      saved = true;
     }
 
-    // 입력 초기화
-    document.getElementById('logEon').value = '';
-    document.getElementById('logChu').value = '';
-    document.getElementById('logMemo').value = '';
-    document.getElementById('logPreview').style.display = 'none';
-
-    renderLog();
+    if (saved) {
+      // 성공 시에만 입력 초기화
+      document.getElementById('logEon').value = '';
+      document.getElementById('logChu').value = '';
+      document.getElementById('logMemo').value = '';
+      document.getElementById('logPreview').style.display = 'none';
+      renderLog();
+    }
+  } catch (e) {
+    console.error('addLogEntry error:', e);
+    toast('저장 중 오류가 발생했습니다.', { type: 'error' });
   } finally {
-    addBtn.disabled = false;
-    addBtn.textContent = '기록 추가';
+    if (addBtn) {
+      addBtn.disabled = false;
+      addBtn.textContent = '기록 추가';
+    }
     _addingLog = false;
   }
+  return saved;
 }
 
 // 기록 삭제
@@ -7943,6 +7991,9 @@ document.getElementById('qgReset').addEventListener('click', async () => {
 });
 
 document.getElementById('qgSave').addEventListener('click', async () => {
+  const qgSaveBtn = document.getElementById('qgSave');
+  if (qgSaveBtn.disabled) return;  // 중복 클릭 방지
+
   const year = parseInt(document.getElementById('qgYear').value);
   const date = document.getElementById('qgDate').value;
   if (!date) { showFieldError('qgDate', '풀이 날짜를 입력해주세요.'); return; }
@@ -7960,9 +8011,20 @@ document.getElementById('qgSave').addEventListener('click', async () => {
   document.getElementById('logEon').value = eonCorrect;
   document.getElementById('logChu').value = chuCorrect;
   document.getElementById('logMemo').value = session.memo || '';
-  // 회차 단위 입력 모드의 addLogEntry 재사용
-  await addLogEntry();
-  toast(`저장 완료 · 언어 ${eonCorrect}/${yearData.items_eon}, 추리 ${chuCorrect}/${yearData.items_chu}`, { type: 'success', duration: 4000 });
+
+  // qgSave 버튼도 잠금 (중복 클릭 시 토스트 스팸 방지)
+  const originalText = qgSaveBtn.textContent;
+  qgSaveBtn.disabled = true;
+  qgSaveBtn.textContent = '저장 중…';
+  try {
+    const saved = await addLogEntry();
+    if (saved) {
+      toast(`저장 완료 · 언어 ${eonCorrect}/${yearData.items_eon}, 추리 ${chuCorrect}/${yearData.items_chu}`, { type: 'success', duration: 4000 });
+    }
+  } finally {
+    qgSaveBtn.disabled = false;
+    qgSaveBtn.textContent = originalText;
+  }
 });
 
 // 카테고리별 통계 렌더
