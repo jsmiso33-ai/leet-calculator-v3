@@ -2822,6 +2822,148 @@
     border-color: #ef6c00;
     color: #bf360c;
   }
+
+  /* === Toast (3초 자동 사라짐, 화면 하단 중앙) === */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+    align-items: center;
+  }
+  .toast {
+    background: var(--ink);
+    color: var(--ink-on-dark);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+    font-size: 13px;
+    font-weight: 500;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 90vw;
+    line-height: 1.5;
+    animation: toastSlideUp var(--motion-medium) var(--ease-out-soft);
+  }
+  .toast.success { background: var(--success); }
+  .toast.error { background: var(--danger); }
+  .toast.warning { background: var(--warning); }
+  .toast-action {
+    background: rgba(255,255,255,0.18);
+    color: inherit;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background var(--motion-fast) var(--ease-out);
+  }
+  .toast-action:hover { background: rgba(255,255,255,0.32); }
+  .toast.dismissing { animation: toastSlideDown var(--motion-fast) var(--ease-out) forwards; }
+  @keyframes toastSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes toastSlideDown {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(20px); }
+  }
+
+  /* === Confirm Modal === */
+  .confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn var(--motion-fast) var(--ease-out);
+  }
+  .confirm-modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.24);
+    animation: confirmPopIn var(--motion-medium) var(--ease-out-soft);
+  }
+  .confirm-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .confirm-message {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    white-space: pre-line;
+  }
+  .confirm-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .confirm-btn {
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--motion-fast) var(--ease-out);
+    font-family: inherit;
+  }
+  .confirm-btn.cancel {
+    background: var(--bg-subtle);
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+  .confirm-btn.cancel:hover { background: var(--bg-tint); }
+  .confirm-btn.confirm {
+    background: var(--ink);
+    color: var(--ink-on-dark);
+  }
+  .confirm-btn.confirm:hover { background: var(--ink-soft); }
+  .confirm-btn.danger {
+    background: var(--danger);
+    color: white;
+  }
+  .confirm-btn.danger:hover { background: #991717; }
+  @keyframes confirmPopIn {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* === 인라인 폼 에러 === */
+  .field-error {
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  input.has-error,
+  select.has-error,
+  .log-select.has-error,
+  .log-date.has-error,
+  .log-memo.has-error {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
+  }
 </style>
 </head>
 <body>
@@ -4832,13 +4974,17 @@ async function signIn() {
     });
     if (error) throw error;
   } catch (e) {
-    alert('로그인 실패: ' + e.message);
+    toast('로그인 실패: ' + e.message, { type: 'error' });
   }
 }
 
 // 로그아웃
 async function signOut() {
-  if (!confirm('로그아웃하시겠어요?\n클라우드 데이터는 그대로 유지되고, 다음에 로그인하면 다시 보입니다.')) return;
+  const ok = await confirmAsync(
+    '클라우드 데이터는 그대로 유지되고, 다음에 로그인하면 다시 보입니다.',
+    { title: '로그아웃하시겠어요?' }
+  );
+  if (!ok) return;
   try {
     await supabaseClient.auth.signOut();
     currentUser = null;
@@ -4847,7 +4993,7 @@ async function signOut() {
     logEntries = loadLog();
     renderLog();
   } catch (e) {
-    alert('로그아웃 실패: ' + e.message);
+    toast('로그아웃 실패: ' + e.message, { type: 'error' });
   }
 }
 
@@ -4924,11 +5070,12 @@ async function migrateLocalToCloud() {
   const localLogs = loadLog();
   if (localLogs.length === 0) return;
 
-  const ok = confirm(
+  const ok = await confirmAsync(
     `이 브라우저에 저장된 ${localLogs.length}개의 게스트 기록이 있습니다.\n` +
     `클라우드 계정으로 옮길까요?\n\n` +
-    `[확인] 옮기기 (게스트 기록 + 기존 클라우드 기록 모두 보임)\n` +
-    `[취소] 게스트 기록은 그대로 두고 클라우드 기록만 사용`
+    `[확인] 옮기기 (게스트 + 클라우드 기록 모두 보임)\n` +
+    `[취소] 게스트 기록은 그대로 두고 클라우드 기록만 사용`,
+    { title: '게스트 기록 가져오기', okLabel: '옮기기' }
   );
   if (!ok) return;
 
@@ -7025,11 +7172,12 @@ async function addLogEntry() {
   const chuV = document.getElementById('logChu').value;
   const memo = document.getElementById('logMemo').value.trim();
 
-  if (!date) { alert('날짜를 입력해주세요.'); _addingLog = false; return; }
+  if (!date) { showFieldError('logDate', '날짜를 입력해주세요.'); _addingLog = false; return; }
   const eonRaw = (eonV === '' || isNaN(parseInt(eonV))) ? null : parseInt(eonV);
   const chuRaw = (chuV === '' || isNaN(parseInt(chuV))) ? null : parseInt(chuV);
   if (eonRaw === null && chuRaw === null) {
-    alert('언어 또는 추리 점수 중 하나는 입력해주세요.');
+    toast('언어 또는 추리 점수 중 하나는 입력해주세요.', { type: 'warning' });
+    document.getElementById('logEon')?.focus();
     _addingLog = false;
     return;
   }
@@ -7084,7 +7232,12 @@ async function addLogEntry() {
 
 // 기록 삭제
 async function deleteLogEntry(id) {
-  if (!confirm('이 기록을 삭제할까요?')) return;
+  const ok = await confirmAsync('이 기록을 삭제할까요?', {
+    title: '기록 삭제',
+    okLabel: '삭제',
+    danger: true,
+  });
+  if (!ok) return;
   if (currentUser) {
     const ok = await deleteCloudLog(id);
     if (!ok) return;
@@ -7775,8 +7928,13 @@ document.getElementById('qgMemo').addEventListener('input', () => {
   saveQgState();
 });
 
-document.getElementById('qgReset').addEventListener('click', () => {
-  if (!confirm('이 회차의 모든 채점을 초기화하시겠습니까?')) return;
+document.getElementById('qgReset').addEventListener('click', async () => {
+  const ok = await confirmAsync('이 회차의 모든 채점을 초기화하시겠습니까?', {
+    title: '채점 초기화',
+    okLabel: '초기화',
+    danger: true,
+  });
+  if (!ok) return;
   const key = qgSessionKey();
   delete qgState[key];
   saveQgState();
@@ -7787,13 +7945,13 @@ document.getElementById('qgReset').addEventListener('click', () => {
 document.getElementById('qgSave').addEventListener('click', async () => {
   const year = parseInt(document.getElementById('qgYear').value);
   const date = document.getElementById('qgDate').value;
-  if (!date) { alert('풀이 날짜를 입력해주세요.'); return; }
+  if (!date) { showFieldError('qgDate', '풀이 날짜를 입력해주세요.'); return; }
   const session = qgGetSession();
   const yearData = LEET[year];
   const eonCorrect = Object.values(session.eon).filter(v => v === 'correct').length;
   const chuCorrect = Object.values(session.chu).filter(v => v === 'correct').length;
   if (eonCorrect === 0 && chuCorrect === 0) {
-    alert('정답으로 표시된 문항이 없습니다.');
+    toast('정답으로 표시된 문항이 없습니다.', { type: 'warning' });
     return;
   }
   // 기존 logEntries 형식으로 저장
@@ -7804,7 +7962,7 @@ document.getElementById('qgSave').addEventListener('click', async () => {
   document.getElementById('logMemo').value = session.memo || '';
   // 회차 단위 입력 모드의 addLogEntry 재사용
   await addLogEntry();
-  alert(`기록 저장 완료\n언어 ${eonCorrect}/${yearData.items_eon}, 추리 ${chuCorrect}/${yearData.items_chu}`);
+  toast(`저장 완료 · 언어 ${eonCorrect}/${yearData.items_eon}, 추리 ${chuCorrect}/${yearData.items_chu}`, { type: 'success', duration: 4000 });
 });
 
 // 카테고리별 통계 렌더
@@ -8700,6 +8858,201 @@ function computeWeakness(year, session) {
 
   return result;
 }
+
+// ===========================================================================
+// Toast / Confirm Modal / 인라인 폼 에러 (alert/confirm 대체용)
+// ===========================================================================
+function ensureToastContainer() {
+  let c = document.getElementById('toastContainer');
+  if (!c) {
+    c = document.createElement('div');
+    c.id = 'toastContainer';
+    c.className = 'toast-container';
+    c.setAttribute('aria-live', 'polite');
+    c.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(c);
+  }
+  return c;
+}
+
+function toast(msg, opts) {
+  opts = opts || {};
+  const type = opts.type || 'info';
+  const duration = opts.duration === undefined ? 3000 : opts.duration;
+  const action = opts.action || null;
+  const c = ensureToastContainer();
+  const t = document.createElement('div');
+  t.className = 'toast' + (type !== 'info' ? ' ' + type : '');
+  t.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+  const text = document.createElement('span');
+  text.textContent = msg;
+  t.appendChild(text);
+
+  if (action) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toast-action';
+    btn.textContent = action.label;
+    btn.addEventListener('click', () => {
+      try { action.onClick(); } finally { dismissToast(t); }
+    });
+    t.appendChild(btn);
+  }
+
+  c.appendChild(t);
+  if (duration > 0) setTimeout(() => dismissToast(t), duration);
+  return t;
+}
+
+function dismissToast(t) {
+  if (!t || !t.parentNode) return;
+  t.classList.add('dismissing');
+  setTimeout(() => { if (t.parentNode) t.remove(); }, 200);
+}
+
+// Promise<boolean> 반환 — confirm() 대체
+function confirmAsync(msg, opts) {
+  opts = opts || {};
+  const title = opts.title || '확인';
+  const okLabel = opts.okLabel || '확인';
+  const cancelLabel = opts.cancelLabel || '취소';
+  const danger = !!opts.danger;
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    const titleId = 'confirmTitle_' + Date.now();
+    overlay.setAttribute('aria-labelledby', titleId);
+    overlay.innerHTML =
+      '<div class="confirm-modal">' +
+        '<div class="confirm-title" id="' + titleId + '">' + escapeHtml(title) + '</div>' +
+        '<div class="confirm-message">' + escapeHtml(msg) + '</div>' +
+        '<div class="confirm-actions">' +
+          '<button class="confirm-btn cancel" type="button">' + escapeHtml(cancelLabel) + '</button>' +
+          '<button class="confirm-btn ' + (danger ? 'danger' : 'confirm') + '" type="button">' + escapeHtml(okLabel) + '</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    const cancelBtn = overlay.querySelector('.cancel');
+    const okBtn = overlay.querySelector('.confirm-btn:not(.cancel)');
+    const prevFocus = document.activeElement;
+
+    function close(result) {
+      document.removeEventListener('keydown', keyHandler);
+      if (overlay.parentNode) overlay.remove();
+      if (prevFocus && prevFocus.focus) prevFocus.focus();
+      resolve(result);
+    }
+    function keyHandler(e) {
+      if (e.key === 'Escape') { e.preventDefault(); close(false); }
+      else if (e.key === 'Enter') { e.preventDefault(); close(true); }
+    }
+
+    cancelBtn.addEventListener('click', () => close(false));
+    okBtn.addEventListener('click', () => close(true));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
+    document.addEventListener('keydown', keyHandler);
+    okBtn.focus();
+  });
+}
+
+function showFieldError(inputId, message) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.classList.add('has-error');
+  input.setAttribute('aria-invalid', 'true');
+
+  const errId = inputId + '-error';
+  let err = document.getElementById(errId);
+  if (!err) {
+    err = document.createElement('div');
+    err.id = errId;
+    err.className = 'field-error';
+    err.setAttribute('role', 'alert');
+    input.insertAdjacentElement('afterend', err);
+    input.setAttribute('aria-describedby', errId);
+  }
+  err.textContent = message;
+
+  const clear = () => {
+    input.classList.remove('has-error');
+    input.removeAttribute('aria-invalid');
+    input.removeAttribute('aria-describedby');
+    if (err.parentNode) err.remove();
+    input.removeEventListener('input', clear);
+    input.removeEventListener('change', clear);
+  };
+  input.addEventListener('input', clear, { once: true });
+  input.addEventListener('change', clear, { once: true });
+}
+
+function clearFieldErrors() {
+  for (let i = 0; i < arguments.length; i++) {
+    const id = arguments[i];
+    const input = document.getElementById(id);
+    if (input) {
+      input.classList.remove('has-error');
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+    }
+    const err = document.getElementById(id + '-error');
+    if (err) err.remove();
+  }
+}
+
+// ===========================================================================
+// 탭 키보드 네비게이션 (← → 키로 탭 이동, ARIA 동기화)
+// ===========================================================================
+(function initTabA11y() {
+  const tabs = Array.from(document.querySelectorAll('.tab-nav .tab-btn'));
+  if (!tabs.length) return;
+  const tabNav = document.querySelector('.tab-nav');
+  if (tabNav) tabNav.setAttribute('role', 'tablist');
+
+  tabs.forEach((btn, i) => {
+    btn.setAttribute('role', 'tab');
+    const target = btn.dataset.tab;
+    btn.id = 'tab-btn-' + target;
+    btn.setAttribute('aria-controls', 'tab-' + target);
+    const isActive = btn.classList.contains('active');
+    btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    btn.setAttribute('tabindex', isActive ? '0' : '-1');
+
+    const panel = document.getElementById('tab-' + target);
+    if (panel) {
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', 'tab-btn-' + target);
+      if (!panel.hasAttribute('tabindex')) panel.setAttribute('tabindex', '0');
+    }
+
+    btn.addEventListener('keydown', (e) => {
+      const visible = tabs.filter(t => t.offsetParent !== null);
+      const idx = visible.indexOf(btn);
+      if (idx === -1) return;
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (idx + 1) % visible.length;
+      else if (e.key === 'ArrowLeft') next = (idx - 1 + visible.length) % visible.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = visible.length - 1;
+      if (next !== -1) {
+        e.preventDefault();
+        visible[next].focus();
+        visible[next].click();
+      }
+    });
+
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => {
+        const active = b === btn;
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+        b.setAttribute('tabindex', active ? '0' : '-1');
+      });
+    });
+  });
+})();
 </script>
 </body>
 </html>
