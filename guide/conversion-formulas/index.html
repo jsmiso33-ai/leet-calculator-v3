@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>25개 로스쿨 LEET 환산식 총정리 (2026학년도) · LEET 표준점수 계산기</title>
+
+<meta name="description" content="2026학년도 25개 로스쿨 LEET 환산식 정리. 서울대·고려대·연세대·성균관대·한양대 등 학교별 LEET 반영비율, 환산공식, 영어 P/F 기준을 한눈에." />
+<meta name="keywords" content="로스쿨 환산식,LEET 환산,서울대 리트,연세대 리트,고려대 리트,법학적성시험 환산점수,로스쿨 반영비율,2026 로스쿨" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://leet-calculator.site/guide/conversion-formulas/" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="25개 로스쿨 LEET 환산식 총정리 (2026학년도)" />
+<meta property="og:description" content="서울대·고려대·연세대 등 25개 로스쿨의 LEET 반영비율과 환산공식을 한 페이지에." />
+<meta property="og:url" content="https://leet-calculator.site/guide/conversion-formulas/" />
+<meta property="og:site_name" content="LEET 표준점수 계산기" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content="https://leet-calculator.site/og-image.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="25개 로스쿨 LEET 환산식 총정리 (2026학년도)" />
+<meta name="twitter:description" content="학교별 LEET 반영비율과 환산공식 한 페이지 정리." />
+<meta name="twitter:image" content="https://leet-calculator.site/og-image.png" />
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "25개 로스쿨 LEET 환산식 총정리 (2026학년도)",
+  "description": "2026학년도 25개 로스쿨의 LEET 반영비율, 환산공식, 영어 P/F 기준을 학교별로 정리한 가이드.",
+  "datePublished": "2026-05-03",
+  "dateModified": "2026-05-03",
+  "author": { "@type": "Organization", "name": "LEET 표준점수 계산기" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "LEET 표준점수 계산기",
+    "url": "https://leet-calculator.site/"
+  },
+  "mainEntityOfPage": "https://leet-calculator.site/guide/conversion-formulas/",
+  "image": "https://leet-calculator.site/og-image.png",
+  "inLanguage": "ko"
+}
+</script>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+<style>
+:root {
+  --bg: #FAFAF9;
+  --bg-card: #FFFFFF;
+  --bg-tint: #F1F5F9;
+  --bg-subtle: #F4F4F5;
+  --ink: #18181B;
+  --ink-soft: #27272A;
+  --ink-mute: #71717A;
+  --ink-tertiary: #A1A1AA;
+  --line: rgba(24, 24, 27, 0.06);
+  --line-strong: rgba(24, 24, 27, 0.12);
+  --accent: #1A56DB;
+  --accent-hover: #1747B8;
+  --success: #15803D;
+  --warning: #B45309;
+  --danger: #B91C1C;
+  --shadow-sm: 0 1px 2px rgba(24, 24, 27, 0.04), 0 0 0 1px rgba(24, 24, 27, 0.05);
+  --shadow-md: 0 1px 3px rgba(24, 24, 27, 0.05), 0 0 0 1px rgba(24, 24, 27, 0.05);
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  padding: 32px 24px 80px;
+}
+.container { max-width: 880px; margin: 0 auto; }
+
+/* 상단 네비 */
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 32px;
+}
+.topnav a {
+  color: var(--ink-mute);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 150ms;
+}
+.topnav a:hover { color: var(--accent); }
+.topnav .home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.topnav .brand {
+  font-weight: 600;
+  color: var(--ink);
+  font-size: 14px;
+}
+
+/* 헤더 */
+header.page-header { margin-bottom: 40px; }
+.eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.lede {
+  font-size: 17px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  max-width: 640px;
+}
+.meta-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-tertiary);
+}
+
+/* 도입부 박스 */
+.intro-box {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 40px;
+  box-shadow: var(--shadow-sm);
+}
+.intro-box h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--ink);
+}
+.intro-box p {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.intro-box p + p { margin-top: 10px; }
+
+/* 목차 */
+.toc {
+  background: var(--bg-tint);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  margin-bottom: 48px;
+}
+.toc h2 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+}
+.toc-group {
+  margin-bottom: 16px;
+}
+.toc-group:last-child { margin-bottom: 0; }
+.toc-group-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.toc-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+.toc-list a {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 150ms;
+}
+.toc-list a:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* 지역 섹션 */
+.region-section { margin-bottom: 48px; }
+.region-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--line-strong);
+}
+
+/* 학교 카드 */
+.school-card {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: 24px;
+}
+.school-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.school-tagline {
+  font-size: 14px;
+  color: var(--ink-mute);
+  margin-bottom: 20px;
+}
+
+/* 핵심 정보 표 */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+.spec-table th, .spec-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+.spec-table th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+  color: var(--ink-mute);
+  font-size: 13px;
+  width: 32%;
+}
+.spec-table td {
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.spec-table tr:last-child th, .spec-table tr:last-child td { border-bottom: none; }
+.ratio-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  background: var(--accent);
+  color: white;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 환산식 설명 블록 */
+.formula-block {
+  margin-top: 16px;
+}
+.formula-block h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.formula-block h3::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.formula-block p {
+  color: var(--ink-soft);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.formula-block p:last-child { margin-bottom: 0; }
+.formula {
+  font-family: var(--font-mono);
+  background: var(--bg-subtle);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--ink);
+  display: inline-block;
+  margin: 4px 0;
+  line-height: 1.5;
+}
+.note-callout {
+  background: #FEF3C7;
+  border-left: 3px solid var(--warning);
+  padding: 10px 14px;
+  border-radius: 4px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #78350F;
+}
+
+/* 하단 CTA */
+.cta-section {
+  margin-top: 64px;
+  padding: 40px 32px;
+  background: var(--ink);
+  color: white;
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.cta-section h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}
+.cta-section p {
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+.cta-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 15px;
+  transition: background 150ms;
+}
+.cta-btn:hover { background: var(--accent-hover); }
+
+/* 푸터 */
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink-tertiary);
+  text-align: center;
+}
+footer a { color: var(--ink-mute); text-decoration: none; }
+
+/* 모바일 */
+@media (max-width: 640px) {
+  body { padding: 20px 16px 60px; }
+  h1 { font-size: 26px; }
+  .school-card { padding: 20px 18px; }
+  .intro-box, .toc { padding: 18px 20px; }
+  .spec-table th { width: 40%; font-size: 12px; }
+  .spec-table td { font-size: 13px; }
+  .cta-section { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a class="home-link" href="/">← 메인으로</a>
+    <span class="brand">LEET 표준점수 계산기</span>
+  </nav>
+
+  <header class="page-header">
+    <span class="eyebrow">로스쿨 입시 가이드</span>
+    <h1>25개 로스쿨 LEET 환산식 총정리</h1>
+    <p class="lede">
+      서울대·고려대·연세대를 비롯한 25개 법학전문대학원의 2026학년도 LEET 환산공식, 반영비율, 영어 P/F 기준을 한 페이지에 정리했습니다. 학교별 환산 방식이 모두 달라서 같은 표준점수라도 학교에 따라 유불리가 크게 갈립니다.
+    </p>
+    <div class="meta-row">
+      <span>2026학년도 모집요강 기준</span>
+      <span>·</span>
+      <span>최종 업데이트: 2026-05-03</span>
+    </div>
+  </header>
+
+  <section class="intro-box">
+    <h2>이 가이드를 읽기 전에</h2>
+    <p><strong>LEET 반영비율</strong>은 1단계 전형에서 LEET 점수가 차지하는 비중입니다. 같은 비율이라도 학교마다 환산 방식(표점합 / 백분위 / 환산표)이 달라서 실제 유불리는 다르게 나옵니다.</p>
+    <p>예를 들어 <strong>한양대(50%)</strong>와 <strong>경희대(50.9%)</strong>는 비율은 비슷하지만, 한양대는 만점 기준 비율 환산식이고 경희대는 표점합에 계수를 곱하는 선형식이라 LEET 고득점자에게 더 유리한 학교가 다릅니다.</p>
+    <p>본 가이드의 <strong>"내 점수로 직접 계산"</strong> 버튼을 누르면 사이트 메인의 학교별 환산점수 탭으로 이동해 모든 학교의 환산점수를 한 번에 비교할 수 있습니다.</p>
+  </section>
+
+  <nav class="toc" aria-label="학교 목차">
+    <h2>학교별 빠른 이동</h2>
+    <div class="toc-group">
+      <div class="toc-group-label">서울권 (12개교)</div>
+      <ul class="toc-list">
+        <li><a href="#snu">서울대</a></li>
+        <li><a href="#korea">고려대</a></li>
+        <li><a href="#yonsei">연세대</a></li>
+        <li><a href="#sungkyun">성균관대</a></li>
+        <li><a href="#hanyang">한양대</a></li>
+        <li><a href="#ewha">이화여대</a></li>
+        <li><a href="#kyunghee">경희대</a></li>
+        <li><a href="#hufs">한국외대</a></li>
+        <li><a href="#sogang">서강대</a></li>
+        <li><a href="#chungang">중앙대</a></li>
+        <li><a href="#uos">서울시립대</a></li>
+        <li><a href="#konkuk">건국대</a></li>
+      </ul>
+    </div>
+    <div class="toc-group">
+      <div class="toc-group-label">경기/인천권 (2개교)</div>
+      <ul class="toc-list">
+        <li><a href="#ajou">아주대</a></li>
+        <li><a href="#inha">인하대</a></li>
+      </ul>
+    </div>
+    <div class="toc-group">
+      <div class="toc-group-label">지방권 (11개교)</div>
+      <ul class="toc-list">
+        <li><a href="#pusan">부산대</a></li>
+        <li><a href="#kyungpook">경북대</a></li>
+        <li><a href="#chonnam">전남대</a></li>
+        <li><a href="#chonbuk">전북대</a></li>
+        <li><a href="#chungnam">충남대</a></li>
+        <li><a href="#chungbuk">충북대</a></li>
+        <li><a href="#kangwon">강원대</a></li>
+        <li><a href="#jeju">제주대</a></li>
+        <li><a href="#donga">동아대</a></li>
+        <li><a href="#wonkwang">원광대</a></li>
+        <li><a href="#yeungnam">영남대</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       서울권
+       ============================================================ -->
+  <section class="region-section">
+    <h2 class="region-title">서울권 (12개교)</h2>
+
+    <article class="school-card" id="snu">
+      <h2 class="school-name">서울대</h2>
+      <div class="school-tagline">국내 유일 백분위 기반 환산 · 정성평가 80점 별도</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">30.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 60 + 학부 60 + 정성평가 80 = 200점</td></tr>
+        <tr><th>영어</th><td>P/F (TEPS 387 / TOEFL 107 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>서울대는 <strong>표준점수가 아닌 백분위</strong>를 사용합니다. 언어 백분위와 추리 백분위를 4:6으로 가중평균한 뒤 0.6을 곱해 60점 만점으로 환산합니다.</p>
+        <div class="formula">LEET 환산점수 = (언어백분위 × 0.4 + 추리백분위 × 0.6) × 0.6</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위에 0.6을 곱해 60점 만점으로 환산합니다.</p>
+      </div>
+      <div class="note-callout">
+        ⚠️ 정량점수(LEET + 학부 = 120점)는 1단계 정량 평가만 결정합니다. 최종 합격은 정성평가 80점이 더해진 200점 만점에서 결정되며, 정성평가 점수는 공개되지 않습니다.
+      </div>
+    </article>
+
+    <article class="school-card" id="korea">
+      <h2 class="school-name">고려대</h2>
+      <div class="school-tagline">백분위 기반 환산표 (모집요강 별첨1·2)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">41.74%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 200 + 학부 150 + 면접/자소서 = 500점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 815 / TEPS 316 / TOEFL 94 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>고려대도 백분위 기반입니다. 언어이해와 추리논증의 백분위를 각각 별첨2 환산표에 대입해 점수를 합산합니다(언어 80점 + 추리 120점 만점).</p>
+        <div class="formula">LEET 환산점수 = 언어 환산점수(별첨2-A) + 추리 환산점수(별첨2-B)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>4.5만점 평점과 백분위를 함께 사용하는 별첨1 환산표를 거칩니다. 백분위 100 → 150점, 91 → 146점, 89 → 141점 식으로 비선형 감소합니다.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="yonsei">
+      <h2 class="school-name">연세대</h2>
+      <div class="school-tagline">표점합 168 이상 만점 · 85 이하 50점 (별첨 환산표1)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">35.7%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 150 + 학부 150 + 영어/면접 = 400점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 800 / TEPS 309 / TOEFL 90 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>언어 표점과 추리 표점을 더한 <strong>표점합</strong>을 별첨 환산표1에 대입합니다. 168 이상 만점 150점, 85 이하 하한선 50점으로 처리됩니다.</p>
+        <div class="formula">표점합 = 언어 표준점수 + 추리 표준점수 → 환산표1 룩업</div>
+        <p>환산표는 비선형이라 130점 이상 구간에서는 1점 차이가 0.5점, 100점 이하 구간에서는 1점 차이가 2~3점까지 벌어집니다.</p>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위를 별첨 환산표2에 대입(50~150점). 73.5% 미만 구간에서 급격하게 감점됩니다.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="sungkyun">
+      <h2 class="school-name">성균관대</h2>
+      <div class="school-tagline">표점합 → 환산점수표 (1단계 85점 만점)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">35.3%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 30 + 학부 25 + 면접/자소서 = 85점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 830 / TEPS 325 / TOEFL 96 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합을 별첨1 환산점수표에 대입해 30점 만점으로 환산합니다.</p>
+        <div class="formula">표점합 = 언어 + 추리 → 별첨1 환산표 → 30점 만점</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위를 별첨2 환산점수표에 대입(25점 만점).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="hanyang">
+      <h2 class="school-name">한양대</h2>
+      <div class="school-tagline">최상위 만점 표점 대비 비율 환산 (나군)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">50.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 40 + 학부 20 + 면접/자소서 = 80점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 800 / TEPS 309 / TOEFL 91 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>해당 연도 만점자의 표준점수를 분모로 한 비율을 사용합니다. 2026학년도 기준 언어 만점 73.1점, 추리 만점 97.6점.</p>
+        <div class="formula">A = 언어표점 / 73.1<br>B = 추리표점 / 97.6<br>C = (A + B) / 2<br>C ≥ 0.95 → 40점<br>0.45 ≤ C < 0.95 → 12 + (C − 0.45) × 56<br>C < 0.45 → 12점</div>
+        <p>최상위권에게는 만점이 쉽게 나오지만 중상위권은 변별이 큰 식입니다.</p>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학부 100점 환산점수가 60 이상이면 6 + (x − 60) × 0.35, 60 미만이면 기본점수 6점.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="ewha">
+      <h2 class="school-name">이화여대</h2>
+      <div class="school-tagline">표점합 130 이상 만점 · 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">35.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 70 + 학부 40 + 영어 20 + 면접 = 200점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (21등급 환산표, 20점 만점)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합 × 0.7 − 30 (130 이상이면 70점 만점).</p>
+        <div class="formula">LEET = 표점합 ≥ 130 ? 70 : max(0, 표점합 × 0.7 − 30)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 백분위 비례 40점, 영어는 21등급 환산표(점수반영).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="kyunghee">
+      <h2 class="school-name">경희대</h2>
+      <div class="school-tagline">단순 선형식 (표점합에 0.28 곱하기)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">50.9%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 100 + 학부 100 + 면접/자소서 = 400점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 800 / TEPS 309 / TOEFL 90 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>가장 단순한 선형식. 표점합 × 0.28 + 58.5로 100점 만점에 매핑.</p>
+        <div class="formula">LEET = 0.28 × (언어표점 + 추리표점) + 58.5</div>
+        <p>표점이 1점 오를 때마다 0.28점 정직하게 오르므로 변별이 균등합니다.</p>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>11등급 환산표 (백분위 기반).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="hufs">
+      <h2 class="school-name">한국외대</h2>
+      <div class="school-tagline">표점합 × 2/3 + 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">45.8%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 100 + 학부 100 + 영어 100 + 면접 = 450점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (6등급 환산표, 100점 만점)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합에 2/3을 곱한 값(상한 100, 하한 0).</p>
+        <div class="formula">LEET = clamp((언어표점 + 추리표점) × 2/3, 0, 100)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 4.5만점 환산 후 10등급 환산표(기본점수 80 포함). 영어는 6등급 환산표.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="sogang">
+      <h2 class="school-name">서강대</h2>
+      <div class="school-tagline">기본점수 큰 비중 (LEET 33%, 학부 75%가 기본점수)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">50.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 30 + 학부 20 + 면접/자소서 = 70점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 700 / TEPS 300 / TOEFL 79 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>기본점수 10점에 표점합의 0.1을 더하는 식. 30점 만점에서 10점이 보장되어 변별 폭이 좁습니다.</p>
+        <div class="formula">LEET = clamp(10 + (언어표점 + 추리표점) × 0.1, 10, 30)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>기본점수 15 + 백분위 × 0.05 (20점 만점에 15점 기본).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="chungang">
+      <h2 class="school-name">중앙대</h2>
+      <div class="school-tagline">표점합 130 이상 만점 · 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">38.4%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 100 + 학부 100 + 영어 100 + 면접 = 400점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (TOEIC 기준 환산표)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합 구간별 환산표. 130 이상이면 100점 만점, 85 미만이면 75점 하한.</p>
+        <div class="formula">LEET = chungangLeetTable(언어표점 + 추리표점)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 4.5만점 평점 구간별 환산표. 영어는 TOEIC 기준 환산표.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="uos">
+      <h2 class="school-name">서울시립대</h2>
+      <div class="school-tagline">표점 × 0.2 단순식 + 영어 TOEIC 환산</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">50.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 35 + 학부 15 + 영어 10 + 면접 = 80점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (TOEIC 기준, 935 이상 만점)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>언어와 추리 각각에 0.2를 곱해 더하는 식 (35점 만점, 상한 클램프).</p>
+        <div class="formula">LEET = clamp(언어표점 × 0.2 + 추리표점 × 0.2, 0, 35)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 백분위 × 0.10 + 5. 영어는 TOEIC 935 이상 만점 10점, 미만은 (TOEIC × 0.005) + 5.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="konkuk">
+      <h2 class="school-name">건국대</h2>
+      <div class="school-tagline">언어/추리 별도 가중 + 큰 기본점수 (100점 보장)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">34.97%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 200 + 학부 200 + 면접/자소서 = 600점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 800 / TEPS 310 / TOEFL 91 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>언어와 추리 각각에 다른 계수를 곱하는 가중식. 100점 보장(하한), 200점 상한.</p>
+        <div class="formula">LEET = clamp((언어 − 45) × 1.45 + (추리 − 60) × 1.55 + 125, 100, 200)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>백분위 구간별 환산표 (200점 만점).</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================================
+       경기/인천권
+       ============================================================ -->
+  <section class="region-section">
+    <h2 class="region-title">경기/인천권 (2개교)</h2>
+
+    <article class="school-card" id="ajou">
+      <h2 class="school-name">아주대</h2>
+      <div class="school-tagline">표점 80% + 백분위 20% 혼합식 + 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">45.5%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 30 + 학부 20 + 영어 20 + 면접 = 80점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (13등급 환산표)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점 부분 80%와 백분위 부분 20%를 혼합한 뒤 0.25를 곱하고 5점을 더합니다.</p>
+        <div class="formula">표점부 = (언어표점 × 0.4 + 추리표점 × 0.6) × 0.8<br>백분위부 = (언어백분위 × 0.4 + 추리백분위 × 0.6) × 0.2<br>LEET = (표점부 + 백분위부) × 0.25 + 5</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 백분위 × 0.1 + 10. 영어는 13등급 환산표.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="inha">
+      <h2 class="school-name">인하대</h2>
+      <div class="school-tagline">큰 만점 폭 + 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">35.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 250 + 학부 200 + 영어 100 + 면접 = 750점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (TOEIC 기준 환산표, 50점 기본 + 50점 실질)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>30점 기본점수에 가중평균(언어 0.4, 추리 0.6)에 220/90을 곱한 값을 더합니다.</p>
+        <div class="formula">LEET = clamp(30 + (언어표점 × 0.4 + 추리표점 × 0.6) × 220/90, 30, 250)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 4.5만점 환산표 (90점 기본 + 110점 실질). 영어는 TOEIC 기준 환산표.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============================================================
+       지방권
+       ============================================================ -->
+  <section class="region-section">
+    <h2 class="region-title">지방권 (11개교)</h2>
+
+    <article class="school-card" id="pusan">
+      <h2 class="school-name">부산대</h2>
+      <div class="school-tagline">표점 80% + 백분위 20% 혼합 + 만점 비율 환산</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">40.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 30 + 학부 30 + 면접/자소서 = 80점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 700 / TEPS 285 / TOEFL 80 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <div class="formula">표점부 = (언어/90 × 40 + 추리/120 × 60) × 0.8<br>백분위부 = (언어백분위 × 0.4 + 추리백분위 × 0.6) × 0.2<br>LEET = clamp((표점부 + 백분위부) × 0.30, 0, 30)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위 × 0.25 + 5 (30점 만점).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="kyungpook">
+      <h2 class="school-name">경북대</h2>
+      <div class="school-tagline">기본점수 85점 + 표점합 비율 가산</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">46.4%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 150 + 학부 100 + 면접/자소서 = 300점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 800 / TEPS 310 / TOEFL 91 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>기본점수 85에 표점합 비율을 65점만큼 더합니다.</p>
+        <div class="formula">LEET = clamp(85 + 65 × (표점합 / 210), 85, 150)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>기본 65 + 백분위 × 0.35 (100점 만점).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="chonnam">
+      <h2 class="school-name">전남대</h2>
+      <div class="school-tagline">표점합 + 5 (단순식)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">42.6%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 150 + 학부 150 + 면접/자소서 = 500점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 750 / TEPS 285 / TOEFL 85 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합에 5점을 더한 매우 단순한 식 (75점 하한, 150점 상한).</p>
+        <div class="formula">LEET = clamp(언어표점 + 추리표점 + 5, 75, 150)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위 기반, 119점 하한 + 150점 상한.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="chonbuk">
+      <h2 class="school-name">전북대</h2>
+      <div class="school-tagline">시그모이드 함수 환산 (특이 케이스)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">53.3%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 40 + 학부 15 + 면접/자소서 = 75점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 700 / TEPS 300 / TOEFL 80 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>국내 유일하게 시그모이드(S자) 함수를 사용합니다. 110점 부근에서 변별이 가장 커지고 양 끝에서는 평탄해집니다.</p>
+        <div class="formula">표점합 ≥ 150 → 40점<br>표점합 < 75 → 21.5점<br>그 외 → 18.6 / (1 + e^(−0.13 × (표점합 − 110))) + 21.5</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>학점 백분위 환산표 (15점 만점).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="chungnam">
+      <h2 class="school-name">충남대</h2>
+      <div class="school-tagline">LEET 비중 가장 높음 (69.77%) · 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">69.77%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 120 + 학부 100 + 영어 100 + 면접 = 350점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (CNU 환산표)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합 × 0.7 − 20 (120점 만점, 0점 하한).</p>
+        <div class="formula">LEET = clamp((언어 + 추리) × 0.7 − 20, 0, 120)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 백분위를 그대로 100점 만점 사용. 영어는 별도 환산표.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="chungbuk">
+      <h2 class="school-name">충북대</h2>
+      <div class="school-tagline">LEET 비중 89.3% · 학부 81% 미만 지원 불가</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">89.3%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 200 + 학부 100 + 면접/자소서 = 330점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 750 / TEPS 286 / TOEFL 85 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합에 1.3을 곱하는 단순식 (200점 상한).</p>
+        <div class="formula">LEET = clamp((언어 + 추리) × 1.3, 0, 200)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>백분위 93 이상 100점, 87 이상 98점, 81 이상 96점, 81 미만 0점.</p>
+      </div>
+      <div class="note-callout">
+        ⚠️ 학부 백분위가 81% 미만이면 사실상 지원이 불가능합니다(0점 처리). 지원 전 반드시 확인 필요.
+      </div>
+    </article>
+
+    <article class="school-card" id="kangwon">
+      <h2 class="school-name">강원대</h2>
+      <div class="school-tagline">표점합 구간별 비선형 환산</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">44.0%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 150 + 학부 100 + 면접/자소서 = 350점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 720 / TEPS 308 / TOEFL 75 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>표점합 구간별로 기울기가 바뀝니다. 100~140 구간에서 가장 가파르게 오릅니다.</p>
+        <div class="formula">표점합 < 80 → 40<br>80 ≤ 표점합 < 100 → 50 + (합 − 80)<br>100 ≤ 표점합 < 140 → 70 + (합 − 100) × 2<br>표점합 ≥ 140 → 150</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>백분위 70 미만 40, 70~80 60+(p−70), 80 이상 70+(p−80)×1.5 (40~100점).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="jeju">
+      <h2 class="school-name">제주대</h2>
+      <div class="school-tagline">백분위 가중평균 × 0.4 (60점 만점 작은 폭)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">66.7%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 40 + 학부 20 + 면접/자소서 = 60점</td></tr>
+        <tr><th>영어</th><td>P/F (TOEIC 710 / TEPS 334 / TOEFL 75 이상)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <div class="formula">LEET = clamp((언어표점 × 0.4 + 추리표점 × 0.6) × 0.40, 0, 40)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>20점 × (백분위 / 100).</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="donga">
+      <h2 class="school-name">동아대</h2>
+      <div class="school-tagline">큰 기본점수 + 표점합 가산 (가·나군 모집)</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">51.3%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 300 + 학부 100 + 영어 200 + 면접 = 800점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (사실상 P/F: 통과 시 200점, 불통과 시 0점)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>기본점수가 200~220으로 매우 크고, 표점합의 절반을 가산합니다.</p>
+        <div class="formula">기본점수 = 표점합 ≥ 100 ? 220 : (≥90 ? 210 : 200)<br>LEET = clamp(기본점수 + 표점합 / 2, 0, 300)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 4.5만점 환산표 (85 기본 + 15 실질). 영어는 명목 200점이지만 통과 시 200, 불통과 0인 사실상 P/F.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="wonkwang">
+      <h2 class="school-name">원광대</h2>
+      <div class="school-tagline">표점 평균 변환 + 영어 점수반영</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">54.5%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 40 + 학부 20 + 영어 20 + 면접 = 100점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (별도 환산표)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>언어와 추리의 평균을 낸 뒤 (평균 + 72) × 2/7 공식 적용 (28~40 구간).</p>
+        <div class="formula">평균 = (언어표점 + 추리표점) / 2<br>LEET = clamp((평균 + 72) × 2/7, 28, 40)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 / 영어</h3>
+        <p>학부는 4.5만점 환산 후 (점수/4.5) × 2 + 18. 영어는 별도 환산표.</p>
+      </div>
+    </article>
+
+    <article class="school-card" id="yeungnam">
+      <h2 class="school-name">영남대</h2>
+      <div class="school-tagline">단순 평균 × 3 + GPA 4단계 환산</div>
+      <table class="spec-table">
+        <tr><th>LEET 반영비율</th><td><span class="ratio-pill">58.8%</span></td></tr>
+        <tr><th>총점 구성</th><td>LEET 300 + 학부 100 + 영어 100 + 면접 = 700점</td></tr>
+        <tr><th>영어</th><td>점수 반영 (별도 환산표)</td></tr>
+      </table>
+      <div class="formula-block">
+        <h3>LEET 환산</h3>
+        <p>언어와 추리의 평균에 3을 곱하는 매우 단순한 식.</p>
+        <div class="formula">LEET = clamp(((언어 + 추리) / 2) × 3, 0, 300)</div>
+      </div>
+      <div class="formula-block">
+        <h3>학부 환산</h3>
+        <p>4.5만점 환산 후 4단계 (4.0 이상 100, 3.5 이상 95, 3.0 이상 90, 미만 80).</p>
+      </div>
+    </article>
+  </section>
+
+  <section class="cta-section">
+    <h2>내 점수로 직접 환산해보기</h2>
+    <p>표준점수만 입력하면 25개 학교의 환산점수를 한 번에 비교할 수 있습니다.</p>
+    <a class="cta-btn" href="/">계산기로 이동 →</a>
+  </section>
+
+  <footer>
+    <p>본 가이드는 각 학교 2026학년도 모집요강을 기반으로 작성되었습니다. 정확한 환산식은 반드시 해당 학교 모집요강 원본을 확인해주세요.</p>
+    <p style="margin-top: 8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
