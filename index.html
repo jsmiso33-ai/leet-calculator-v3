@@ -19,14 +19,27 @@
 <meta property="og:url" content="https://leet-calculator.site/" />
 <meta property="og:site_name" content="LEET 표준점수 계산기" />
 <meta property="og:locale" content="ko_KR" />
+<!-- og:image: 카카오톡/페이스북/에타 공유 시 미리보기 이미지 (1200×630 권장) -->
+<!-- TODO: og-image.png 파일을 레포 루트에 업로드한 후 아래 4줄 주석을 해제하세요 -->
+<!-- <meta property="og:image" content="https://leet-calculator.site/og-image.png" /> -->
+<!-- <meta property="og:image:width" content="1200" /> -->
+<!-- <meta property="og:image:height" content="630" /> -->
+<!-- <meta property="og:image:alt" content="LEET 표준점수 계산기" /> -->
 
 <!-- 트위터 카드 -->
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="LEET 표준점수 계산기 · 25개 로스쿨 환산 비교" />
 <meta name="twitter:description" content="2009~2026학년도 LEET 환산, 25개 로스쿨 커트라인 비교, 기출 기록 관리" />
+<!-- <meta name="twitter:image" content="https://leet-calculator.site/og-image.png" /> -->
 
 <!-- 네이버 서치어드바이저 인증 -->
 <meta name="naver-site-verification" content="b634889f01c6604700c6490fae055c1315ce1c39" />
+
+<!-- 파비콘 / PWA 매니페스트 / 테마 컬러 -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/favicon.svg" />
+<link rel="manifest" href="/site.webmanifest" />
+<meta name="theme-color" content="#1A56DB" />
 
 <!-- 구조화 데이터 (JSON-LD) — 구글 검색 결과 강화 -->
 <script type="application/ld+json">
@@ -83,10 +96,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
     /* === 디자인 토큰 (중성 차콜 + 파랑 포인트) === */
@@ -3436,6 +3447,10 @@
     학교 자체 환산 기준이 달라 비교 가능한 항목만 ± 표시됩니다. 표점합만 공개한 학교는 참고 정보로 표시.
   </footer>
 </div>
+
+<!-- 외부 라이브러리 (HTML 본문 렌더 후 로드되도록 body 끝에 위치) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 // ===========================================================================
@@ -6827,7 +6842,7 @@ function buildImportLogList() {
     const chuPct = result.chu.pct !== null && result.chu.pct !== undefined ? result.chu.pct.toFixed(1) : '—';
 
     const dateStr = entry.date || '';
-    const memo = entry.memo ? ` (${entry.memo})` : '';
+    const memo = entry.memo ? ` (${escapeHtml(entry.memo)})` : '';
 
     return `<div class="import-log-item" onclick="applyLogEntry(${idx})" data-idx="${idx}">
       <span class="ili-year">${entry.year}</span>

@@ -1,0 +1,18 @@
+{
+  "name": "LEET 표준점수 계산기",
+  "short_name": "LEET 계산기",
+  "description": "법학적성시험 표준점수 환산 · 25개 로스쿨 비교",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAFAF9",
+  "theme_color": "#1A56DB",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
