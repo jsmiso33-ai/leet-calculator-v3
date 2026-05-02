@@ -1539,6 +1539,252 @@
     .info-callout ul { margin-left: 10px; }
   }
 
+  /* ===== 문항별 채점 모드 ===== */
+  .grade-mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .grade-mode-toggle button {
+    flex: 1;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: 'IBM Plex Sans KR', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .grade-mode-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .grade-mode-toggle button:not(.active):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .qgrade-section {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .qgrade-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    margin-bottom: 18px;
+  }
+  .qgrade-controls .field { flex: 1; min-width: 140px; max-width: 240px; }
+  .qgrade-section-block { margin-bottom: 24px; }
+  .qgrade-section-block:last-child { margin-bottom: 0; }
+  .qgrade-section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .qgrade-section-title .qg-score {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .qgrade-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  @media (max-width: 640px) {
+    .qgrade-grid { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  }
+  .qg-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #faf8f3;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    user-select: none;
+    position: relative;
+  }
+  .qg-cell:hover {
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+  .qg-cell .qg-num {
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .qg-cell .qg-mark {
+    font-size: 16px;
+    line-height: 1;
+    margin-top: 2px;
+  }
+  .qg-cell.correct {
+    background: #e8f5e9;
+    border-color: #2e7d32;
+    color: #2e7d32;
+  }
+  .qg-cell.incorrect {
+    background: #fde8e8;
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .qg-cell.unsure {
+    background: #fff8e1;
+    border-color: #c4a14a;
+    color: #8a6d20;
+  }
+  /* 카테고리 색띠 (메타데이터에서 가져옴) */
+  .qg-cell .qg-cat-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  .qg-cell .qg-tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(17,17,17,0.95);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 400;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .qg-cell:hover .qg-tooltip { visibility: visible; }
+
+  .qgrade-legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin-top: 16px;
+    padding: 10px 14px;
+    background: #faf8f3;
+    border-radius: 4px;
+  }
+  .qgrade-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .qgrade-legend-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+  }
+
+  /* ===== 카테고리별 통계 ===== */
+  .qstats-section {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 24px;
+  }
+  .qstats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .qstats-summary {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  .qstats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 640px) {
+    .qstats-grid { grid-template-columns: 1fr; }
+  }
+  .qstats-block-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .qstats-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 60px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .qstats-row .qs-label { color: var(--ink-soft); }
+  .qstats-row .qs-bar {
+    height: 10px;
+    background: #ece8df;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+  }
+  .qstats-row .qs-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 5px;
+    transition: width 0.3s;
+  }
+  .qstats-row .qs-fill.high { background: #2e7d32; }
+  .qstats-row .qs-fill.med { background: #c4a14a; }
+  .qstats-row .qs-fill.low { background: var(--accent); }
+  .qstats-row .qs-pct {
+    color: var(--ink);
+    font-weight: 700;
+    text-align: right;
+  }
+  .qstats-empty {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--ink-mute);
+    font-style: italic;
+    font-size: 13px;
+  }
+
   /* 기출 풀이 기록 탭 */
   @media (max-width: 640px) {
     .log-form { padding: 16px; }
@@ -1559,6 +1805,365 @@
   @media (max-width: 640px) {
     .foot { padding: 16px; font-size: 10px; line-height: 1.6; }
   }
+
+  /* ===== 관리자 모드 ===== */
+  .tab-btn.admin-only {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fed7aa;
+  }
+  .tab-btn.admin-only.active {
+    background: #9a3412;
+    color: #fff;
+  }
+
+  .admin-controls {
+    display: grid;
+    grid-template-columns: 200px 1fr auto;
+    gap: 16px;
+    align-items: end;
+    margin-top: 16px;
+  }
+  .admin-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .admin-progress-bar {
+    flex: 1;
+    height: 10px;
+    background: #f0ebe0;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid #d9cfb6;
+  }
+  .admin-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6db98a, #4a8d65);
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .admin-progress-text {
+    font-family: var(--font-mono, monospace);
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+    min-width: 70px;
+    text-align: right;
+  }
+  .admin-action-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .admin-bulk-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 12px;
+    background: #faf6ec;
+    border: 1px dashed #d9cfb6;
+    border-radius: 6px;
+    flex-wrap: wrap;
+  }
+  .admin-bulk-label {
+    font-size: 12px;
+    color: var(--ink-muted, #6b6256);
+    font-weight: 600;
+  }
+  .btn-tiny {
+    padding: 5px 10px;
+    font-size: 12px;
+    background: #fff;
+    border: 1px solid #d9cfb6;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .btn-tiny:hover {
+    background: #f5efde;
+    border-color: var(--gold, #c4a14a);
+  }
+  .btn-tiny.btn-danger {
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+  .btn-tiny.btn-danger:hover {
+    background: #fee2e2;
+    border-color: #b91c1c;
+  }
+
+  /* 관리자 그리드 */
+  .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+  }
+  .admin-cell {
+    aspect-ratio: 1;
+    border: 1.5px solid #d9cfb6;
+    background: #faf8f3;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .admin-cell:hover {
+    border-color: var(--gold, #c4a14a);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+  .admin-cell.partial {
+    background: #fff8e1;
+    border-color: #c4a14a;
+  }
+  .admin-cell.complete {
+    background: #e8f5e9;
+    border-color: #2e7d32;
+  }
+  .admin-cell-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    font-family: var(--font-mono, monospace);
+  }
+  .admin-cell-cat-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+  .admin-cell-ans {
+    font-size: 9px;
+    color: var(--ink-muted, #6b6256);
+    margin-top: 1px;
+  }
+  .admin-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--ink);
+  }
+
+  /* 모달 */
+  .admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .admin-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(2px);
+  }
+  .admin-modal-card {
+    position: relative;
+    background: #fdfaf2;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    border: 1px solid #d9cfb6;
+  }
+  .admin-modal-head {
+    display: flex;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e8dec6;
+  }
+  .admin-modal-head h3 {
+    margin: 0;
+    flex: 1;
+    font-size: 17px;
+    color: var(--ink);
+  }
+  .admin-modal-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--ink-muted, #6b6256);
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+  }
+  .admin-modal-close:hover { color: var(--accent, #c44545); }
+  .admin-modal-body {
+    padding: 20px 24px;
+  }
+  .admin-field {
+    margin-bottom: 16px;
+  }
+  .admin-field label {
+    display: block;
+    font-size: 12px;
+    color: var(--ink-muted, #6b6256);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .admin-field input[type="text"],
+  .admin-field input[type="number"],
+  .admin-field select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d9cfb6;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fff;
+  }
+  .admin-answer-row, .admin-diff-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+  .admin-answer-row button, .admin-diff-row button {
+    padding: 10px 0;
+    border: 1.5px solid #d9cfb6;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    transition: all 0.15s;
+  }
+  .admin-answer-row button:hover,
+  .admin-diff-row button:hover {
+    border-color: var(--gold, #c4a14a);
+  }
+  .admin-answer-row button.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .admin-diff-row button.active {
+    color: #fff;
+    border-color: transparent;
+  }
+  .admin-diff-row button.active[data-diff="하"]   { background: #6db98a; }
+  .admin-diff-row button.active[data-diff="중하"] { background: #9bc97a; }
+  .admin-diff-row button.active[data-diff="중"]   { background: #d4b54a; }
+  .admin-diff-row button.active[data-diff="중상"] { background: #d18d45; }
+  .admin-diff-row button.active[data-diff="상"]   { background: #c44545; }
+  .admin-diff-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ink-muted, #6b6256);
+  }
+  .admin-modal-foot {
+    display: flex;
+    gap: 8px;
+    padding: 14px 24px;
+    border-top: 1px solid #e8dec6;
+    background: #faf6ec;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  @media (max-width: 700px) {
+    .admin-controls { grid-template-columns: 1fr; }
+    .admin-grid { grid-template-columns: repeat(6, 1fr); }
+    .admin-cell-num { font-size: 12px; }
+  }
+
+  /* ===== 가중치 약점 진단 추가 스타일 ===== */
+  .weakness-card {
+    background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 100%);
+    border: 1px solid #fbbf24;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+  }
+  .weakness-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .weakness-card-icon {
+    font-size: 18px;
+  }
+  .weakness-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #92400e;
+  }
+  .weakness-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .weakness-item {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
+  }
+  .weakness-rank {
+    font-weight: 700;
+    color: #b45309;
+    font-family: var(--font-mono, monospace);
+    text-align: center;
+  }
+  .weakness-name {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .weakness-detail {
+    font-size: 11px;
+    color: var(--ink-muted, #6b6256);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .qs-bar-overlay {
+    position: relative;
+  }
+  .qs-bar-expected {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(0,0,0,0.45);
+    z-index: 2;
+  }
+  .qs-bar-expected::after {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 8px;
+    height: 8px;
+    background: rgba(0,0,0,0.45);
+    border-radius: 50%;
+  }
+  .qs-gap-positive { color: #2e7d32; font-weight: 600; }
+  .qs-gap-negative { color: #c44545; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1585,6 +2190,7 @@
     <button class="tab-btn" data-tab="log">기출 풀이 기록</button>
     <button class="tab-btn" data-tab="schools">학교별 환산점수</button>
     <button class="tab-btn" data-tab="admission">입시결과 비교</button>
+    <button class="tab-btn admin-only" data-tab="admin" style="display:none;">🔧 메타데이터 관리</button>
   </nav>
 
   <div class="tab-panel active" id="tab-calc">
@@ -1671,8 +2277,14 @@
 
   <div class="tab-panel" id="tab-log">
 
-    <!-- 새 기록 입력 -->
-    <section class="input-area">
+    <!-- 입력 모드 토글 -->
+    <div class="grade-mode-toggle">
+      <button data-grade-mode="total" class="active">회차 단위 입력 (점수만)</button>
+      <button data-grade-mode="per-question">문항별 채점 (O/X)</button>
+    </div>
+
+    <!-- 회차 단위 입력 -->
+    <section class="input-area" id="modeTotal">
       <div class="section-label">새 기출 기록 추가</div>
       <div class="section-desc">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
 
@@ -1712,6 +2324,67 @@
         <button id="logAdd" class="btn-primary">기록 추가</button>
         <button id="logCancel" class="btn-secondary" style="display:none;">취소</button>
       </div>
+    </section>
+
+    <!-- 문항별 채점 모드 -->
+    <section class="qgrade-section" id="modePerQuestion" style="display:none;">
+      <div class="section-label">문항별 채점</div>
+      <div class="section-desc">학년도와 풀이 날짜를 선택하고 각 문항을 클릭해 정답·오답·헷갈림을 표시하세요. 메타데이터가 입력된 학년도는 카테고리·난이도가 자동으로 표시됩니다.</div>
+
+      <div class="qgrade-controls">
+        <div class="field">
+          <label>학년도 기출</label>
+          <select id="qgYear" class="log-select"></select>
+        </div>
+        <div class="field">
+          <label>푼 날짜</label>
+          <input type="date" id="qgDate" class="log-date" />
+        </div>
+        <div class="field" style="flex:2;">
+          <label>메모 (선택)</label>
+          <input type="text" id="qgMemo" class="log-memo" placeholder="예: 추리 후반부 시간 부족" />
+        </div>
+      </div>
+
+      <!-- 언어이해 -->
+      <div class="qgrade-section-block">
+        <div class="qgrade-section-title">
+          <span>언어이해</span>
+          <span class="qg-score" id="qgEonScore">0 / 30</span>
+        </div>
+        <div class="qgrade-grid" id="qgGridEon"></div>
+      </div>
+
+      <!-- 추리논증 -->
+      <div class="qgrade-section-block">
+        <div class="qgrade-section-title">
+          <span>추리논증</span>
+          <span class="qg-score" id="qgChuScore">0 / 40</span>
+        </div>
+        <div class="qgrade-grid" id="qgGridChu"></div>
+      </div>
+
+      <div class="qgrade-legend">
+        <span style="color:var(--ink);font-weight:700;">클릭으로 토글:</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#faf8f3;"></span>미채점</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#e8f5e9;border-color:#2e7d32;"></span>O 정답</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#fde8e8;border-color:var(--accent);"></span>X 오답</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#fff8e1;border-color:#c4a14a;"></span>△ 헷갈림</span>
+      </div>
+
+      <div class="log-actions" style="margin-top:18px;">
+        <button id="qgSave" class="btn-primary">채점 결과 저장</button>
+        <button id="qgReset" class="btn-secondary">전체 초기화</button>
+      </div>
+    </section>
+
+    <!-- 카테고리별 통계 -->
+    <section class="qstats-section" id="qstatsSection" style="display:none;">
+      <div class="qstats-header">
+        <div class="section-label" style="margin:0;">유형별 정답률 분석</div>
+        <span class="qstats-summary" id="qstatsSummary"></span>
+      </div>
+      <div class="qstats-grid" id="qstatsGrid"></div>
     </section>
 
     <!-- 통계 카드 -->
@@ -1932,6 +2605,140 @@
     </section>
 
   </div><!-- /tab-admission -->
+
+  <div class="tab-panel" id="tab-admin">
+
+    <section class="input-area">
+      <div class="section-label">메타데이터 관리자 모드</div>
+      <div class="section-desc">
+        기출문제의 정답·카테고리·난이도를 입력해서 약점 진단 기능을 활성화합니다.
+        입력한 데이터는 브라우저에 자동 저장되며, JSON으로 다운로드해서 코드에 포함시킬 수 있습니다.
+      </div>
+
+      <div class="admin-controls">
+        <div class="field">
+          <label>학년도</label>
+          <select id="adminYear" class="log-select"></select>
+        </div>
+        <div class="field admin-progress-field">
+          <label>입력 진행률</label>
+          <div class="admin-progress-wrap">
+            <div class="admin-progress-bar"><div class="admin-progress-fill" id="adminProgressFill"></div></div>
+            <span class="admin-progress-text" id="adminProgressText">0 / 0</span>
+          </div>
+        </div>
+        <div class="field admin-actions-field">
+          <label>&nbsp;</label>
+          <div class="admin-action-buttons">
+            <button id="adminLoadFromCode" class="btn-secondary" title="코드에 내장된 기존 데이터 불러오기">코드에서 불러오기</button>
+            <button id="adminImport" class="btn-secondary">JSON 불러오기</button>
+            <input type="file" id="adminImportFile" accept=".json" style="display:none;" />
+            <button id="adminExport" class="btn-primary">JSON 다운로드</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-bulk-bar">
+        <span class="admin-bulk-label">일괄 도구:</span>
+        <button id="adminFillSequential" class="btn-tiny" title="모든 문항에 빈 카테고리 슬롯 생성">빈 슬롯 생성</button>
+        <button id="adminCopyFromYear" class="btn-tiny" title="다른 학년도에서 카테고리 구조 복사">다른 학년도에서 복사</button>
+        <button id="adminClearYear" class="btn-tiny btn-danger" title="이 학년도 데이터 모두 삭제">이 학년도 초기화</button>
+      </div>
+    </section>
+
+    <!-- 언어이해 입력 그리드 -->
+    <section class="qgrade-section">
+      <div class="qgrade-section-block">
+        <div class="qgrade-section-title">
+          <span>언어이해</span>
+          <span class="qg-score" id="adminEonProgress">0 / 30</span>
+        </div>
+        <div class="admin-grid" id="adminGridEon"></div>
+      </div>
+
+      <div class="qgrade-section-block" style="margin-top: 24px;">
+        <div class="qgrade-section-title">
+          <span>추리논증</span>
+          <span class="qg-score" id="adminChuProgress">0 / 40</span>
+        </div>
+        <div class="admin-grid" id="adminGridChu"></div>
+      </div>
+
+      <div class="admin-legend">
+        <span style="color:var(--ink);font-weight:700;">셀 색상:</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#faf8f3;"></span>미입력</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#fff8e1;border-color:#c4a14a;"></span>일부 입력</span>
+        <span class="qgrade-legend-item"><span class="qgrade-legend-swatch" style="background:#e8f5e9;border-color:#2e7d32;"></span>완료 (정답+분류+난이도)</span>
+      </div>
+    </section>
+
+    <!-- 입력 모달 -->
+    <div class="admin-modal" id="adminModal" style="display:none;">
+      <div class="admin-modal-backdrop"></div>
+      <div class="admin-modal-card">
+        <div class="admin-modal-head">
+          <h3 id="adminModalTitle">문항 입력</h3>
+          <button class="admin-modal-close" id="adminModalClose">×</button>
+        </div>
+        <div class="admin-modal-body">
+          <div class="admin-field">
+            <label>정답</label>
+            <div class="admin-answer-row" id="adminAnswerRow">
+              <button type="button" data-ans="1">1</button>
+              <button type="button" data-ans="2">2</button>
+              <button type="button" data-ans="3">3</button>
+              <button type="button" data-ans="4">4</button>
+              <button type="button" data-ans="5">5</button>
+            </div>
+          </div>
+
+          <div class="admin-field">
+            <label>카테고리 (대분류)</label>
+            <select id="adminCategory" class="log-select"></select>
+          </div>
+
+          <div class="admin-field">
+            <label>소분류 (자유 입력, 선택)</label>
+            <input type="text" id="adminSubcategory" placeholder="예: 주제찾기, 강화·약화, 모순 찾기" />
+          </div>
+
+          <div class="admin-field">
+            <label>난이도</label>
+            <div class="admin-diff-row" id="adminDiffRow">
+              <button type="button" data-diff="하">하</button>
+              <button type="button" data-diff="중하">중하</button>
+              <button type="button" data-diff="중">중</button>
+              <button type="button" data-diff="중상">중상</button>
+              <button type="button" data-diff="상">상</button>
+            </div>
+            <div class="admin-diff-hint" id="adminDiffHint">난이도를 선택하면 예상 정답률이 표시됩니다.</div>
+          </div>
+
+          <div class="admin-field">
+            <label>지문 묶음 ID (언어이해, 선택)</label>
+            <input type="number" id="adminPassageGroup" min="1" placeholder="같은 지문 문항끼리 같은 숫자" />
+          </div>
+
+          <div class="admin-field">
+            <label>태그 (쉼표로 구분, 선택)</label>
+            <input type="text" id="adminTags" placeholder="예: 주제찾기, 비유추리" />
+          </div>
+
+          <div class="admin-field">
+            <label>메모 (선택)</label>
+            <input type="text" id="adminMemo" placeholder="주관적 메모" />
+          </div>
+        </div>
+        <div class="admin-modal-foot">
+          <button class="btn-secondary" id="adminModalDelete">삭제</button>
+          <div style="flex:1;"></div>
+          <button class="btn-secondary" id="adminModalPrev">← 이전</button>
+          <button class="btn-primary" id="adminModalNext">저장 후 다음 →</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-admin -->
 
   <footer class="foot">
     <strong>표준점수 데이터 출처:</strong> 2009–2025 학년도는 suomessa 블로그에 정리된 법학전문대학원협의회 공식 환산표,
@@ -2310,6 +3117,62 @@ const LEET = {
     eon_est: [], chu_est: []
   },
 };
+
+// ===========================================================================
+// 기출 메타데이터: 분류 체계
+// ===========================================================================
+const LEET_TAXONOMY = {
+  eon: {
+    name: '언어이해',
+    categories: {
+      passage_lit:  { name: '인문/문학',   color: '#a855f7' },
+      passage_phil: { name: '철학/사상',   color: '#7c3aed' },
+      passage_soc:  { name: '사회과학',   color: '#3b82f6' },
+      passage_sci:  { name: '자연과학/기술', color: '#10b981' },
+      passage_law:  { name: '법/규범',    color: '#dc2626' },
+      passage_art:  { name: '예술/문화',   color: '#ec4899' },
+    },
+  },
+  chu: {
+    name: '추리논증',
+    categories: {
+      formal_logic:    { name: '형식논리',    color: '#1e40af' },
+      analytical:      { name: '분석추리',    color: '#0ea5e9' },
+      argument_eval:   { name: '논증 평가',   color: '#059669' },
+      argument_struct: { name: '논증 구조',   color: '#65a30d' },
+      principle_apply: { name: '원칙 적용',   color: '#ca8a04' },
+      case_analysis:   { name: '사례 분석',   color: '#dc2626' },
+      quantitative:    { name: '수리/통계',   color: '#7c3aed' },
+      dilemma:         { name: '딜레마/역설', color: '#be185d' },
+    },
+  },
+};
+const DIFFICULTY_LEVELS = {
+  '하':   { code: 1, color: '#6db98a', expected_rate: 0.85 },
+  '중하': { code: 2, color: '#9bc97a', expected_rate: 0.70 },
+  '중':   { code: 3, color: '#d4b54a', expected_rate: 0.55 },
+  '중상': { code: 4, color: '#d18d45', expected_rate: 0.40 },
+  '상':   { code: 5, color: '#c44545', expected_rate: 0.25 },
+};
+
+// 학년도별 기출 메타데이터 (사용자가 채워야 함)
+// 각 항목: { no, answer, category, subcategory, difficulty, tags, memo }
+// answer/category/difficulty가 null이면 미입력 상태
+const LEET_META = {
+  // 예시 — 사용자가 채워나가는 구조
+  // 2026: {
+  //   eon: [ { no: 1, answer: 3, category: 'passage_phil', difficulty: '중', ... }, ... ],
+  //   chu: [ { no: 1, answer: 2, category: 'formal_logic', difficulty: '하', ... }, ... ],
+  // },
+};
+
+// 메타데이터 조회 헬퍼
+function getMeta(year, section, no) {
+  const yearData = LEET_META[year];
+  if (!yearData || !yearData[section]) return null;
+  return yearData[section].find(q => q.no === no) || null;
+}
+
 
 // ===========================================================================
 // 표준점수 체계
@@ -5627,8 +6490,952 @@ document.getElementById('logEon').addEventListener('input', updateLogPreview);
 document.getElementById('logChu').addEventListener('input', updateLogPreview);
 document.getElementById('logAdd').addEventListener('click', addLogEntry);
 
+// ===========================================================================
+// 문항별 채점 모드
+// ===========================================================================
+// qgState[year-date] = { eon: { 1: 'correct'|'incorrect'|'unsure', ... }, chu: {...}, memo }
+let qgState = {};
+
+function qgStorageKey() {
+  return 'leet_qgrade_v1';
+}
+function loadQgState() {
+  try {
+    const raw = localStorage.getItem(qgStorageKey());
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+function saveQgState() {
+  try { localStorage.setItem(qgStorageKey(), JSON.stringify(qgState)); } catch {}
+}
+
+function qgSessionKey() {
+  const y = document.getElementById('qgYear').value;
+  const d = document.getElementById('qgDate').value;
+  return `${y}_${d}`;
+}
+
+function qgGetSession() {
+  const key = qgSessionKey();
+  if (!qgState[key]) {
+    qgState[key] = { eon: {}, chu: {}, memo: '' };
+  }
+  return qgState[key];
+}
+
+// 모드 토글
+document.querySelectorAll('[data-grade-mode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.gradeMode;
+    document.querySelectorAll('[data-grade-mode]').forEach(b => b.classList.toggle('active', b === btn));
+    document.getElementById('modeTotal').style.display = (mode === 'total') ? '' : 'none';
+    document.getElementById('modePerQuestion').style.display = (mode === 'per-question') ? '' : 'none';
+    if (mode === 'per-question') {
+      qgInit();
+    }
+  });
+});
+
+function qgInit() {
+  // 학년도 선택 채우기
+  const sel = document.getElementById('qgYear');
+  if (!sel.options.length) {
+    Object.keys(LEET).map(Number).sort((a,b) => b-a).forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = y + '학년도';
+      sel.appendChild(opt);
+    });
+    sel.value = '2026';
+    document.getElementById('qgDate').value = new Date().toISOString().slice(0, 10);
+  }
+  qgState = loadQgState();
+  qgRender();
+}
+
+function qgRender() {
+  const year = parseInt(document.getElementById('qgYear').value);
+  const yearData = LEET[year];
+  if (!yearData) return;
+
+  const session = qgGetSession();
+  document.getElementById('qgMemo').value = session.memo || '';
+
+  ['eon', 'chu'].forEach(sec => {
+    const count = sec === 'eon' ? yearData.items_eon : yearData.items_chu;
+    const grid = document.getElementById('qgGrid' + (sec === 'eon' ? 'Eon' : 'Chu'));
+    grid.innerHTML = '';
+    for (let n = 1; n <= count; n++) {
+      const cell = document.createElement('div');
+      cell.className = 'qg-cell';
+      const status = session[sec][n];
+      if (status) cell.classList.add(status);
+
+      const meta = getMeta(year, sec, n);
+      const catColor = meta && meta.category && LEET_TAXONOMY[sec].categories[meta.category]
+        ? LEET_TAXONOMY[sec].categories[meta.category].color
+        : null;
+
+      let tooltipText = `${n}번`;
+      if (meta) {
+        if (meta.category) {
+          const catName = LEET_TAXONOMY[sec].categories[meta.category]?.name || meta.category;
+          tooltipText += ` · ${catName}`;
+        }
+        if (meta.difficulty) tooltipText += ` · ${meta.difficulty}`;
+      }
+
+      cell.innerHTML = `
+        <div class="qg-num">${n}</div>
+        <div class="qg-mark">${status === 'correct' ? 'O' : status === 'incorrect' ? 'X' : status === 'unsure' ? '△' : ''}</div>
+        ${catColor ? `<div class="qg-cat-bar" style="background:${catColor};"></div>` : ''}
+        <div class="qg-tooltip">${tooltipText}</div>
+      `;
+      cell.addEventListener('click', () => qgToggle(sec, n));
+      grid.appendChild(cell);
+    }
+  });
+
+  qgUpdateScores();
+  qgRenderStats();
+}
+
+function qgToggle(sec, n) {
+  const session = qgGetSession();
+  const cur = session[sec][n];
+  // 미채점 → correct → incorrect → unsure → 미채점
+  let next;
+  if (!cur) next = 'correct';
+  else if (cur === 'correct') next = 'incorrect';
+  else if (cur === 'incorrect') next = 'unsure';
+  else next = null;
+
+  if (next === null) delete session[sec][n];
+  else session[sec][n] = next;
+
+  saveQgState();
+  qgRender();
+}
+
+function qgUpdateScores() {
+  const year = parseInt(document.getElementById('qgYear').value);
+  const yearData = LEET[year];
+  const session = qgGetSession();
+  ['eon', 'chu'].forEach(sec => {
+    const total = sec === 'eon' ? yearData.items_eon : yearData.items_chu;
+    const correct = Object.values(session[sec]).filter(v => v === 'correct').length;
+    const elId = 'qg' + (sec === 'eon' ? 'Eon' : 'Chu') + 'Score';
+    document.getElementById(elId).textContent = `${correct} / ${total}`;
+  });
+}
+
+document.getElementById('qgYear').addEventListener('change', qgRender);
+document.getElementById('qgDate').addEventListener('change', qgRender);
+document.getElementById('qgMemo').addEventListener('input', () => {
+  const session = qgGetSession();
+  session.memo = document.getElementById('qgMemo').value;
+  saveQgState();
+});
+
+document.getElementById('qgReset').addEventListener('click', () => {
+  if (!confirm('이 회차의 모든 채점을 초기화하시겠습니까?')) return;
+  const key = qgSessionKey();
+  delete qgState[key];
+  saveQgState();
+  qgRender();
+});
+
+document.getElementById('qgSave').addEventListener('click', async () => {
+  const year = parseInt(document.getElementById('qgYear').value);
+  const date = document.getElementById('qgDate').value;
+  if (!date) { alert('풀이 날짜를 입력해주세요.'); return; }
+  const session = qgGetSession();
+  const yearData = LEET[year];
+  const eonCorrect = Object.values(session.eon).filter(v => v === 'correct').length;
+  const chuCorrect = Object.values(session.chu).filter(v => v === 'correct').length;
+  if (eonCorrect === 0 && chuCorrect === 0) {
+    alert('정답으로 표시된 문항이 없습니다.');
+    return;
+  }
+  // 기존 logEntries 형식으로 저장
+  document.getElementById('logYear').value = year;
+  document.getElementById('logDate').value = date;
+  document.getElementById('logEon').value = eonCorrect;
+  document.getElementById('logChu').value = chuCorrect;
+  document.getElementById('logMemo').value = session.memo || '';
+  // 회차 단위 입력 모드의 addLogEntry 재사용
+  await addLogEntry();
+  alert(`기록 저장 완료\n언어 ${eonCorrect}/${yearData.items_eon}, 추리 ${chuCorrect}/${yearData.items_chu}`);
+});
+
+// 카테고리별 통계 렌더
+function qgRenderStats() {
+  const year = parseInt(document.getElementById('qgYear').value);
+  const session = qgGetSession();
+  const statsSection = document.getElementById('qstatsSection');
+  const grid = document.getElementById('qstatsGrid');
+  const summary = document.getElementById('qstatsSummary');
+
+  // 메타데이터 있는지 확인
+  const hasMeta = LEET_META[year] && (LEET_META[year].eon || LEET_META[year].chu);
+  if (!hasMeta) {
+    statsSection.style.display = 'block';
+    summary.textContent = '';
+    grid.innerHTML = `<div class="qstats-empty" style="grid-column:1/-1;">${year}학년도 메타데이터가 아직 입력되지 않았습니다.<br>관리자 모드(URL에 ?admin=1)에서 정답·카테고리·난이도를 입력하면 약점 분석이 활성화됩니다.</div>`;
+    return;
+  }
+
+  // 채점 결과 있는지 확인
+  const totalGraded = Object.keys(session.eon).length + Object.keys(session.chu).length;
+  if (totalGraded === 0) {
+    statsSection.style.display = 'block';
+    summary.textContent = '';
+    grid.innerHTML = `<div class="qstats-empty" style="grid-column:1/-1;">위에서 문항을 채점하면 카테고리·난이도별 정답률이 표시됩니다.</div>`;
+    return;
+  }
+
+  statsSection.style.display = 'block';
+
+  // 가중치 약점 진단 호출
+  const wk = computeWeakness(year, session);
+
+  // ===== TOP 3 약점 카드 =====
+  const sortedCats = Object.values(wk.categories)
+    .filter(c => c.total >= 2) // 최소 2문항 이상 채점된 카테고리만
+    .sort((a, b) => b.weaknessScore - a.weaknessScore);
+
+  const top3 = sortedCats.slice(0, 3).filter(c => c.weaknessScore > 0.05);
+
+  let weaknessCardHtml = '';
+  if (top3.length > 0) {
+    weaknessCardHtml = `
+      <div class="weakness-card" style="grid-column:1/-1;">
+        <div class="weakness-card-header">
+          <span class="weakness-card-icon">🎯</span>
+          <span class="weakness-card-title">집중 학습이 필요한 영역 TOP ${top3.length}</span>
+        </div>
+        <div class="weakness-list">
+          ${top3.map((c, i) => {
+            const sectionName = c.sec === 'eon' ? '언어' : '추리';
+            const actualPct = (c.actualRate * 100).toFixed(0);
+            const expectedPct = c.expectedRate !== null ? (c.expectedRate * 100).toFixed(0) : null;
+            let detailText = `정답률 ${actualPct}%`;
+            if (expectedPct !== null) {
+              const gap = Math.round((c.actualRate - c.expectedRate) * 100);
+              detailText += ` (예상 ${expectedPct}%, ${gap >= 0 ? '+' : ''}${gap}%p)`;
+            }
+            detailText += ` · ${c.correct}/${c.total}문항`;
+            return `<div class="weakness-item">
+              <div class="weakness-rank">${i + 1}</div>
+              <div>
+                <div class="weakness-name">${sectionName} · ${c.name}</div>
+                <div class="weakness-detail">${detailText}</div>
+              </div>
+              <div style="font-size:11px;color:var(--ink-muted,#6b6256);text-align:right;">
+                약점 점수<br>
+                <span style="font-family:var(--font-mono,monospace);font-weight:700;color:#b45309;font-size:13px;">${(c.weaknessScore * 100).toFixed(0)}</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== 카테고리별 막대그래프 (예상 정답률 점선 포함) =====
+  const blocks = ['eon', 'chu'].map(sec => {
+    const cats = Object.values(wk.categories).filter(c => c.sec === sec);
+    if (cats.length === 0) return null;
+    cats.sort((a, b) => b.weaknessScore - a.weaknessScore);
+
+    const rows = cats.map(c => {
+      const actualPct = c.actualRate * 100;
+      const expectedPct = c.expectedRate !== null ? c.expectedRate * 100 : null;
+      const cls = actualPct >= 70 ? 'high' : (actualPct >= 50 ? 'med' : 'low');
+      const expectedMarker = expectedPct !== null
+        ? `<div class="qs-bar-expected" style="left:${expectedPct}%;" title="예상 ${expectedPct.toFixed(0)}%"></div>`
+        : '';
+      let gapHtml = '';
+      if (c.gap !== null) {
+        const gapPct = Math.round(c.gap * 100);
+        const gapCls = gapPct >= 0 ? 'qs-gap-positive' : 'qs-gap-negative';
+        gapHtml = `<span class="${gapCls}">(${gapPct >= 0 ? '+' : ''}${gapPct})</span> `;
+      }
+      return `<div class="qstats-row">
+        <span class="qs-label">${c.name}</span>
+        <div class="qs-bar qs-bar-overlay">
+          <div class="qs-fill ${cls}" style="width:${actualPct}%;background:${c.color};"></div>
+          ${expectedMarker}
+        </div>
+        <span class="qs-pct">${gapHtml}${(c.correct).toFixed(c.correct % 1 === 0 ? 0 : 1)}/${c.total}</span>
+      </div>`;
+    }).join('');
+
+    return `<div>
+      <div class="qstats-block-title">${LEET_TAXONOMY[sec].name} 유형별 <span style="font-size:10px;font-weight:400;color:var(--ink-muted,#6b6256);">· 점선=예상 정답률</span></div>
+      ${rows}
+    </div>`;
+  }).filter(b => b !== null);
+
+  // ===== 난이도별 (예상 대비) =====
+  const diffOrder = ['하', '중하', '중', '중상', '상'];
+  const diffRows = diffOrder.filter(d => wk.byDifficulty[d]).map(d => {
+    const s = wk.byDifficulty[d];
+    const actualPct = s.total > 0 ? (s.correct / s.total * 100) : 0;
+    const expectedPct = s.expected * 100;
+    const color = DIFFICULTY_LEVELS[d].color;
+    const gap = Math.round(actualPct - expectedPct);
+    const gapCls = gap >= 0 ? 'qs-gap-positive' : 'qs-gap-negative';
+    return `<div class="qstats-row">
+      <span class="qs-label">${d}</span>
+      <div class="qs-bar qs-bar-overlay">
+        <div class="qs-fill" style="width:${actualPct}%;background:${color};"></div>
+        <div class="qs-bar-expected" style="left:${expectedPct}%;" title="예상 ${expectedPct.toFixed(0)}%"></div>
+      </div>
+      <span class="qs-pct"><span class="${gapCls}">(${gap >= 0 ? '+' : ''}${gap})</span> ${(s.correct).toFixed(s.correct % 1 === 0 ? 0 : 1)}/${s.total}</span>
+    </div>`;
+  }).join('');
+
+  if (diffRows) {
+    blocks.push(`<div>
+      <div class="qstats-block-title">난이도별 <span style="font-size:10px;font-weight:400;color:var(--ink-muted,#6b6256);">· 점선=예상 정답률</span></div>
+      ${diffRows}
+    </div>`);
+  }
+
+  // ===== 영역별 종합 =====
+  const sectionRows = ['eon', 'chu'].filter(s => wk.sections[s]).map(s => {
+    const sec = wk.sections[s];
+    const actualPct = sec.total > 0 ? sec.correct / sec.total * 100 : 0;
+    const expectedPct = sec.expectedCount > 0 ? sec.expectedSum / sec.expectedCount * 100 : null;
+    const cls = actualPct >= 70 ? 'high' : (actualPct >= 50 ? 'med' : 'low');
+    const expectedMarker = expectedPct !== null
+      ? `<div class="qs-bar-expected" style="left:${expectedPct}%;" title="예상 ${expectedPct.toFixed(0)}%"></div>`
+      : '';
+    let gapHtml = '';
+    if (expectedPct !== null) {
+      const gap = Math.round(actualPct - expectedPct);
+      const gapCls = gap >= 0 ? 'qs-gap-positive' : 'qs-gap-negative';
+      gapHtml = `<span class="${gapCls}">(${gap >= 0 ? '+' : ''}${gap})</span> `;
+    }
+    return `<div class="qstats-row">
+      <span class="qs-label">${LEET_TAXONOMY[s].name}</span>
+      <div class="qs-bar qs-bar-overlay">
+        <div class="qs-fill ${cls}" style="width:${actualPct}%;background:#7a7166;"></div>
+        ${expectedMarker}
+      </div>
+      <span class="qs-pct">${gapHtml}${(sec.correct).toFixed(sec.correct % 1 === 0 ? 0 : 1)}/${sec.total}</span>
+    </div>`;
+  }).join('');
+
+  if (sectionRows) {
+    blocks.unshift(`<div>
+      <div class="qstats-block-title">영역별 종합 <span style="font-size:10px;font-weight:400;color:var(--ink-muted,#6b6256);">· 점선=예상 정답률</span></div>
+      ${sectionRows}
+    </div>`);
+  }
+
+  if (blocks.length === 0 && !weaknessCardHtml) {
+    grid.innerHTML = `<div class="qstats-empty" style="grid-column:1/-1;">채점된 문항에 분류 정보가 없습니다.</div>`;
+  } else {
+    grid.innerHTML = weaknessCardHtml + blocks.join('');
+  }
+
+  // 요약: 전체 정답률
+  const allCorrect = Object.values(session.eon).filter(v => v === 'correct').length
+                  + Object.values(session.chu).filter(v => v === 'correct').length;
+  const unsureCount = Object.values(session.eon).filter(v => v === 'unsure').length
+                    + Object.values(session.chu).filter(v => v === 'unsure').length;
+  const allGraded = Object.keys(session.eon).length + Object.keys(session.chu).length;
+  if (allGraded > 0) {
+    let txt = `채점 ${allGraded}문항 중 정답 ${allCorrect}개 (${(allCorrect/allGraded*100).toFixed(1)}%)`;
+    if (unsureCount > 0) txt += ` · 헷갈림 ${unsureCount}개`;
+    summary.textContent = txt;
+  }
+}
+
 // 전역 노출 (onclick 핸들러용)
 window.deleteLogEntry = deleteLogEntry;
+
+// ===========================================================================
+// 관리자 모드 (메타데이터 입력)
+// ===========================================================================
+// 진입: URL ?admin=1 또는 헤더 로고 5번 빠르게 클릭
+(function setupAdminAccess() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('admin') === '1') {
+    enableAdminMode();
+  }
+
+  // 헤더 5번 빠르게 클릭으로도 활성화
+  let clicks = 0, timer = null;
+  const header = document.querySelector('header') || document.body;
+  header.addEventListener('click', (e) => {
+    // 일반 사용자가 우연히 트리거하지 않게: Shift 키와 함께 5번
+    if (!e.shiftKey) return;
+    clicks++;
+    clearTimeout(timer);
+    timer = setTimeout(() => { clicks = 0; }, 1500);
+    if (clicks >= 5) {
+      clicks = 0;
+      enableAdminMode();
+      alert('🔧 관리자 모드 활성화됨');
+    }
+  });
+})();
+
+function enableAdminMode() {
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+  // 자동 초기화
+  if (!window._adminInited) {
+    adminInit();
+    window._adminInited = true;
+  }
+}
+
+// 메타데이터 작업 상태 (LocalStorage)
+const ADMIN_KEY = 'leet_meta_draft_v1';
+let adminDraft = {}; // { 2026: { eon: [...], chu: [...] }, ... }
+let adminCurrent = null; // { year, sec, no } 현재 편집 중인 문항
+
+function loadAdminDraft() {
+  try {
+    const raw = localStorage.getItem(ADMIN_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+function saveAdminDraft() {
+  try { localStorage.setItem(ADMIN_KEY, JSON.stringify(adminDraft)); } catch {}
+}
+
+function adminInit() {
+  // 학년도 셀렉트 채우기
+  const sel = document.getElementById('adminYear');
+  if (!sel.options.length) {
+    Object.keys(LEET).map(Number).sort((a,b) => b-a).forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y + '학년도';
+      sel.appendChild(opt);
+    });
+    sel.value = '2026';
+  }
+
+  // 카테고리 셀렉트는 나중에 sec에 따라 동적 생성
+  adminDraft = loadAdminDraft();
+
+  // 코드에 내장된 LEET_META가 있으면 머지(기존 작업 보존)
+  Object.keys(LEET_META).forEach(y => {
+    if (!adminDraft[y]) adminDraft[y] = LEET_META[y];
+  });
+
+  adminRender();
+  adminBindEvents();
+}
+
+function adminGetYearData(year) {
+  if (!adminDraft[year]) {
+    adminDraft[year] = { eon: [], chu: [] };
+  }
+  if (!adminDraft[year].eon) adminDraft[year].eon = [];
+  if (!adminDraft[year].chu) adminDraft[year].chu = [];
+  return adminDraft[year];
+}
+
+function adminGetItem(year, sec, no) {
+  const yd = adminGetYearData(year);
+  return yd[sec].find(q => q.no === no) || null;
+}
+
+function adminSetItem(year, sec, no, data) {
+  const yd = adminGetYearData(year);
+  const idx = yd[sec].findIndex(q => q.no === no);
+  if (idx >= 0) {
+    yd[sec][idx] = { ...yd[sec][idx], ...data, no };
+  } else {
+    yd[sec].push({ no, ...data });
+    yd[sec].sort((a, b) => a.no - b.no);
+  }
+  saveAdminDraft();
+}
+
+function adminDeleteItem(year, sec, no) {
+  const yd = adminGetYearData(year);
+  yd[sec] = yd[sec].filter(q => q.no !== no);
+  saveAdminDraft();
+}
+
+function adminItemStatus(item) {
+  if (!item) return 'empty';
+  const hasAns = item.answer !== null && item.answer !== undefined;
+  const hasCat = !!item.category;
+  const hasDiff = !!item.difficulty;
+  if (hasAns && hasCat && hasDiff) return 'complete';
+  if (hasAns || hasCat || hasDiff) return 'partial';
+  return 'empty';
+}
+
+function adminRender() {
+  const year = parseInt(document.getElementById('adminYear').value);
+  const yearData = LEET[year];
+  if (!yearData) return;
+
+  ['eon', 'chu'].forEach(sec => {
+    const count = sec === 'eon' ? yearData.items_eon : yearData.items_chu;
+    const grid = document.getElementById('adminGrid' + (sec === 'eon' ? 'Eon' : 'Chu'));
+    grid.innerHTML = '';
+
+    let completeCount = 0;
+    for (let n = 1; n <= count; n++) {
+      const item = adminGetItem(year, sec, n);
+      const status = adminItemStatus(item);
+      if (status === 'complete') completeCount++;
+
+      const cell = document.createElement('div');
+      cell.className = 'admin-cell';
+      if (status === 'complete') cell.classList.add('complete');
+      else if (status === 'partial') cell.classList.add('partial');
+
+      const catColor = item && item.category && LEET_TAXONOMY[sec].categories[item.category]
+        ? LEET_TAXONOMY[sec].categories[item.category].color
+        : null;
+
+      cell.innerHTML = `
+        <div class="admin-cell-num">${n}</div>
+        ${item && item.answer ? `<div class="admin-cell-ans">정답 ${item.answer}</div>` : ''}
+        ${catColor ? `<div class="admin-cell-cat-bar" style="background:${catColor};"></div>` : ''}
+      `;
+      cell.addEventListener('click', () => adminOpenModal(year, sec, n));
+      grid.appendChild(cell);
+    }
+
+    document.getElementById('admin' + (sec === 'eon' ? 'Eon' : 'Chu') + 'Progress').textContent =
+      `${completeCount} / ${count}`;
+  });
+
+  // 전체 진행률
+  const total = yearData.items_eon + yearData.items_chu;
+  const yd = adminGetYearData(year);
+  const allComplete = yd.eon.filter(q => adminItemStatus(q) === 'complete').length
+                    + yd.chu.filter(q => adminItemStatus(q) === 'complete').length;
+  const pct = total > 0 ? (allComplete / total * 100) : 0;
+  document.getElementById('adminProgressFill').style.width = pct.toFixed(1) + '%';
+  document.getElementById('adminProgressText').textContent = `${allComplete} / ${total} (${pct.toFixed(0)}%)`;
+}
+
+function adminOpenModal(year, sec, no) {
+  adminCurrent = { year, sec, no };
+  const item = adminGetItem(year, sec, no) || {};
+
+  document.getElementById('adminModalTitle').textContent =
+    `${year}학년도 ${sec === 'eon' ? '언어이해' : '추리논증'} ${no}번`;
+
+  // 카테고리 셀렉트 채우기 (sec에 따라 다름)
+  const catSel = document.getElementById('adminCategory');
+  catSel.innerHTML = '<option value="">-- 선택 --</option>';
+  Object.entries(LEET_TAXONOMY[sec].categories).forEach(([key, cat]) => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = cat.name;
+    catSel.appendChild(opt);
+  });
+
+  // 값 채우기
+  catSel.value = item.category || '';
+  document.getElementById('adminSubcategory').value = item.subcategory || '';
+  document.getElementById('adminPassageGroup').value = item.passage_group || '';
+  document.getElementById('adminTags').value = (item.tags || []).join(', ');
+  document.getElementById('adminMemo').value = item.memo || '';
+
+  // 정답 버튼
+  document.querySelectorAll('#adminAnswerRow button').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.ans) === item.answer);
+  });
+  // 난이도 버튼
+  document.querySelectorAll('#adminDiffRow button').forEach(b => {
+    b.classList.toggle('active', b.dataset.diff === item.difficulty);
+  });
+  adminUpdateDiffHint(item.difficulty);
+
+  // 지문 묶음은 언어이해만
+  document.getElementById('adminPassageGroup').parentElement.style.display =
+    sec === 'eon' ? '' : 'none';
+
+  document.getElementById('adminModal').style.display = 'flex';
+}
+
+function adminUpdateDiffHint(diff) {
+  const hint = document.getElementById('adminDiffHint');
+  if (diff && DIFFICULTY_LEVELS[diff]) {
+    const rate = DIFFICULTY_LEVELS[diff].expected_rate;
+    hint.textContent = `예상 정답률: ${(rate * 100).toFixed(0)}% — 이 난이도면 평균적으로 이 비율로 맞춥니다.`;
+  } else {
+    hint.textContent = '난이도를 선택하면 예상 정답률이 표시됩니다.';
+  }
+}
+
+function adminCloseModal() {
+  document.getElementById('adminModal').style.display = 'none';
+  adminCurrent = null;
+}
+
+function adminCollectModal() {
+  const ans = document.querySelector('#adminAnswerRow button.active');
+  const diff = document.querySelector('#adminDiffRow button.active');
+  const cat = document.getElementById('adminCategory').value;
+  const sub = document.getElementById('adminSubcategory').value.trim();
+  const grp = document.getElementById('adminPassageGroup').value;
+  const tagsRaw = document.getElementById('adminTags').value.trim();
+  const memo = document.getElementById('adminMemo').value.trim();
+  return {
+    answer: ans ? parseInt(ans.dataset.ans) : null,
+    category: cat || null,
+    subcategory: sub || null,
+    difficulty: diff ? diff.dataset.diff : null,
+    passage_group: grp ? parseInt(grp) : null,
+    tags: tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [],
+    memo: memo || null,
+  };
+}
+
+function adminSaveModal() {
+  if (!adminCurrent) return;
+  const data = adminCollectModal();
+  adminSetItem(adminCurrent.year, adminCurrent.sec, adminCurrent.no, data);
+}
+
+function adminMoveTo(delta) {
+  if (!adminCurrent) return;
+  adminSaveModal();
+
+  const { year, sec, no } = adminCurrent;
+  const yearData = LEET[year];
+  const eonMax = yearData.items_eon;
+  const chuMax = yearData.items_chu;
+
+  // 통합 인덱스: eon 1..eonMax, chu 1..chuMax
+  let absIdx;
+  if (sec === 'eon') absIdx = no;
+  else absIdx = eonMax + no;
+
+  absIdx += delta;
+  const totalMax = eonMax + chuMax;
+  if (absIdx < 1) absIdx = 1;
+  if (absIdx > totalMax) {
+    adminCloseModal();
+    adminRender();
+    return;
+  }
+
+  let nextSec, nextNo;
+  if (absIdx <= eonMax) {
+    nextSec = 'eon';
+    nextNo = absIdx;
+  } else {
+    nextSec = 'chu';
+    nextNo = absIdx - eonMax;
+  }
+
+  adminRender();
+  adminOpenModal(year, nextSec, nextNo);
+}
+
+function adminBindEvents() {
+  // 학년도 변경
+  document.getElementById('adminYear').addEventListener('change', adminRender);
+
+  // 모달 닫기
+  document.getElementById('adminModalClose').addEventListener('click', adminCloseModal);
+  document.querySelector('.admin-modal-backdrop').addEventListener('click', adminCloseModal);
+
+  // 정답 버튼
+  document.querySelectorAll('#adminAnswerRow button').forEach(b => {
+    b.addEventListener('click', () => {
+      const wasActive = b.classList.contains('active');
+      document.querySelectorAll('#adminAnswerRow button').forEach(bb => bb.classList.remove('active'));
+      if (!wasActive) b.classList.add('active');
+    });
+  });
+  // 난이도 버튼
+  document.querySelectorAll('#adminDiffRow button').forEach(b => {
+    b.addEventListener('click', () => {
+      const wasActive = b.classList.contains('active');
+      document.querySelectorAll('#adminDiffRow button').forEach(bb => bb.classList.remove('active'));
+      if (!wasActive) {
+        b.classList.add('active');
+        adminUpdateDiffHint(b.dataset.diff);
+      } else {
+        adminUpdateDiffHint(null);
+      }
+    });
+  });
+
+  // 이전/다음
+  document.getElementById('adminModalPrev').addEventListener('click', () => adminMoveTo(-1));
+  document.getElementById('adminModalNext').addEventListener('click', () => adminMoveTo(1));
+
+  // 삭제
+  document.getElementById('adminModalDelete').addEventListener('click', () => {
+    if (!adminCurrent) return;
+    if (!confirm('이 문항의 메타데이터를 삭제하시겠습니까?')) return;
+    adminDeleteItem(adminCurrent.year, adminCurrent.sec, adminCurrent.no);
+    adminCloseModal();
+    adminRender();
+  });
+
+  // ESC로 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.getElementById('adminModal').style.display === 'flex') {
+      adminCloseModal();
+    }
+    // Enter로 다음
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && document.getElementById('adminModal').style.display === 'flex') {
+      adminMoveTo(1);
+    }
+  });
+
+  // JSON 다운로드
+  document.getElementById('adminExport').addEventListener('click', () => {
+    const year = parseInt(document.getElementById('adminYear').value);
+    const yd = adminGetYearData(year);
+    const exportObj = {
+      year,
+      generated_at: new Date().toISOString(),
+      eon: yd.eon,
+      chu: yd.chu,
+    };
+    const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `leet_meta_${year}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // JSON 불러오기
+  document.getElementById('adminImport').addEventListener('click', () => {
+    document.getElementById('adminImportFile').click();
+  });
+  document.getElementById('adminImportFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (!data.year || !data.eon || !data.chu) {
+          alert('JSON 형식이 올바르지 않습니다. {year, eon, chu} 구조여야 합니다.');
+          return;
+        }
+        if (!confirm(`${data.year}학년도 데이터를 불러오시겠습니까? 기존 데이터는 덮어쓰여집니다.`)) return;
+        adminDraft[data.year] = { eon: data.eon, chu: data.chu };
+        saveAdminDraft();
+        document.getElementById('adminYear').value = data.year;
+        adminRender();
+        alert(`${data.year}학년도 메타데이터 불러오기 완료`);
+      } catch (err) {
+        alert('JSON 파싱 실패: ' + err.message);
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  });
+
+  // 코드에서 불러오기 (개발용)
+  document.getElementById('adminLoadFromCode').addEventListener('click', () => {
+    if (!confirm('코드에 내장된 LEET_META를 불러옵니다. 현재 작업물이 덮어쓰여질 수 있습니다.')) return;
+    Object.keys(LEET_META).forEach(y => {
+      adminDraft[y] = LEET_META[y];
+    });
+    saveAdminDraft();
+    adminRender();
+    alert('코드 데이터 불러오기 완료');
+  });
+
+  // 일괄 도구
+  document.getElementById('adminFillSequential').addEventListener('click', () => {
+    const year = parseInt(document.getElementById('adminYear').value);
+    const yearData = LEET[year];
+    const yd = adminGetYearData(year);
+    let added = 0;
+    ['eon', 'chu'].forEach(sec => {
+      const max = sec === 'eon' ? yearData.items_eon : yearData.items_chu;
+      for (let n = 1; n <= max; n++) {
+        if (!yd[sec].find(q => q.no === n)) {
+          yd[sec].push({ no: n, answer: null, category: null, difficulty: null });
+          added++;
+        }
+      }
+      yd[sec].sort((a, b) => a.no - b.no);
+    });
+    saveAdminDraft();
+    adminRender();
+    alert(`${added}개 빈 슬롯 생성됨`);
+  });
+
+  document.getElementById('adminCopyFromYear').addEventListener('click', () => {
+    const year = parseInt(document.getElementById('adminYear').value);
+    const others = Object.keys(adminDraft)
+      .map(Number)
+      .filter(y => y !== year && adminDraft[y] && (adminDraft[y].eon?.length || adminDraft[y].chu?.length))
+      .sort((a, b) => b - a);
+    if (others.length === 0) {
+      alert('복사할 다른 학년도 데이터가 없습니다.');
+      return;
+    }
+    const fromYear = prompt(`어느 학년도에서 복사할까요? (사용 가능: ${others.join(', ')})\n\n주의: 카테고리·난이도 구조만 참고용으로 복사하며, 정답은 복사하지 않습니다.`, others[0]);
+    if (!fromYear) return;
+    const fy = parseInt(fromYear);
+    if (!adminDraft[fy]) { alert('해당 학년도 데이터 없음'); return; }
+    const yd = adminGetYearData(year);
+    let copied = 0;
+    ['eon', 'chu'].forEach(sec => {
+      (adminDraft[fy][sec] || []).forEach(src => {
+        if (!yd[sec].find(q => q.no === src.no)) {
+          yd[sec].push({
+            no: src.no,
+            answer: null, // 정답은 복사 안 함
+            category: src.category,
+            subcategory: src.subcategory,
+            difficulty: src.difficulty,
+            passage_group: src.passage_group,
+            tags: src.tags ? [...src.tags] : [],
+          });
+          copied++;
+        }
+      });
+      yd[sec].sort((a, b) => a.no - b.no);
+    });
+    saveAdminDraft();
+    adminRender();
+    alert(`${fy}학년도에서 ${copied}개 항목 복사됨 (정답 제외)`);
+  });
+
+  document.getElementById('adminClearYear').addEventListener('click', () => {
+    const year = parseInt(document.getElementById('adminYear').value);
+    if (!confirm(`${year}학년도 메타데이터를 모두 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.`)) return;
+    delete adminDraft[year];
+    saveAdminDraft();
+    adminRender();
+  });
+}
+
+// 탭 전환 시 관리자 탭이면 자동 초기화
+(function hookAdminTabSwitch() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.tab === 'admin' && !window._adminInited) {
+        adminInit();
+        window._adminInited = true;
+      }
+    });
+  });
+})();
+
+// ===========================================================================
+// 메타데이터 통합: 관리자가 입력한 draft를 LEET_META에 머지
+// 기존 코드(qgRenderStats 등)가 LEET_META를 참조하므로, 페이지 로드 시 통합
+// ===========================================================================
+(function mergeAdminDraftIntoMeta() {
+  try {
+    const raw = localStorage.getItem(ADMIN_KEY);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    Object.keys(draft).forEach(y => {
+      LEET_META[y] = draft[y];
+    });
+  } catch {}
+})();
+
+// ===========================================================================
+// 가중치 약점 진단
+// ===========================================================================
+// 핵심 공식:
+// - "치명도 점수" = 오답률 × 예상정답률
+//   쉬운 문제(예상 90%) 자주 틀림(60%) = 0.54 (높음, 치명적)
+//   어려운 문제(예상 30%) 자주 틀림(60%) = 0.18 (낮음, 정상적)
+// - 카테고리 약점 점수 = 평균(치명도) — 0에 가까울수록 정상, 클수록 약점
+// - 동시에 카테고리별 단순 정답률도 계산하여 둘 다 표시
+function computeWeakness(year, session) {
+  const result = { categories: {}, byDifficulty: {}, sections: {} };
+  ['eon', 'chu'].forEach(sec => {
+    const meta = LEET_META[year] && LEET_META[year][sec];
+    if (!meta) return;
+    meta.forEach(q => {
+      if (!q.category && !q.difficulty) return;
+      const status = session[sec][q.no];
+      if (!status) return; // 미채점 제외
+      const isCorrect = status === 'correct';
+      const isUnsure = status === 'unsure';
+      // 헷갈림은 절반 정답 처리 (0.5 가중치)
+      const correctValue = isCorrect ? 1 : (isUnsure ? 0.5 : 0);
+
+      // 카테고리별
+      if (q.category) {
+        const key = `${sec}::${q.category}`;
+        if (!result.categories[key]) {
+          result.categories[key] = {
+            sec,
+            category: q.category,
+            name: LEET_TAXONOMY[sec].categories[q.category]?.name || q.category,
+            color: LEET_TAXONOMY[sec].categories[q.category]?.color || '#888',
+            total: 0,
+            correct: 0,
+            expectedSum: 0,    // 예상정답률 합 (난이도 있는 문항만)
+            expectedCount: 0,
+            criticalitySum: 0, // 치명도 합
+            criticalityCount: 0,
+          };
+        }
+        const c = result.categories[key];
+        c.total++;
+        c.correct += correctValue;
+        if (q.difficulty && DIFFICULTY_LEVELS[q.difficulty]) {
+          const exp = DIFFICULTY_LEVELS[q.difficulty].expected_rate;
+          c.expectedSum += exp;
+          c.expectedCount++;
+          // 치명도: (1 - 정답값) × 예상정답률
+          c.criticalitySum += (1 - correctValue) * exp;
+          c.criticalityCount++;
+        }
+      }
+
+      // 난이도별
+      if (q.difficulty) {
+        if (!result.byDifficulty[q.difficulty]) {
+          result.byDifficulty[q.difficulty] = { total: 0, correct: 0, expected: DIFFICULTY_LEVELS[q.difficulty].expected_rate };
+        }
+        result.byDifficulty[q.difficulty].total++;
+        result.byDifficulty[q.difficulty].correct += correctValue;
+      }
+
+      // 영역별
+      if (!result.sections[sec]) result.sections[sec] = { total: 0, correct: 0, expectedSum: 0, expectedCount: 0 };
+      result.sections[sec].total++;
+      result.sections[sec].correct += correctValue;
+      if (q.difficulty) {
+        result.sections[sec].expectedSum += DIFFICULTY_LEVELS[q.difficulty].expected_rate;
+        result.sections[sec].expectedCount++;
+      }
+    });
+  });
+
+  // 카테고리별 점수 계산
+  Object.values(result.categories).forEach(c => {
+    c.actualRate = c.total > 0 ? c.correct / c.total : 0;
+    c.expectedRate = c.expectedCount > 0 ? c.expectedSum / c.expectedCount : null;
+    c.gap = c.expectedRate !== null ? c.actualRate - c.expectedRate : null;
+    c.criticality = c.criticalityCount > 0 ? c.criticalitySum / c.criticalityCount : 0;
+    // 약점 종합 점수: gap이 음수일수록 + criticality가 높을수록 큼
+    // 표본이 적으면 신뢰도 낮음 (Wilson-style 보정)
+    const reliability = Math.min(1, c.total / 5); // 5문항 이상이면 만점 신뢰도
+    c.weaknessScore = c.gap !== null
+      ? (-c.gap * 0.6 + c.criticality * 0.4) * reliability
+      : c.criticality * reliability;
+  });
+
+  return result;
+}
 </script>
 </body>
 </html>
