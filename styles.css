@@ -430,6 +430,7 @@
   .year-selector { margin-top: 8px; }
   .year-selector .y-label { font-size: 11px; color: var(--ink-mute); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
   .year-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .year-row-break { flex-basis: 100%; height: 0; }
   .y-chip {
     padding: 6px 12px;
     border: 1px solid var(--line);

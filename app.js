@@ -117,7 +117,14 @@ function buildYearChips() {
   const wrap = document.getElementById('yearChips');
   wrap.innerHTML = '';
   const years = Object.keys(LEET).map(Number).sort((a,b) => a-b);
+  let breakInserted = false;
   years.forEach(y => {
+    if (!breakInserted && y >= 2020) {
+      const br = document.createElement('div');
+      br.className = 'year-row-break';
+      wrap.appendChild(br);
+      breakInserted = true;
+    }
     const chip = document.createElement('div');
     chip.className = 'y-chip';
     if (LEET[y].era === 'old') chip.classList.add('era-old');
