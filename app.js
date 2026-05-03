@@ -341,12 +341,12 @@ function renderCombined(results) {
     const total = r.eon.std + r.chu.std;
     const isEst = r.eon.estimated || r.chu.estimated;
     // 합계 백분위 추정: 두 영역 백분위가 모두 있을 때만 기하평균으로 근사
-    let pctCell = '<td style="color:var(--ink-mute)">—</td>';
+    let pctCell = '<td class="combined-pct">—</td>';
     if (r.eon.pct !== null && r.eon.pct !== undefined && r.chu.pct !== null && r.chu.pct !== undefined) {
       // 백분위는 "내 아래에 있는 비율"이므로, 1-pct/100을 z-score처럼 다뤄서 결합
       // 단순화: 두 영역 백분위의 기하평균 (보수적 추정)
       const combined = Math.sqrt(r.eon.pct * r.chu.pct);
-      pctCell = `<td style="color:var(--blue);font-weight:600">${combined.toFixed(1)}%</td>`;
+      pctCell = `<td class="combined-pct has-value">${combined.toFixed(1)}%</td>`;
     }
     tbody.innerHTML += `
       <tr>

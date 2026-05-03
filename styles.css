@@ -432,13 +432,21 @@
   }
 
   @media (max-width: 900px) {
-    .hero-pulse { grid-template-columns: 1fr; gap: 28px; padding: 24px; }
-    .hp-score { font-size: 56px; }
+    .hero-pulse { grid-template-columns: 1fr; gap: 24px; padding: 24px; }
+    .hp-score { font-size: 64px; }
+  }
+  @media (max-width: 640px) {
+    /* touch-friendly year chips inside hero-pulse on mobile */
+    .hero-pulse .year-chips { gap: 4px; }
+    .hero-pulse .y-chip {
+      padding: 7px 11px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
   }
   @media (max-width: 480px) {
-    .hero-pulse { padding: 20px; }
-    .hp-score { font-size: 48px; }
-    .hp-input-grid { grid-template-columns: 1fr; }
+    .hero-pulse { padding: 20px; gap: 20px; }
+    .hp-score { font-size: 56px; }
   }
 
   /* ===== STATS STRIP: 슬림 풀이 기록 통계 (탭 위) ===== */
@@ -736,6 +744,8 @@
     letter-spacing: 0.02em;
   }
   .combined table td.year { font-weight: 700; color: var(--ink); }
+  .combined table td.combined-pct { color: var(--ink-mute); }
+  .combined table td.combined-pct.has-value { color: var(--accent); font-weight: 600; }
 
   /* Detail viewer */
   details.detail-viewer {
@@ -1936,24 +1946,103 @@
     .title-block::before { width: 34px; height: 34px; font-size: 15px; }
   }
 
-  /* 탭 메뉴 */
+  /* 탭 메뉴 — 모바일에서 가로 스크롤 + 우측 페이드 */
   @media (max-width: 640px) {
     nav.tab-nav {
+      display: flex;
       width: 100%;
       padding: 5px;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
     }
+    nav.tab-nav::-webkit-scrollbar { display: none; }
     .tab-btn {
-      padding: 11px 6px;
+      padding: 11px 14px;
       font-size: 14px;
-      flex: 1;
+      flex: 0 0 auto;
       text-align: center;
-      min-width: 0;
+      white-space: nowrap;
       letter-spacing: -0.02em;
       font-weight: 600;
+      min-width: max-content;
     }
   }
   @media (max-width: 380px) {
-    .tab-btn { padding: 11px 4px; font-size: 13px; }
+    .tab-btn { padding: 11px 12px; font-size: 13px; }
+  }
+
+  /* 통합표 — 모바일에서 학년도별 카드 리스트로 변환 */
+  @media (max-width: 640px) {
+    .combined { padding: 16px 18px; gap: 14px; }
+    .combined .table-block { overflow-x: visible; }
+    #combinedTable thead { display: none; }
+    #combinedTable, #combinedTable tbody { display: block; width: 100%; }
+    #combinedTable tr {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: baseline;
+      column-gap: 14px;
+      row-gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 6px;
+    }
+    #combinedTable tr:last-child { margin-bottom: 0; }
+    #combinedTable tr:hover td { background: transparent; }
+    #combinedTable td {
+      display: block;
+      padding: 0;
+      border: none;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-mute);
+    }
+    #combinedTable td.year {
+      grid-column: 1 / 4; grid-row: 1;
+      font-size: 16px; font-weight: 700;
+      color: var(--ink);
+    }
+    /* eon */
+    #combinedTable td:nth-child(2) { grid-column: 1 / span 2; grid-row: 2; }
+    #combinedTable td:nth-child(2)::before { content: '언어 '; color: var(--ink-tertiary); font-weight: 400; }
+    /* chu */
+    #combinedTable td:nth-child(3) { grid-column: 3; grid-row: 2; }
+    #combinedTable td:nth-child(3)::before { content: '추리 '; color: var(--ink-tertiary); font-weight: 400; }
+    /* total — large, right-aligned, spans both rows */
+    #combinedTable td.total {
+      grid-column: 4; grid-row: 1 / span 2;
+      align-self: center; justify-self: end;
+      font-size: 26px; font-weight: 700; color: var(--accent);
+    }
+    /* combined-pct — wraps under as 3rd row */
+    #combinedTable td.combined-pct {
+      grid-column: 1 / span 4; grid-row: 3;
+      padding-top: 4px;
+      border-top: 1px dashed var(--line);
+      margin-top: 2px;
+    }
+    #combinedTable td.combined-pct::before {
+      content: '백분위 ';
+      color: var(--ink-tertiary);
+      font-weight: 400;
+    }
+    /* score-tables (eon/chu) — tighten on mobile */
+    .result-card { padding: 16px 18px; }
+    .result-card .head { padding-bottom: 8px; margin-bottom: 12px; }
+    .result-card .head .name { font-size: 15px; }
+    table.score-table { font-size: 12px; }
+    table.score-table th { padding: 6px 8px; font-size: 10px; }
+    table.score-table td { padding: 8px; }
+    table.score-table td.std { font-size: 14px; }
   }
 
   /* 모바일 터치 타겟 — 손가락이 닿기 좋도록 */
