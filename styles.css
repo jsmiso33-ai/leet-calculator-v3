@@ -38,7 +38,7 @@
     /* 레거시 호환용 */
     --blue: #18181B;
     --blue-soft: #27272A;
-    --gold: #B45309;
+    --gold: #7c3aed;
 
     /* 그림자 — 중성 그림자 */
     --shadow-xs: 0 0 0 1px rgba(24, 24, 27, 0.05);
@@ -581,7 +581,7 @@
   .y-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-tint); }
   .y-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
   .y-chip.era-old { color: var(--gold); }
-  .y-chip.era-old:hover { border-color: var(--gold); color: var(--gold); background: rgba(180, 83, 9, 0.08); }
+  .y-chip.era-old:hover { border-color: var(--gold); color: var(--gold); background: rgba(124, 58, 237, 0.08); }
   .y-chip.era-old.active { background: var(--gold); border-color: var(--gold); color: #fff; }
   .quick-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
   .quick-actions button {
@@ -2704,7 +2704,7 @@
   }
   .btn-tiny:hover {
     background: var(--bg-tint);
-    border-color: var(--gold, #c4a14a);
+    border-color: var(--gold, #7c3aed);
   }
   .btn-tiny.btn-danger {
     color: #b91c1c;
@@ -2736,7 +2736,7 @@
     user-select: none;
   }
   .admin-cell:hover {
-    border-color: var(--gold, #c4a14a);
+    border-color: var(--gold, #7c3aed);
     transform: translateY(-1px);
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   }
@@ -2873,7 +2873,7 @@
   }
   .admin-answer-row button:hover,
   .admin-diff-row button:hover {
-    border-color: var(--gold, #c4a14a);
+    border-color: var(--gold, #7c3aed);
   }
   .admin-answer-row button.active {
     background: var(--ink);
@@ -3111,7 +3111,7 @@
   }
   .qg-bulk-input:focus {
     outline: none;
-    border-color: var(--gold, #c4a14a);
+    border-color: var(--gold, #7c3aed);
   }
   .qg-bulk-result {
     margin-top: 10px;
