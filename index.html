@@ -133,35 +133,21 @@
     </div>
   </header>
 
-  <section class="hero" id="heroSection">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">
-        <span class="hero-eyebrow-dot"></span>
-        2026학년도 기출 데이터 반영 완료
-      </div>
-      <h2 class="hero-headline">
-        18년치 기출 데이터로<br>
-        <span class="hero-headline-accent">내 LEET 점수를 한눈에</span>
-      </h2>
-      <p class="hero-sub">2009~2026 학년도 표준점수 환산 · 25개 로스쿨 환산점수 비교 · 약점 진단까지</p>
+  <section class="stats-strip" id="statsStrip">
+    <div class="stats-strip-item">
+      <div class="hero-stat-label">최근 풀이 합계</div>
+      <div class="hero-stat-value" id="heroStatRecent">—</div>
+      <div class="hero-stat-sub" id="heroStatRecentSub">아직 기록이 없어요</div>
     </div>
-    <div class="hero-stats" id="heroStats">
-      <div class="hero-stat">
-        <div class="hero-stat-label">최근 풀이 합계</div>
-        <div class="hero-stat-value" id="heroStatRecent">—</div>
-        <div class="hero-stat-sub" id="heroStatRecentSub">아직 기록이 없어요</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-label">총 풀이 횟수</div>
-        <div class="hero-stat-value" id="heroStatCount">—</div>
-        <div class="hero-stat-sub" id="heroStatCountSub">기출 풀이 기록 탭에서</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-label">최고 합계</div>
-        <div class="hero-stat-value" id="heroStatBest">—</div>
-        <div class="hero-stat-sub" id="heroStatBestSub">첫 기록을 추가해보세요</div>
-      </div>
+    <div class="stats-strip-item">
+      <div class="hero-stat-label">총 풀이 횟수</div>
+      <div class="hero-stat-value" id="heroStatCount">—</div>
+      <div class="hero-stat-sub" id="heroStatCountSub">기출 풀이 기록 탭에서</div>
+    </div>
+    <div class="stats-strip-item">
+      <div class="hero-stat-label">최고 합계</div>
+      <div class="hero-stat-value" id="heroStatBest">—</div>
+      <div class="hero-stat-sub" id="heroStatBestSub">첫 기록을 추가해보세요</div>
     </div>
   </section>
 
@@ -175,29 +161,57 @@
 
   <div class="tab-panel active" id="tab-calc">
 
-  <section class="input-area">
-    <div class="section-label">원점수 입력</div>
-    <div class="section-desc">맞힌 문항 수를 입력하세요. 연도별 문항수 차이(2009·2019 시험제도 변경)는 자동 처리됩니다. 입력란의 최대 문항 수도 선택한 연도에 맞춰 자동으로 조절됩니다. <span style="color:var(--gold);font-weight:500;">· 입력값은 자동 저장됩니다</span></div>
-
-    <div class="input-grid">
-      <div class="field">
-        <label>언어이해 원점수 <span class="max">최대 40</span></label>
-        <input type="number" inputmode="numeric" pattern="[0-9]*" id="eonInput" min="0" max="40" step="1" placeholder="예: 22" />
+  <section class="hero-pulse" id="heroPulse">
+    <div class="hero-pulse-bg"></div>
+    <div class="hp-result">
+      <div class="hp-era-badge">
+        <span class="hp-era-dot"></span>
+        <span id="heroEraYear">2026</span>학년도 환산
       </div>
-      <div class="field">
-        <label>추리논증 원점수 <span class="max">최대 40</span></label>
-        <input type="number" inputmode="numeric" pattern="[0-9]*" id="chuInput" min="0" max="40" step="1" placeholder="예: 28" />
+      <div class="hp-score-row">
+        <div class="hp-score" id="heroScoreValue">—</div>
+        <div class="hp-score-meta">
+          <span class="main">합계 표준점수</span>
+          <span>언어 + 추리</span>
+        </div>
       </div>
+      <div class="hp-pill-row">
+        <span class="hp-percentile-text" id="heroPercentileText">원점수를 입력하세요</span>
+      </div>
+      <div class="hp-delta" id="heroDelta" style="display:none;"></div>
     </div>
 
-    <div class="year-selector">
-      <div class="y-label">비교할 학년도 선택 (복수 선택 가능)</div>
-      <div class="year-chips" id="yearChips"></div>
-      <div class="quick-actions">
-        <button id="selectAll">전체 선택</button>
-        <button id="selectNew">신리트만 (2020~)</button>
-        <button id="selectRecent">최근 5개년</button>
-        <button id="selectClear">선택 해제</button>
+    <div class="hp-input">
+      <div class="hp-input-header">
+        <strong>원점수 입력</strong>
+        <span class="save-tag">· 자동 저장</span>
+      </div>
+      <div class="hp-input-grid">
+        <label class="hp-field">
+          <div class="hp-field-label">언어이해</div>
+          <div class="hp-field-row">
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="eonInput" min="0" max="40" step="1" placeholder="0" />
+            <span class="hp-field-max" id="eonMaxLabel">/ 30</span>
+          </div>
+        </label>
+        <label class="hp-field">
+          <div class="hp-field-label">추리논증</div>
+          <div class="hp-field-row">
+            <input type="number" inputmode="numeric" pattern="[0-9]*" id="chuInput" min="0" max="40" step="1" placeholder="0" />
+            <span class="hp-field-max" id="chuMaxLabel">/ 40</span>
+          </div>
+        </label>
+      </div>
+
+      <div class="hp-years">
+        <div class="hp-years-label">비교할 학년도</div>
+        <div class="year-chips" id="yearChips"></div>
+        <div class="hp-quick-actions">
+          <button id="selectAll">전체 선택</button>
+          <button id="selectNew">신리트만 (2020~)</button>
+          <button id="selectRecent">최근 5개년</button>
+          <button id="selectClear">선택 해제</button>
+        </div>
       </div>
     </div>
   </section>

@@ -219,11 +219,84 @@ function render() {
   const years = [...state.selectedYears].sort((a,b) => a-b);
   const results = years.map(y => calcForYear(y, state.eonRaw, state.chuRaw)).filter(r => r);
 
+  renderHeroPulse();
   renderSubjectTable('eonTable', results, 'eon', state.eonRaw);
   renderSubjectTable('chuTable', results, 'chu', state.chuRaw);
   renderCombined(results);
   renderChart(results);
   renderConvTables();
+}
+
+// ===========================================================================
+// Hero Pulse: 선택된 학년도 중 가장 최근 연도 기준으로 표점합·백분위·전년 대비 델타 표시
+// ===========================================================================
+function renderHeroPulse() {
+  const eraYearEl = document.getElementById('heroEraYear');
+  const scoreEl = document.getElementById('heroScoreValue');
+  const pctEl = document.getElementById('heroPercentileText');
+  const deltaEl = document.getElementById('heroDelta');
+  const eonMaxEl = document.getElementById('eonMaxLabel');
+  const chuMaxEl = document.getElementById('chuMaxLabel');
+  if (!scoreEl) return;
+
+  const allYears = Object.keys(LEET).map(Number);
+  const selected = [...state.selectedYears].filter(y => LEET[y]).sort((a, b) => b - a);
+  const heroYear = selected[0] ?? Math.max(...allYears);
+  const heroData = LEET[heroYear];
+
+  eraYearEl.textContent = heroYear;
+  if (heroData) {
+    eonMaxEl.textContent = `/ ${heroData.items_eon}`;
+    chuMaxEl.textContent = `/ ${heroData.items_chu}`;
+  }
+
+  const heroResult = calcForYear(heroYear, state.eonRaw, state.chuRaw);
+  const eonStd = heroResult && heroResult.eon ? heroResult.eon.std : null;
+  const chuStd = heroResult && heroResult.chu ? heroResult.chu.std : null;
+
+  if (state.eonRaw === null || state.chuRaw === null || eonStd === null || chuStd === null) {
+    scoreEl.textContent = '—';
+    scoreEl.classList.remove('has-value');
+    pctEl.innerHTML = '원점수를 입력하세요';
+    deltaEl.style.display = 'none';
+    return;
+  }
+
+  const total = eonStd + chuStd;
+  scoreEl.textContent = total.toFixed(1);
+  scoreEl.classList.add('has-value');
+
+  let pctText = `원점수 <b>${state.eonRaw}+${state.chuRaw}</b>`;
+  const eonPct = heroResult.eon.pct;
+  const chuPct = heroResult.chu.pct;
+  if (eonPct !== null && eonPct !== undefined && chuPct !== null && chuPct !== undefined) {
+    const combinedPct = Math.sqrt(eonPct * chuPct);
+    pctText = `백분위 <b>${combinedPct.toFixed(1)}</b> · ${pctText}`;
+  }
+  pctEl.innerHTML = pctText;
+
+  // 전년 대비 델타: 같은 era 안에서만 (구↔신 시험제도 변경 구간은 비교 무의미)
+  const prevYear = heroYear - 1;
+  const prevData = LEET[prevYear];
+  if (!prevData || prevData.era !== heroData.era) {
+    deltaEl.style.display = 'none';
+    return;
+  }
+  const prevResult = calcForYear(prevYear, state.eonRaw, state.chuRaw);
+  const prevEonStd = prevResult && prevResult.eon ? prevResult.eon.std : null;
+  const prevChuStd = prevResult && prevResult.chu ? prevResult.chu.std : null;
+  if (prevEonStd === null || prevChuStd === null) {
+    deltaEl.style.display = 'none';
+    return;
+  }
+  const prevTotal = prevEonStd + prevChuStd;
+  const delta = total - prevTotal;
+  const sign = delta >= 0 ? '+' : '';
+  const cls = delta >= 0 ? 'up' : 'down';
+  const verb = delta >= 0 ? '상승' : '하락';
+  const ico = delta >= 0 ? '📈' : '📉';
+  deltaEl.innerHTML = `<span class="ico">${ico}</span>${prevYear}학년도 동일 원점수 대비 <span class="${cls}">${sign}${delta.toFixed(1)}</span> ${verb}`;
+  deltaEl.style.display = 'inline-flex';
 }
 
 function renderSubjectTable(tableId, results, key, raw) {
