@@ -1520,7 +1520,7 @@
   /* ===== 입시결과 비교 탭 ===== */
   .adm-summary {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-bottom: 24px;
   }
@@ -1528,8 +1528,11 @@
     background: var(--bg-card);
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
-    padding: 14px 16px;
+    padding: 16px 18px;
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
   .adm-summary-item .as-label {
     font-family: var(--font-mono);
@@ -1537,15 +1540,56 @@
     color: var(--ink-mute);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .adm-summary-item .as-val {
     font-family: var(--font-mono);
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
   }
-  .adm-summary-item .as-val.empty { color: var(--ink-mute); font-size: 14px; }
+  .adm-summary-item .as-val.empty { color: var(--ink-mute); font-size: 13px; font-weight: 500; }
+  .adm-summary-item .as-val.muted { color: var(--ink-mute); }
+  .adm-summary-item .as-val-school {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .adm-summary-item .as-sub {
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    letter-spacing: -0.01em;
+  }
+  .adm-summary-distrib .as-distrib {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+    margin-top: 2px;
+  }
+  .grade-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .grade-pill.grade-safe  { background: rgba(34, 197, 94, 0.14);  color: #15803d; }
+  .grade-pill.grade-match { background: rgba(14, 165, 233, 0.14); color: #075985; }
+  .grade-pill.grade-reach { background: rgba(245, 158, 11, 0.14); color: #b45309; }
+  .grade-pill.grade-hard  { background: rgba(113, 113, 122, 0.12); color: #52525b; }
 
   .adm-table-wrap {
     background: var(--bg-card);
@@ -1655,35 +1699,192 @@
   .adm-region-badge.metro { background: #FEE4D0; color: #9A3412; }
   .adm-region-badge.local { background: #DCFCE7; color: #166534; }
 
-  @media (max-width: 640px) {
-    table.adm-table { font-size: 11px; min-width: 520px; }
-    table.adm-table th, table.adm-table td { padding: 8px 6px; }
-    table.adm-table td.school-name { font-size: 12px; }
-    table.adm-table td.diff { font-size: 12px; }
-    .adm-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .adm-summary-item .as-val { font-size: 16px; }
-    .adm-school-sub { font-size: 10px; }
+  /* 합격등급 뱃지 (학교명 옆) */
+  .adm-grade-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-left: 6px;
+    vertical-align: 2px;
+    color: #fff;
   }
-  @media (max-width: 480px) {
-    table.adm-table { font-size: 10px; min-width: 460px; }
-    table.adm-table th, table.adm-table td { padding: 6px 4px; }
-    table.adm-table td.school-name { font-size: 11px; }
+  .adm-grade-badge.grade-safe  { background: #16a34a; }
+  .adm-grade-badge.grade-match { background: #0ea5e9; }
+  .adm-grade-badge.grade-reach { background: #f59e0b; }
+  .adm-grade-badge.grade-hard  { background: #71717a; }
+
+  /* 행 합격등급 시각화: 옅은 배경 + 좌측 4px 컬러바 */
+  table.adm-table tr[data-grade="safe"]  td { background: rgba(34, 197, 94, 0.04); }
+  table.adm-table tr[data-grade="match"] td { background: rgba(14, 165, 233, 0.04); }
+  table.adm-table tr[data-grade="reach"] td { background: rgba(245, 158, 11, 0.04); }
+  table.adm-table tr[data-grade="safe"]  td:first-child { box-shadow: inset 4px 0 0 0 #16a34a; }
+  table.adm-table tr[data-grade="match"] td:first-child { box-shadow: inset 4px 0 0 0 #0ea5e9; }
+  table.adm-table tr[data-grade="reach"] td:first-child { box-shadow: inset 4px 0 0 0 #f59e0b; }
+  table.adm-table tr[data-grade="hard"]  td:first-child { box-shadow: inset 4px 0 0 0 rgba(113,113,122,0.4); }
+  table.adm-table tr[data-grade="safe"]:hover  td { background: rgba(34, 197, 94, 0.09); }
+  table.adm-table tr[data-grade="match"]:hover td { background: rgba(14, 165, 233, 0.09); }
+  table.adm-table tr[data-grade="reach"]:hover td { background: rgba(245, 158, 11, 0.09); }
+
+  /* 자체환산 경계 구분선 (인라인 스타일 → 클래스) */
+  table.adm-table tr.adm-separator-row td {
+    padding: 10px 12px;
+    background: #ede8dd;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid var(--line);
+    letter-spacing: 0.03em;
+  }
+  table.adm-table tr.adm-separator-row:hover td { background: #ede8dd; }
+
+  @media (max-width: 900px) {
+    .adm-summary { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    /* KPI 카드 모바일 */
+    .adm-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+    .adm-summary-item { padding: 12px 14px; }
+    .adm-summary-item .as-label { font-size: 9px; margin-bottom: 6px; }
+    .adm-summary-item .as-val { font-size: 20px; }
+    .adm-summary-item .as-val.empty { font-size: 12px; }
+    .adm-summary-item .as-val-school { font-size: 14px; }
+    .adm-summary-item .as-sub { font-size: 10px; margin-top: 4px; }
+    .grade-pill { font-size: 10px; padding: 3px 8px; }
+    .adm-school-sub { font-size: 10px; }
+
+    /* 테이블 → 학교별 카드 리스트 */
     .adm-table-wrap {
-      position: relative;
-      -webkit-overflow-scrolling: touch;
+      overflow-x: visible;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      border-radius: 0;
     }
-    /* 우측 스크롤 가능 힌트 (그라데이션) */
-    .adm-table-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 24px;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.9));
-      pointer-events: none;
-      border-top-right-radius: var(--radius-md);
-      border-bottom-right-radius: var(--radius-md);
+    .adm-table-wrap::after { display: none; }
+    table.adm-table {
+      min-width: 0;
+      display: block;
+      table-layout: auto;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    table.adm-table colgroup, table.adm-table thead { display: none; }
+    table.adm-table tbody { display: block; }
+    table.adm-table tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      column-gap: 12px;
+      row-gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+    /* 모바일은 좌측 border-left로 등급 표시 (데스크톱의 inset shadow 대신) */
+    table.adm-table tr[data-grade] td { background: transparent; }
+    table.adm-table tr[data-grade] td:first-child { box-shadow: none; }
+    table.adm-table tr:hover td { background: transparent; }
+    table.adm-table tr[data-grade=""] { padding-left: 16px; }
+    table.adm-table tr[data-grade="safe"],
+    table.adm-table tr[data-grade="match"],
+    table.adm-table tr[data-grade="reach"],
+    table.adm-table tr[data-grade="hard"] {
+      border-left-width: 4px;
+      padding-left: 12px;
+    }
+    table.adm-table tr[data-grade="safe"]  { border-left-color: #16a34a; }
+    table.adm-table tr[data-grade="match"] { border-left-color: #0ea5e9; }
+    table.adm-table tr[data-grade="reach"] { border-left-color: #f59e0b; }
+    table.adm-table tr[data-grade="hard"]  { border-left-color: rgba(113,113,122,0.4); }
+
+    table.adm-table td {
+      display: block;
+      padding: 0;
+      border: none;
+      text-align: left;
+      line-height: 1.45;
+    }
+    table.adm-table td.school-name {
+      grid-column: 1; grid-row: 1;
+      font-size: 14px;
+      font-weight: 700;
+      white-space: normal;
+      overflow: visible;
+      word-break: keep-all;
+    }
+    table.adm-table td.diff {
+      grid-column: 2; grid-row: 1;
+      align-self: center;
+      justify-self: end;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    /* leet50 (col 1, row 2) */
+    table.adm-table td:nth-child(3) {
+      grid-column: 1; grid-row: 2;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    /* leet75 (col 2, row 2) */
+    table.adm-table td:nth-child(4) {
+      grid-column: 2; grid-row: 2;
+      font-size: 13px;
+      color: var(--ink);
+      text-align: right;
+    }
+    /* enrolled (col 1, row 3) */
+    table.adm-table td:nth-child(2) {
+      grid-column: 1; grid-row: 3;
+      font-size: 11px;
+      color: var(--ink-mute);
+      padding-top: 6px;
+      border-top: 1px dashed var(--line);
+    }
+    /* gpa (col 2, row 3) */
+    table.adm-table td:nth-child(6) {
+      grid-column: 2; grid-row: 3;
+      font-size: 11px;
+      color: var(--ink-mute);
+      text-align: right;
+      padding-top: 6px;
+      border-top: 1px dashed var(--line);
+    }
+    /* eng (full row 4) */
+    table.adm-table td:nth-child(7) {
+      grid-column: 1 / span 2; grid-row: 4;
+      font-size: 11px;
+      color: var(--ink-mute);
+    }
+    /* 셀 라벨 */
+    table.adm-table td:nth-child(2)::before { content: '등록 '; color: var(--ink-tertiary); font-size: 10px; font-weight: 500; }
+    table.adm-table td:nth-child(3)::before { content: 'LEET 50% '; color: var(--ink-tertiary); font-size: 10px; font-weight: 500; }
+    table.adm-table td:nth-child(4)::before { content: '75% '; color: var(--ink-tertiary); font-size: 10px; font-weight: 500; }
+    table.adm-table td:nth-child(6)::before { content: '학점 '; color: var(--ink-tertiary); font-size: 10px; font-weight: 500; }
+    table.adm-table td:nth-child(7)::before { content: '영어 '; color: var(--ink-tertiary); font-size: 10px; font-weight: 500; }
+
+    /* 자체환산 separator on mobile */
+    table.adm-table tr.adm-separator-row {
+      display: block;
+      margin: 14px 0 6px;
+      border: none;
+      box-shadow: none;
+      background: transparent;
+      padding: 0;
+    }
+    table.adm-table tr.adm-separator-row td {
+      text-align: center;
+      background: #ede8dd;
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 11px;
+      border: none;
     }
   }
 
