@@ -948,22 +948,59 @@ function chungangEngTable(engType, score) {
   return 95;
 }
 
-// ========== 시립대 ==========
+// ========== TEPS/TOEFL → TOEIC 환산 ==========
+// 한국교육과정평가원(KICE) New TEPS 공식 1:1 환산 가이드 기반 (선형 보간)
+// New TEPS (2018+, 600점 만점) 기준
 function uosTepsToToeic(teps) {
-  // 대략적 환산 (실제 환산표 단순화)
-  if (teps >= 555) return 990;
-  if (teps >= 387) return 800;
-  if (teps >= 309) return 700;
-  if (teps >= 268) return 600;
-  return 500;
+  // 기준점: TEPS → TOEIC
+  // 555+→990, 526→950, 488→900, 453→850, 419→800,
+  // 387→750, 358→700, 327→650, 268→600, 243→550
+  const pts = [
+    [555, 990],
+    [526, 950],
+    [488, 900],
+    [453, 850],
+    [419, 800],
+    [387, 750],
+    [358, 700],
+    [327, 650],
+    [268, 600],
+    [243, 550],
+  ];
+  if (teps >= pts[0][0]) return pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [hi, hiVal] = pts[i];
+    const [lo, loVal] = pts[i + 1];
+    if (teps >= lo) {
+      return loVal + ((teps - lo) / (hi - lo)) * (hiVal - loVal);
+    }
+  }
+  // 243 미만은 선형 외삽
+  return Math.max(200, 550 - (243 - teps) * 2);
 }
 
 function uosToeflToToeic(toefl) {
-  if (toefl >= 110) return 990;
-  if (toefl >= 95) return 900;
-  if (toefl >= 87) return 800;
-  if (toefl >= 76) return 700;
-  return 600;
+  // ETS/KICE 공식 환산표 기반 선형 보간
+  // 110→990, 100→950, 95→900, 87→850, 80→800,
+  // 70→700, 60→600
+  const pts = [
+    [110, 990],
+    [100, 950],
+    [95, 900],
+    [87, 850],
+    [80, 800],
+    [70, 700],
+    [60, 600],
+  ];
+  if (toefl >= pts[0][0]) return pts[0][1];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [hi, hiVal] = pts[i];
+    const [lo, loVal] = pts[i + 1];
+    if (toefl >= lo) {
+      return loVal + ((toefl - lo) / (hi - lo)) * (hiVal - loVal);
+    }
+  }
+  return Math.max(300, 600 - (60 - toefl) * 5);
 }
 
 // ========== 건국대 ==========
