@@ -2292,6 +2292,10 @@ document.getElementById('qgSave').addEventListener('click', async () => {
 
 // 카테고리별 통계 렌더
 function qgRenderStats() {
+  // "유형별 정답률 분석"은 메타데이터 수집 중이라 임시 비활성화 — 정적 "준비중" placeholder 노출 (index.html)
+  // 메타데이터 준비 완료 후 이 early-return만 제거하면 즉시 동적 렌더 복원됨
+  return;
+  // eslint-disable-next-line no-unreachable
   const year = parseInt(document.getElementById('qgYear').value);
   const session = qgGetSession();
   const statsSection = document.getElementById('qstatsSection');

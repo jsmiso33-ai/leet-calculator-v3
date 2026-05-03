@@ -2556,6 +2556,42 @@
     line-height: 1.7;
   }
 
+  /* "준비중" placeholder (유형별 정답률 분석) */
+  .qstats-coming-soon {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 36px 24px;
+    background: linear-gradient(180deg, var(--bg-subtle) 0%, transparent 100%);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .qcs-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--ink);
+    color: var(--ink-on-dark);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border-radius: 999px;
+  }
+  .qcs-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .qcs-desc {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
   /* 기출 풀이 기록 탭 */
   @media (max-width: 640px) {
     .log-form { padding: 16px; }
