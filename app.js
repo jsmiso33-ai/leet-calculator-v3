@@ -294,8 +294,10 @@ function renderHeroPulse() {
   const sign = delta >= 0 ? '+' : '';
   const cls = delta >= 0 ? 'up' : 'down';
   const verb = delta >= 0 ? '상승' : '하락';
-  const ico = delta >= 0 ? '📈' : '📉';
-  deltaEl.innerHTML = `<span class="ico">${ico}</span>${prevYear}학년도 동일 원점수 대비 <span class="${cls}">${sign}${delta.toFixed(1)}</span> ${verb}`;
+  const svg = delta >= 0
+    ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>'
+    : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="14 17 21 17 21 10"/></svg>';
+  deltaEl.innerHTML = `<span class="ico ${cls}">${svg}</span>${prevYear}학년도 동일 원점수 대비 <span class="${cls}">${sign}${delta.toFixed(1)}</span> ${verb}`;
   deltaEl.style.display = 'inline-flex';
 }
 
