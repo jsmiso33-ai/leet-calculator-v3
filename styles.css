@@ -307,6 +307,7 @@
     color: var(--ink-soft);
     font-weight: 600;
     letter-spacing: -0.01em;
+    white-space: nowrap;
   }
   .hp-score-meta .dim {
     color: var(--ink-mute);
@@ -421,10 +422,10 @@
     border-style: solid;
   }
 
-  /* compact year chips inside hero-pulse */
-  .hero-pulse .year-chips { gap: 3px; }
+  /* compact year chips inside hero-pulse — 11 old-era chips must fit one row */
+  .hero-pulse .year-chips { gap: 2px; }
   .hero-pulse .y-chip {
-    padding: 3px 7px;
+    padding: 3px 5px;
     font-size: 11px;
     line-height: 1.4;
     border-color: var(--line-strong);
