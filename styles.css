@@ -245,7 +245,7 @@
     margin-bottom: 24px;
     overflow: hidden;
     display: grid;
-    grid-template-columns: 1.05fr 1fr;
+    grid-template-columns: 1fr 1.3fr;
     gap: 40px;
   }
   .hero-pulse-bg {
