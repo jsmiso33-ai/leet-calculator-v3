@@ -646,6 +646,31 @@ function updateAdmFilterCount() {
   }
 }
 
+// 입시 합격등급 분류: 'safe' | 'match' | 'reach' | 'hard' | null
+function classifyAdm(school, ad, leetSum) {
+  if (!ad.leet || ad.leet.val === null) return null;
+  let myLeet;
+  if (ad.leet.max !== null) {
+    // 자체환산 → 학교 자체 calc로 내 점수 환산
+    const c = calcSchool(school);
+    if (c.leet === null || c.leet === undefined) return null;
+    myLeet = c.leet;
+  } else {
+    // 표점합 기준 → 내 표점합과 직접 비교
+    if (leetSum === null) return null;
+    myLeet = leetSum;
+  }
+  const leet50 = ad.leet.val;
+  const leet75 = (ad.leet75 && ad.leet75.val !== null) ? ad.leet75.val : null;
+  if (leet75 !== null && myLeet >= leet75) return 'safe';
+  if (myLeet >= leet50) return 'match';
+  const step = (leet75 !== null) ? (leet75 - leet50) : 3;
+  if (myLeet >= leet50 - step) return 'reach';
+  return 'hard';
+}
+
+const ADM_GRADE_LABEL = { safe: '안정', match: '적정', reach: '도전', hard: '위험' };
+
 function renderAdmission() {
   // 내 점수 요약
   const sum = document.getElementById('admSummary');
@@ -653,17 +678,6 @@ function renderAdmission() {
   const chuStd = schState.chuStd;
   const leetSum = (eonStd !== null && chuStd !== null) ? eonStd + chuStd : null;
   const gpaPct = schState.gpaPct;
-
-  sum.innerHTML = `
-    <div class="adm-summary-item">
-      <div class="as-label">내 LEET 표점합</div>
-      <div class="as-val ${leetSum === null ? 'empty' : ''}">${leetSum !== null ? leetSum.toFixed(1) : '학교별 탭에서 입력'}</div>
-    </div>
-    <div class="adm-summary-item">
-      <div class="as-label">내 학점 백분위</div>
-      <div class="as-val ${gpaPct === null ? 'empty' : ''}">${gpaPct !== null ? gpaPct.toFixed(1) + '%' : '학교별 탭에서 입력'}</div>
-    </div>
-  `;
 
   // 25개교 데이터 빌드 (필터 적용)
   const admFilter = (admSelectedSchools === null)
@@ -794,7 +808,7 @@ function renderAdmission() {
     const regionText = school.group;
 
     rows.push({
-      name, enrolled: ad.enrolled, school,
+      name, enrolled: ad.enrolled, school, ad,
       leet50Val: leet50Val, leet50Text, leet50IsConverted,
       leet50Max: (ad.leet && ad.leet.max) ? ad.leet.max : null,
       leet75Text,
@@ -803,6 +817,70 @@ function renderAdmission() {
       regionCls, regionText,
     });
   }
+
+  // 합격등급 분류 + 집계
+  const gradeCounts = { safe: 0, match: 0, reach: 0, hard: 0 };
+  let bestSafeName = null, bestSafeCut = -Infinity;
+  let bestMatchName = null, bestMatchCut = -Infinity;
+  for (const r of rows) {
+    r.grade = classifyAdm(r.school, r.ad, leetSum);
+    if (r.grade) gradeCounts[r.grade]++;
+    if (!r.leet50IsConverted && r.leet50Val !== null) {
+      if (r.grade === 'safe' && r.leet50Val > bestSafeCut) {
+        bestSafeCut = r.leet50Val;
+        bestSafeName = r.name;
+      } else if (r.grade === 'match' && r.leet50Val > bestMatchCut) {
+        bestMatchCut = r.leet50Val;
+        bestMatchName = r.name;
+      }
+    }
+  }
+
+  // KPI 4-card 렌더링
+  const sum = document.getElementById('admSummary');
+  const totalGraded = gradeCounts.safe + gradeCounts.match + gradeCounts.reach + gradeCounts.hard;
+  let recHtml;
+  if (bestSafeName) {
+    recHtml = `<div class="as-val as-val-school">${bestSafeName}</div>
+      <div class="as-sub">LEET ${bestSafeCut.toFixed(1)} · 안정권 ${gradeCounts.safe}곳 중 최상위</div>`;
+  } else if (bestMatchName) {
+    recHtml = `<div class="as-val as-val-school muted">안정권 없음</div>
+      <div class="as-sub">적정 ${gradeCounts.match}곳 · 최상위 ${bestMatchName}</div>`;
+  } else if (leetSum === null) {
+    recHtml = `<div class="as-val empty">LEET 입력 필요</div>`;
+  } else {
+    recHtml = `<div class="as-val empty">합격권 없음</div>
+      <div class="as-sub">점수 보강 필요</div>`;
+  }
+  let distribHtml;
+  if (totalGraded > 0) {
+    distribHtml = `<div class="as-distrib">
+      <span class="grade-pill grade-safe">안정 ${gradeCounts.safe}</span>
+      <span class="grade-pill grade-match">적정 ${gradeCounts.match}</span>
+      <span class="grade-pill grade-reach">도전 ${gradeCounts.reach}</span>
+      <span class="grade-pill grade-hard">위험 ${gradeCounts.hard}</span>
+    </div>`;
+  } else {
+    distribHtml = `<div class="as-val empty">${leetSum === null ? 'LEET 입력 필요' : '데이터 없음'}</div>`;
+  }
+  sum.innerHTML = `
+    <div class="adm-summary-item">
+      <div class="as-label">내 LEET 표점합</div>
+      <div class="as-val ${leetSum === null ? 'empty' : ''}">${leetSum !== null ? leetSum.toFixed(1) : '학교별 탭에서 입력'}</div>
+    </div>
+    <div class="adm-summary-item">
+      <div class="as-label">내 학점 백분위</div>
+      <div class="as-val ${gpaPct === null ? 'empty' : ''}">${gpaPct !== null ? gpaPct.toFixed(1) + '%' : '학교별 탭에서 입력'}</div>
+    </div>
+    <div class="adm-summary-item adm-summary-distrib">
+      <div class="as-label">합격권 분포 ${totalGraded > 0 ? `(${totalGraded}개교)` : ''}</div>
+      ${distribHtml}
+    </div>
+    <div class="adm-summary-item">
+      <div class="as-label">추천 안정 라인</div>
+      ${recHtml}
+    </div>
+  `;
 
   // 정렬
   if (admSortKey === 'leet-cut') {
@@ -845,16 +923,19 @@ function renderAdmission() {
   }
   tbody.innerHTML = rows.map((r, i) => {
     const subHtml = r.subText ? `<span class="adm-school-sub">${r.subText}</span>` : '';
+    const gradeBadge = r.grade
+      ? `<span class="adm-grade-badge grade-${r.grade}">${ADM_GRADE_LABEL[r.grade]}</span>`
+      : '';
     // title 속성용 plain text (HTML 태그 제거)
     const gpaPlain = r.gpa50Text.replace(/<[^>]*>/g, '');
     const engPlain = r.eng50Text.replace(/<[^>]*>/g, '');
     // 표점합→자체환산 경계에 구분선 추가
     let separator = '';
     if ((admSortKey === 'leet-cut' || admSortKey === 'diff') && i > 0 && !rows[i-1].leet50IsConverted && r.leet50IsConverted) {
-      separator = `<tr><td colspan="7" style="padding:10px 10px;background:#ede8dd;font-size:12px;color:var(--ink-soft);text-align:center;font-weight:600;border-bottom:2px solid var(--line);letter-spacing:0.03em;">▼ 이하 자체 환산점수 (표점합과 직접 비교 불가)</td></tr>`;
+      separator = `<tr class="adm-separator-row"><td colspan="7">▼ 이하 자체 환산점수 (표점합과 직접 비교 불가)</td></tr>`;
     }
-    return `${separator}<tr>
-      <td class="school-name">${r.name}<span class="adm-region-badge ${r.regionCls}">${r.regionText}</span>${subHtml}</td>
+    return `${separator}<tr data-grade="${r.grade || ''}">
+      <td class="school-name">${r.name}${gradeBadge}<span class="adm-region-badge ${r.regionCls}">${r.regionText}</span>${subHtml}</td>
       <td class="num">${r.enrolled}명</td>
       <td class="num">${r.leet50Text}</td>
       <td class="num">${r.leet75Text}</td>
