@@ -1663,108 +1663,7 @@ async function deleteLogEntry(id) {
   renderLog();
 }
 
-// 기록 렌더링
-// ===========================================================================
-// 히어로 섹션 통계
-// ===========================================================================
-function updateHeroStats() {
-  const recentEl = document.getElementById('heroStatRecent');
-  const recentSubEl = document.getElementById('heroStatRecentSub');
-  const countEl = document.getElementById('heroStatCount');
-  const countSubEl = document.getElementById('heroStatCountSub');
-  const bestEl = document.getElementById('heroStatBest');
-  const bestSubEl = document.getElementById('heroStatBestSub');
-
-  if (!recentEl || !countEl || !bestEl) return;
-
-  if (!logEntries || logEntries.length === 0) {
-    recentEl.textContent = '—';
-    recentEl.classList.remove('has-data');
-    recentSubEl.textContent = '아직 기록이 없어요';
-    countEl.textContent = '0';
-    countEl.classList.remove('has-data');
-    countSubEl.textContent = '기출 풀이 기록 탭에서';
-    bestEl.textContent = '—';
-    bestEl.classList.remove('has-data');
-    bestSubEl.textContent = '첫 기록을 추가해보세요';
-    return;
-  }
-
-  // 환산해서 합계 계산
-  const enriched = logEntries.map(e => {
-    const eon = e.eon !== null ? getStdScore(e.year, 'eon', e.eon) : null;
-    const chu = e.chu !== null ? getStdScore(e.year, 'chu', e.chu) : null;
-    const total = (eon && chu) ? eon.std + chu.std : null;
-    return { ...e, total };
-  });
-
-  const validTotals = enriched.filter(e => e.total !== null);
-  const sortedByDate = [...validTotals].sort((a, b) => a.date.localeCompare(b.date));
-  const recent = sortedByDate.length > 0 ? sortedByDate[sortedByDate.length - 1] : null;
-  const best = validTotals.length > 0 ? validTotals.reduce((a, b) => a.total > b.total ? a : b) : null;
-
-  // 최근 합계
-  if (recent) {
-    animateNumber(recentEl, recent.total, 1);
-    recentEl.classList.add('has-data');
-    const dayDiff = Math.round((Date.now() - new Date(recent.date).getTime()) / 86400000);
-    const dayText = dayDiff === 0 ? '오늘' : dayDiff === 1 ? '어제' : `${dayDiff}일 전`;
-    recentSubEl.textContent = `${recent.year}학년도 · ${dayText}`;
-  } else {
-    recentEl.textContent = '—';
-    recentEl.classList.remove('has-data');
-    recentSubEl.textContent = '환산 가능한 기록 없음';
-  }
-
-  // 총 풀이 횟수
-  animateNumber(countEl, logEntries.length, 0, '회');
-  countEl.classList.add('has-data');
-  const last30Days = logEntries.filter(e => {
-    if (!e.date) return false;
-    return (Date.now() - new Date(e.date).getTime()) <= 30 * 86400000;
-  }).length;
-  countSubEl.textContent = `최근 30일 ${last30Days}회`;
-
-  // 최고 합계
-  if (best) {
-    animateNumber(bestEl, best.total, 1);
-    bestEl.classList.add('has-data');
-    bestSubEl.textContent = `${best.year}학년도 · ${best.date}`;
-  } else {
-    bestEl.textContent = '—';
-    bestEl.classList.remove('has-data');
-    bestSubEl.textContent = '환산 가능한 기록 없음';
-  }
-}
-
-// 숫자 카운트업 애니메이션 (간단)
-function animateNumber(el, target, decimals, suffix) {
-  const dec = decimals === undefined ? 0 : decimals;
-  const sfx = suffix || '';
-  const current = parseFloat(el.dataset.value || '0');
-  if (Math.abs(current - target) < 0.01) {
-    el.textContent = target.toFixed(dec) + sfx;
-    el.dataset.value = String(target);
-    return;
-  }
-  const duration = 700;
-  const start = performance.now();
-  function step(now) {
-    const t = Math.min(1, (now - start) / duration);
-    // ease-out cubic
-    const eased = 1 - Math.pow(1 - t, 3);
-    const value = current + (target - current) * eased;
-    el.textContent = value.toFixed(dec) + sfx;
-    if (t < 1) requestAnimationFrame(step);
-    else el.dataset.value = String(target);
-  }
-  requestAnimationFrame(step);
-}
-
 function renderLog() {
-  // 히어로 통계도 같이 갱신
-  updateHeroStats();
-
   const list = document.getElementById('logList');
   const stats = document.getElementById('logStats');
   const chartCard = document.getElementById('logChartCard');
@@ -1966,9 +1865,6 @@ function renderLogChart(sortedByDate) {
 buildLogYearSelect();
 // 오늘 날짜 기본값
 document.getElementById('logDate').valueAsDate = new Date();
-
-// 페이지 로드 시 히어로 통계 즉시 표시
-updateHeroStats();
 
 document.getElementById('logYear').addEventListener('change', () => {
   updateLogMaxLabels();

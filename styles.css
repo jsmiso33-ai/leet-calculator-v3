@@ -449,50 +449,6 @@
     .hp-score { font-size: 56px; }
   }
 
-  /* ===== STATS STRIP: 슬림 풀이 기록 통계 (탭 위) ===== */
-  .stats-strip {
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    padding: 14px 24px;
-    margin-bottom: 16px;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .stats-strip-item {
-    display: flex; flex-direction: column; gap: 3px;
-    min-width: 0;
-  }
-  .hero-stat-label {
-    font-size: 10px;
-    color: var(--ink-mute);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .hero-stat-value {
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--ink-tertiary);
-    letter-spacing: -0.025em;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.1;
-    transition: color var(--motion-base) var(--ease-out);
-  }
-  .hero-stat-value.has-data { color: var(--accent); }
-  .hero-stat-sub {
-    font-size: 11px;
-    color: var(--ink-tertiary);
-    letter-spacing: -0.01em;
-  }
-  @media (max-width: 700px) {
-    .stats-strip { grid-template-columns: 1fr; gap: 10px; padding: 14px 18px; }
-    .hero-stat-value { font-size: 20px; }
-  }
-
   section.input-area {
     background: var(--bg-card);
     border: none;
