@@ -109,7 +109,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-<link rel="stylesheet" href="styles.css?v=20260503m" />
+<link rel="stylesheet" href="styles.css?v=20260503q" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -383,19 +383,13 @@
       </div>
     </section>
 
-    <!-- 카테고리별 통계 — 메타데이터 수집 중이라 준비중 -->
-    <section class="qstats-section" id="qstatsSection">
+    <!-- 카테고리별 통계 -->
+    <section class="qstats-section" id="qstatsSection" style="display:none;">
       <div class="qstats-header">
         <div class="section-label" style="margin:0;">유형별 정답률 분석</div>
         <span class="qstats-summary" id="qstatsSummary"></span>
       </div>
-      <div class="qstats-grid" id="qstatsGrid">
-        <div class="qstats-coming-soon">
-          <div class="qcs-badge">준비중</div>
-          <div class="qcs-title">유형별 정답률 분석</div>
-          <div class="qcs-desc">2009~2026 학년도 기출 문제의 카테고리·난이도 메타데이터를 정리하는 중입니다. 데이터가 준비되면 자동으로 활성화됩니다.</div>
-        </div>
-      </div>
+      <div class="qstats-grid" id="qstatsGrid"></div>
     </section>
 
     <!-- 통계 카드 -->
@@ -773,11 +767,11 @@
 <!-- 외부 라이브러리 (HTML 본문 렌더 후 로드되도록 body 끝에 위치) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="data/leet.js?v=20260503m"></script>
-<script src="data/meta.js?v=20260503m"></script>
-<script src="data/schools.js?v=20260503m"></script>
-<script src="auth.js?v=20260503m"></script>
-<script src="app.js?v=20260503m"></script>
-<script src="admin.js?v=20260503m"></script>
+<script src="data/leet.js?v=20260503q"></script>
+<script src="data/meta.js?v=20260503q"></script>
+<script src="data/schools.js?v=20260503q"></script>
+<script src="auth.js?v=20260503q"></script>
+<script src="app.js?v=20260503q"></script>
+<script src="admin.js?v=20260503q"></script>
 </body>
 </html>
