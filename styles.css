@@ -580,7 +580,7 @@
   }
   .y-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-tint); }
   .y-chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .y-chip.era-old { color: #38bdf8; }
+  .y-chip.era-old { color: rgba(14, 165, 233, 0.55); }
   .y-chip.era-old:hover { border-color: var(--gold); color: var(--gold); background: rgba(14, 165, 233, 0.08); }
   .y-chip.era-old.active { background: var(--gold); border-color: var(--gold); color: #fff; }
   .quick-actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
