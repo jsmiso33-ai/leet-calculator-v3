@@ -109,7 +109,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-<link rel="stylesheet" href="styles.css?v=20260503s" />
+<link rel="stylesheet" href="styles.css?v=20260528f" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -135,6 +135,7 @@
 
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="calc">표준점수 계산기</button>
+    <button class="tab-btn" data-tab="exams">기출문제</button>
     <button class="tab-btn" data-tab="log">기출 풀이 기록</button>
     <button class="tab-btn" data-tab="schools">학교별 환산점수</button>
     <button class="tab-btn" data-tab="admission">입시결과 비교</button>
@@ -245,6 +246,15 @@
     </div>
   </details>
   </div><!-- /tab-calc -->
+
+  <div class="tab-panel" id="tab-exams">
+    <section class="input-area">
+      <div class="section-label">LEET 기출문제 다운로드</div>
+      <div class="section-desc">2009~2026학년도 법학적성시험 기출문제와 정답입니다. 과목을 클릭하면 새 탭에서 PDF가 열립니다. (출처: 법학전문대학원협의회 공개 자료)</div>
+      <p class="exams-copyright">※ 법학적성시험 문제·정답의 저작권 및 출판권은 법학전문대학원협의회에 있습니다.</p>
+    </section>
+    <section class="exams-grid" id="examsGrid"></section>
+  </div><!-- /tab-exams -->
 
   <div class="tab-panel" id="tab-log">
 
@@ -767,11 +777,11 @@
 <!-- 외부 라이브러리 (HTML 본문 렌더 후 로드되도록 body 끝에 위치) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="data/leet.js?v=20260503s"></script>
-<script src="data/meta.js?v=20260503s"></script>
-<script src="data/schools.js?v=20260503s"></script>
-<script src="auth.js?v=20260503s"></script>
-<script src="app.js?v=20260503s"></script>
-<script src="admin.js?v=20260503s"></script>
+<script src="data/leet.js?v=20260528f"></script>
+<script src="data/meta.js?v=20260528f"></script>
+<script src="data/schools.js?v=20260528f"></script>
+<script src="auth.js?v=20260528f"></script>
+<script src="app.js?v=20260528f"></script>
+<script src="admin.js?v=20260528f"></script>
 </body>
 </html>

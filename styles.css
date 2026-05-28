@@ -913,7 +913,7 @@
 
   /* ===== 탭 네비게이션 ===== */
   nav.tab-nav {
-    display: inline-flex;
+    display: flex;
     gap: 2px;
     background: var(--bg-card);
     padding: 6px;
@@ -921,9 +921,11 @@
     margin-bottom: 24px;
     box-shadow: var(--shadow-sm);
     flex-wrap: wrap;
+    width: 100%;
     max-width: 100%;
   }
   .tab-btn {
+    flex: 1 1 0;
     background: none;
     border: none;
     padding: 11px 22px;
@@ -936,6 +938,7 @@
     transition: all var(--motion-fast) var(--ease-out);
     letter-spacing: -0.01em;
     white-space: nowrap;
+    text-align: center;
   }
   .tab-btn:hover {
     color: var(--ink);
@@ -3261,4 +3264,73 @@
   .log-memo.has-error {
     border-color: var(--danger) !important;
     box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.08);
+  }
+
+  /* 기출문제 다운로드 탭 */
+  .exams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .exam-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: #fff;
+    padding: 16px 18px;
+  }
+  .exam-year {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+  .exam-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .exam-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .exam-subj {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .exam-link {
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--accent);
+    border: 1px solid rgba(26, 86, 219, 0.25);
+    border-radius: var(--radius-md);
+    transition: all var(--motion-fast) var(--ease-out);
+  }
+  .exam-link:hover {
+    background: var(--accent);
+    color: #fff;
+  }
+  .exam-link-ans {
+    color: rgba(24, 24, 27, 0.6);
+    border-color: var(--line);
+  }
+  .exam-link-ans:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .exam-row-empty .exam-na {
+    font-size: 12px;
+    color: rgba(24, 24, 27, 0.35);
+  }
+  .exams-copyright {
+    margin-top: 10px;
+    margin-bottom: 0;
+    font-size: 12px;
+    color: rgba(24, 24, 27, 0.5);
+    line-height: 1.5;
   }
