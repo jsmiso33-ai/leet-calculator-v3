@@ -2106,8 +2106,9 @@
     .title-block::before { width: 34px; height: 34px; font-size: 15px; }
   }
 
-  /* 탭 메뉴 — 모바일에서 가로 스크롤 + 우측 페이드 */
-  @media (max-width: 640px) {
+  /* 탭 메뉴 — 좁은 화면(태블릿/모바일)에서 가로 스크롤 + 우측 페이드.
+     데스크톱(>820px)에서만 균등폭(flex:1)이 적용되어 줄바꿈을 방지 */
+  @media (max-width: 820px) {
     nav.tab-nav {
       display: flex;
       width: 100%;
@@ -3340,4 +3341,20 @@
     font-size: 12px;
     color: rgba(24, 24, 27, 0.5);
     line-height: 1.5;
+  }
+  /* 기출 탭 모바일 — 1열 + 탭 영역 키우기 */
+  @media (max-width: 640px) {
+    .exams-grid { grid-template-columns: 1fr; gap: 10px; }
+    .exam-card { padding: 16px; }
+    .exam-year { font-size: 16px; }
+    .exam-row { gap: 10px; }
+    .exam-subj { font-size: 14px; }
+    .exam-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
   }
