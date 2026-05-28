@@ -604,6 +604,7 @@ function buildAdmChips() {
   if (actions) {
     actions.innerHTML = `
       <button data-action="all">전체 선택</button>
+      <button data-action="favorites">즐겨찾기만</button>
       <button data-action="seoul">서울권만</button>
       <button data-action="metro">서울/경기·인천</button>
       <button data-action="clear">선택 해제</button>
@@ -613,6 +614,9 @@ function buildAdmChips() {
         const a = btn.dataset.action;
         if (a === 'all') {
           admSelectedSchools = null;
+        } else if (a === 'favorites') {
+          const admNames = new Set(Object.keys(ADMISSION_2026));
+          admSelectedSchools = getFavoriteSchoolNames().filter(name => admNames.has(name));
         } else if (a === 'clear') {
           admSelectedSchools = [];
         } else if (a === 'seoul') {
@@ -815,6 +819,7 @@ function renderAdmission() {
       leetDiffVal, leetDiffText, leetDiffClass,
       gpa50Text, eng50Text, subText,
       regionCls, regionText,
+      favorite: isFavoriteSchool(name),
     });
   }
 
@@ -925,6 +930,8 @@ function renderAdmission() {
     const gradeBadge = r.grade
       ? `<span class="adm-grade-badge grade-${r.grade}">${ADM_GRADE_LABEL[r.grade]}</span>`
       : '';
+    const favoriteLabel = r.favorite ? '즐겨찾기 해제' : '즐겨찾기 추가';
+    const favoriteBtn = `<button class="favorite-btn adm-favorite-btn ${r.favorite ? 'active' : ''}" type="button" data-adm-favorite-school="${escapeHtml(r.name)}" aria-pressed="${r.favorite}" aria-label="${r.name} ${favoriteLabel}" title="${favoriteLabel}">${r.favorite ? '★' : '☆'}</button>`;
     // title 속성용 plain text (HTML 태그 제거)
     const gpaPlain = r.gpa50Text.replace(/<[^>]*>/g, '');
     const engPlain = r.eng50Text.replace(/<[^>]*>/g, '');
@@ -934,7 +941,7 @@ function renderAdmission() {
       separator = `<tr class="adm-separator-row"><td colspan="7">▼ 이하 자체 환산점수 (표점합과 직접 비교 불가)</td></tr>`;
     }
     return `${separator}<tr data-grade="${r.grade || ''}">
-      <td class="school-name">${r.name}${gradeBadge}<span class="adm-region-badge ${r.regionCls}">${r.regionText}</span>${subHtml}</td>
+      <td class="school-name">${favoriteBtn}<span class="adm-school-main">${r.name}</span>${gradeBadge}<span class="adm-region-badge ${r.regionCls}">${r.regionText}</span>${subHtml}</td>
       <td class="num">${r.enrolled}명</td>
       <td class="num">${r.leet50Text}</td>
       <td class="num">${r.leet75Text}</td>
@@ -943,6 +950,16 @@ function renderAdmission() {
       <td class="num" title="${engPlain}">${r.eng50Text}</td>
     </tr>`;
   }).join('');
+
+  tbody.querySelectorAll('[data-adm-favorite-school]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleFavoriteSchool(btn.dataset.admFavoriteSchool);
+      buildSchoolChips();
+      buildAdmChips();
+      renderSchools();
+      renderAdmission();
+    });
+  });
 }
 
 // 입시결과 탭 정렬 버튼 이벤트
@@ -1028,7 +1045,42 @@ const schState = Object.assign({
   engScore: null,
   sortBy: 'leet',
   selectedSchools: null,  // null = 전체 표시, 배열이면 해당 학교만 표시
+  favoriteSchools: [],
 }, loadSchInput());
+
+schState.favoriteSchools = normalizeFavoriteSchools(schState.favoriteSchools);
+
+function normalizeFavoriteSchools(names) {
+  if (!Array.isArray(names)) return [];
+  const valid = new Set(LAW_SCHOOLS.map(s => s.name));
+  const seen = new Set();
+  return names.filter(name => {
+    if (!valid.has(name) || seen.has(name)) return false;
+    seen.add(name);
+    return true;
+  });
+}
+
+function getFavoriteSchoolNames() {
+  const favSet = new Set(normalizeFavoriteSchools(schState.favoriteSchools));
+  return LAW_SCHOOLS.map(s => s.name).filter(name => favSet.has(name));
+}
+
+function getFavoriteSchoolSet() {
+  return new Set(getFavoriteSchoolNames());
+}
+
+function isFavoriteSchool(name) {
+  return getFavoriteSchoolSet().has(name);
+}
+
+function toggleFavoriteSchool(name) {
+  const favSet = getFavoriteSchoolSet();
+  if (favSet.has(name)) favSet.delete(name);
+  else favSet.add(name);
+  schState.favoriteSchools = LAW_SCHOOLS.map(s => s.name).filter(schoolName => favSet.has(schoolName));
+  saveSchInput(schState);
+}
 
 // 입력칸 초기 복원
 function restoreSchInputs() {
@@ -1179,6 +1231,10 @@ function renderSchools() {
       return br - ar;
     });
   }
+  const favoriteSet = getFavoriteSchoolSet();
+  if (favoriteSet.size > 0) {
+    schools.sort((a, b) => Number(favoriteSet.has(b.school.name)) - Number(favoriteSet.has(a.school.name)));
+  }
 
   if (schools.length === 0) {
     grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.</div>`;
@@ -1186,6 +1242,9 @@ function renderSchools() {
   }
 
   grid.innerHTML = schools.map(({ school: s, calc: c }) => {
+    const isFavorite = favoriteSet.has(s.name);
+    const favoriteLabel = isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가';
+
     // tier 색상: LEET 실질반영비율에 따라
     let tier = '';
     if (s.leetRatio >= 50) tier = '';  // 빨강 (default)
@@ -1234,7 +1293,10 @@ function renderSchools() {
     return `
       <div class="school-card ${tier}">
         <div class="sc-head">
-          <div class="sc-name">${s.name}</div>
+          <div class="sc-title-row">
+            <div class="sc-name">${s.name}</div>
+            <button class="favorite-btn ${isFavorite ? 'active' : ''}" type="button" data-favorite-school="${escapeHtml(s.name)}" aria-pressed="${isFavorite}" aria-label="${s.name} ${favoriteLabel}" title="${favoriteLabel}">${isFavorite ? '★' : '☆'}</button>
+          </div>
           <div class="sc-leet-pct">LEET 실질반영 <span class="num">${s.leetRatio.toFixed(1)}%</span></div>
         </div>
         <div class="sc-total-row">
@@ -1260,6 +1322,16 @@ function renderSchools() {
         ${noteHtml}
       </div>`;
   }).join('');
+
+  grid.querySelectorAll('[data-favorite-school]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleFavoriteSchool(btn.dataset.favoriteSchool);
+      buildSchoolChips();
+      buildAdmChips();
+      renderSchools();
+      renderAdmission();
+    });
+  });
 }
 
 // 입력 이벤트 연결
@@ -1375,6 +1447,7 @@ function buildSchoolChips() {
   if (actions) {
     actions.innerHTML = `
       <button data-action="all">전체 선택</button>
+      <button data-action="favorites">즐겨찾기만</button>
       <button data-action="seoul">서울권만</button>
       <button data-action="metro">서울/경기·인천</button>
       <button data-action="clear">선택 해제</button>
@@ -1384,6 +1457,8 @@ function buildSchoolChips() {
         const a = btn.dataset.action;
         if (a === 'all') {
           schState.selectedSchools = null;
+        } else if (a === 'favorites') {
+          schState.selectedSchools = getFavoriteSchoolNames();
         } else if (a === 'clear') {
           schState.selectedSchools = [];
         } else if (a === 'seoul') {

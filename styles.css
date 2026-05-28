@@ -1310,14 +1310,52 @@
   .sc-head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: flex-start;
+    gap: 12px;
     margin-bottom: 4px;
+  }
+  .sc-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
   }
   .sc-name {
     font-family: var(--font-sans);
     font-size: 18px;
     font-weight: 700;
     color: var(--ink);
+    min-width: 0;
+  }
+  .favorite-btn {
+    flex: 0 0 auto;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 999px;
+    color: var(--ink-mute);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color var(--motion-fast) var(--ease-out), background var(--motion-fast) var(--ease-out), color var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out);
+  }
+  .favorite-btn:hover {
+    border-color: rgba(180, 83, 9, 0.35);
+    background: #FFF7ED;
+    color: #B45309;
+  }
+  .favorite-btn.active {
+    border-color: rgba(180, 83, 9, 0.45);
+    background: #FFF7ED;
+    color: #B45309;
+    box-shadow: 0 0 0 3px rgba(180, 83, 9, 0.08);
+  }
+  .favorite-btn:active {
+    transform: scale(0.96);
   }
   .sc-leet-pct {
     font-family: var(--font-mono);
@@ -1550,6 +1588,16 @@
   .grade-pill.grade-match { background: rgba(14, 165, 233, 0.14); color: #075985; }
   .grade-pill.grade-reach { background: rgba(245, 158, 11, 0.14); color: #b45309; }
   .grade-pill.grade-hard  { background: rgba(113, 113, 122, 0.12); color: #52525b; }
+
+  .adm-favorite-btn {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .adm-school-main {
+    vertical-align: middle;
+  }
 
   .adm-table-wrap {
     background: var(--bg-card);
@@ -3621,6 +3669,20 @@
 
     .schools-controls .ctrl-label {
       width: 100%;
+    }
+
+    .sc-head {
+      align-items: flex-start;
+    }
+
+    .sc-title-row {
+      flex: 1 1 auto;
+    }
+
+    .favorite-btn {
+      width: 34px;
+      height: 34px;
+      font-size: 17px;
     }
 
     .sc-row {
