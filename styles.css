@@ -3280,10 +3280,17 @@
     padding: 16px 18px;
   }
   .exam-year {
+    display: inline-block;
     font-weight: 700;
     color: var(--ink);
     font-size: 15px;
     margin-bottom: 12px;
+    text-decoration: none;
+    transition: color var(--motion-fast) var(--ease-out);
+  }
+  a.exam-year:hover {
+    color: var(--accent);
+    text-decoration: underline;
   }
   .exam-rows {
     display: flex;

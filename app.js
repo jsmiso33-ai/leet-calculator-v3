@@ -989,7 +989,7 @@ function renderExams() {
   const years = [];
   for (let y = 2026; y >= 2009; y--) years.push(y);
   grid.innerHTML = years.map(y => `<div class="exam-card">
-    <div class="exam-year">${y}학년도</div>
+    <a class="exam-year" href="exams/${y}/">${y}학년도</a>
     <div class="exam-rows">
       ${examRow(y, '언어이해')}
       ${examRow(y, '추리논증')}
