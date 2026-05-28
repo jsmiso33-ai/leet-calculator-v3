@@ -974,12 +974,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // 2009~2026학년도, 학년도별로 언어이해/추리논증 문제+정답 PDF.
 // 파일명은 한글(예: "exams/2026학년도 언어이해.pdf")이라 href는 encodeURI 처리.
 function examRow(year, subj) {
-  const q = encodeURI(`exams/${year}학년도 ${subj}.pdf`);
-  const a = encodeURI(`exams/${year}학년도 ${subj} 정답.pdf`);
+  const qName = `${year}학년도 ${subj}.pdf`;
+  const aName = `${year}학년도 ${subj} 정답.pdf`;
+  const q = encodeURI(`exams/${qName}`);
+  const a = encodeURI(`exams/${aName}`);
   return `<div class="exam-row">
     <span class="exam-subj">${subj}</span>
-    <a class="exam-link" href="${q}" target="_blank" rel="noopener">문제</a>
-    <a class="exam-link exam-link-ans" href="${a}" target="_blank" rel="noopener">정답</a>
+    <a class="exam-link" href="${q}" download="${qName}">문제</a>
+    <a class="exam-link exam-link-ans" href="${a}" download="${aName}">정답</a>
   </div>`;
 }
 
