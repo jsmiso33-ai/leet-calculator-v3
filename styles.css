@@ -3416,6 +3416,8 @@
     .tab-btn {
       min-height: 42px;
       padding: 10px 14px;
+      flex: 0 0 136px;
+      min-width: 136px;
     }
 
     .hero-pulse {
@@ -3679,6 +3681,11 @@
   }
 
   @media (max-width: 380px) {
+    .tab-btn {
+      flex-basis: 124px;
+      min-width: 124px;
+    }
+
     .hp-quick-actions,
     .quick-actions,
     .ctrl-buttons,
