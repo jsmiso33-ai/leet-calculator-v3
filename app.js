@@ -2748,6 +2748,14 @@ function clearFieldErrors() {
   const tabNav = document.querySelector('.tab-nav');
   if (tabNav) tabNav.setAttribute('role', 'tablist');
 
+  function updateTabNavScrollHint() {
+    if (!tabNav) return;
+    const scrollable = tabNav.scrollWidth - tabNav.clientWidth > 8;
+    const atEnd = tabNav.scrollLeft + tabNav.clientWidth >= tabNav.scrollWidth - 8;
+    tabNav.classList.toggle('is-scrollable', scrollable);
+    tabNav.classList.toggle('is-scrolled-end', !scrollable || atEnd);
+  }
+
   tabs.forEach((btn, i) => {
     btn.setAttribute('role', 'tab');
     const target = btn.dataset.tab;
@@ -2786,6 +2794,16 @@ function clearFieldErrors() {
         b.setAttribute('aria-selected', active ? 'true' : 'false');
         b.setAttribute('tabindex', active ? '0' : '-1');
       });
+      if (tabNav && window.innerWidth <= 820) {
+        requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
+      }
+      requestAnimationFrame(updateTabNavScrollHint);
     });
   });
+
+  if (tabNav) {
+    tabNav.addEventListener('scroll', updateTabNavScrollHint, { passive: true });
+    window.addEventListener('resize', updateTabNavScrollHint);
+    requestAnimationFrame(updateTabNavScrollHint);
+  }
 })();

@@ -923,6 +923,7 @@
     flex-wrap: wrap;
     width: 100%;
     max-width: 100%;
+    position: relative;
   }
   .tab-btn {
     flex: 1 1 0;
@@ -2120,6 +2121,36 @@
       -ms-overflow-style: none;
       mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
       -webkit-mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
+    }
+    nav.tab-nav::after {
+      content: '›';
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(24, 24, 27, 0.88);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1;
+      pointer-events: none;
+      box-shadow: 0 6px 16px rgba(24, 24, 27, 0.18);
+      opacity: 0;
+      transition: opacity var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out);
+    }
+    nav.tab-nav.is-scrollable::after {
+      opacity: 0.92;
+      transform: translateY(-50%);
+    }
+    nav.tab-nav.is-scrolled-end::after {
+      opacity: 0;
+      transform: translateY(-50%) translateX(4px);
     }
     nav.tab-nav::-webkit-scrollbar { display: none; }
     .tab-btn {
