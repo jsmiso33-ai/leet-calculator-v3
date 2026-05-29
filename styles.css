@@ -3556,6 +3556,131 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  /* === 의견 보내기 (플로팅 버튼 + 모달) === */
+  .fb-fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 9990;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 12px 18px;
+    background: var(--ink);
+    color: var(--ink-on-dark);
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    box-shadow: var(--shadow-xl);
+    transition: transform var(--motion-fast) var(--ease-out), background var(--motion-fast) var(--ease-out);
+  }
+  .fb-fab:hover { background: var(--ink-soft); transform: translateY(-2px); }
+  .fb-fab:active { transform: translateY(0); }
+  .fb-fab svg { display: block; }
+
+  .fb-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9995;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .fb-overlay.open { display: flex; animation: fadeIn var(--motion-fast) var(--ease-out); }
+  .fb-modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 460px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.24);
+    animation: confirmPopIn var(--motion-medium) var(--ease-out-soft);
+  }
+  .fb-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .fb-head h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .fb-close {
+    background: none;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    color: var(--ink-tertiary);
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .fb-close:hover { color: var(--ink); }
+  .fb-desc {
+    font-size: 13px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  .fb-field { margin-bottom: 14px; }
+  .fb-field label {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-bottom: 6px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .fb-optional { color: var(--ink-tertiary); font-weight: 500; text-transform: none; letter-spacing: 0; }
+  .fb-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
+  }
+  .fb-textarea:hover { border-color: rgba(24, 24, 27, 0.18); }
+  .fb-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+  }
+  .fb-count {
+    text-align: right;
+    font-size: 11px;
+    color: var(--ink-tertiary);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+  .fb-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .fb-fab { right: 16px; bottom: 16px; padding: 11px 16px; font-size: 13px; }
+  }
+
   /* === 인라인 폼 에러 === */
   .field-error {
     color: var(--danger);
