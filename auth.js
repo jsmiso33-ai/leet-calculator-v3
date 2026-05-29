@@ -46,9 +46,13 @@ function updateAuthUI() {
 // 소셜 로그인
 async function signIn(provider = 'google') {
   try {
+    const options = { redirectTo: window.location.href };
+    // 카카오는 이메일 동의항목(account_email)을 켜지 않은 상태라, 닉네임만 요청한다.
+    // (이메일까지 받으려면 카카오 비즈니스 앱 전환 후 동의항목 활성화 필요)
+    if (provider === 'kakao') options.scopes = 'profile_nickname';
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.href },
+      options,
     });
     if (error) throw error;
   } catch (e) {
