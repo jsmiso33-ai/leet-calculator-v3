@@ -835,6 +835,13 @@
     gap: 12px;
     justify-content: flex-end;
   }
+  .auth-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
   .auth-mode {
     font-family: var(--font-sans);
     font-size: 12px;
@@ -862,10 +869,34 @@
     display: inline-flex;
     align-items: center;
   }
+  .auth-provider-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    margin-right: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .auth-kakao {
+    background: #fee500;
+    border-color: #f1d700;
+    color: #191600;
+  }
+  .auth-kakao:hover {
+    border-color: #d9c500;
+    box-shadow: 0 0 0 3px rgba(254, 229, 0, 0.18);
+  }
   .auth-btn:hover {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.08);
     transform: translateY(-1px);
+  }
+  .auth-btn.auth-kakao:hover {
+    border-color: #d9c500;
+    box-shadow: 0 0 0 3px rgba(254, 229, 0, 0.18);
   }
   .auth-btn.signed-in {
     background: transparent;
@@ -2226,9 +2257,11 @@
     .masthead .meta { font-size: 10px; text-align: left; flex-basis: 100%; }
     /* 모바일 auth 영역 컴팩트 */
     .auth-status { justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
+    .auth-actions { justify-content: flex-start; gap: 6px; }
     .auth-mode { font-size: 11px; }
     .auth-btn { padding: 6px 10px; font-size: 12px; }
     .auth-btn svg { width: 14px !important; height: 14px !important; margin-right: 4px !important; }
+    .auth-provider-mark { width: 14px; height: 14px; margin-right: 4px; }
     .auth-info { text-align: left; font-size: 10px; margin-top: 4px; }
     .auth-nudge { text-align: left; font-size: 11px; max-width: none; white-space: normal; }
   }
