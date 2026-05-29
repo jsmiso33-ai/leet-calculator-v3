@@ -898,6 +898,7 @@
     line-height: 1.45;
     color: var(--ink-soft);
     text-align: right;
+    white-space: nowrap;
   }
   .auth-nudge.is-hidden {
     display: none;
@@ -2229,7 +2230,7 @@
     .auth-btn { padding: 6px 10px; font-size: 12px; }
     .auth-btn svg { width: 14px !important; height: 14px !important; margin-right: 4px !important; }
     .auth-info { text-align: left; font-size: 10px; margin-top: 4px; }
-    .auth-nudge { text-align: left; font-size: 11px; max-width: none; }
+    .auth-nudge { text-align: left; font-size: 11px; max-width: none; white-space: normal; }
   }
 
   /* 더 작은 화면 (아이폰 mini, 갤럭시 미니 등) */
