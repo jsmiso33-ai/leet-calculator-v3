@@ -890,6 +890,18 @@
     margin-top: 6px;
     text-align: right;
   }
+  .auth-nudge {
+    margin-top: 6px;
+    max-width: 360px;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    text-align: right;
+  }
+  .auth-nudge.is-hidden {
+    display: none;
+  }
   .sync-indicator {
     display: inline-flex;
     align-items: center;
@@ -980,6 +992,79 @@
   }
   @media (max-width: 480px) {
     .log-input-grid { grid-template-columns: 1fr; }
+  }
+  .login-nudge-card {
+    margin: 18px 0 20px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #f7faf8;
+    border: 1px solid #d9e8df;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xs);
+  }
+  .login-nudge-card.is-hidden {
+    display: none;
+  }
+  .login-nudge-copy {
+    min-width: 0;
+  }
+  .login-nudge-kicker {
+    margin-bottom: 5px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #31724c;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .login-nudge-title {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .login-nudge-title span {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .login-nudge-desc {
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .login-nudge-btn {
+    flex: 0 0 auto;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--ease-out);
+  }
+  .login-nudge-btn:hover {
+    background: #27272A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24, 24, 27, 0.14);
+  }
+  @media (max-width: 640px) {
+    .login-nudge-card {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+    }
+    .login-nudge-btn {
+      width: 100%;
+    }
   }
   .log-select, .log-date, .log-memo {
     width: 100%;
@@ -2144,6 +2229,7 @@
     .auth-btn { padding: 6px 10px; font-size: 12px; }
     .auth-btn svg { width: 14px !important; height: 14px !important; margin-right: 4px !important; }
     .auth-info { text-align: left; font-size: 10px; margin-top: 4px; }
+    .auth-nudge { text-align: left; font-size: 11px; max-width: none; }
   }
 
   /* 더 작은 화면 (아이폰 mini, 갤럭시 미니 등) */

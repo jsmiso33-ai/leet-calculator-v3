@@ -37,6 +37,7 @@ function updateAuthUI() {
     btn.classList.remove('signed-in');
     info.textContent = '기록은 이 브라우저에만 저장됩니다';
   }
+  if (typeof updateLoginNudges === 'function') updateLoginNudges();
 }
 
 // 구글 로그인

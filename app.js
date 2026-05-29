@@ -1622,6 +1622,29 @@ function saveLog(entries) {
 let logEntries = loadLog();
 let logChartInstance = null;
 
+function updateLoginNudges() {
+  const isSignedIn = typeof currentUser !== 'undefined' && !!currentUser;
+  const header = document.getElementById('authNudgeHeader');
+  const card = document.getElementById('loginNudgeCard');
+  const count = document.getElementById('loginNudgeCount');
+  const title = document.getElementById('loginNudgeTitle');
+  const localCount = Array.isArray(logEntries) ? logEntries.length : 0;
+
+  if (header) header.classList.toggle('is-hidden', isSignedIn);
+  if (card) card.classList.toggle('is-hidden', isSignedIn);
+  if (count) count.textContent = String(localCount);
+  if (title && localCount === 0) {
+    title.textContent = '첫 풀이 기록부터 계정에 안전하게 보관하세요.';
+  } else if (title) {
+    title.innerHTML = `지금까지 만든 <span id="loginNudgeCount">${localCount}</span>개의 풀이 기록을 계정에 보관하세요.`;
+  }
+}
+
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('.login-nudge-btn')) return;
+  document.getElementById('authBtn')?.click();
+});
+
 // 학년도 셀렉트 채우기
 function buildLogYearSelect() {
   const sel = document.getElementById('logYear');
@@ -1775,6 +1798,7 @@ function renderLog() {
   const list = document.getElementById('logList');
   const stats = document.getElementById('logStats');
   const chartCard = document.getElementById('logChartCard');
+  updateLoginNudges();
 
   if (logEntries.length === 0) {
     list.innerHTML = `<div class="empty-state" style="padding: 40px 20px;">
