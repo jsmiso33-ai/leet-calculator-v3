@@ -108,7 +108,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-<link rel="stylesheet" href="styles.css?v=20260529kakao" />
+<link rel="stylesheet" href="styles.css?v=20260529hero" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -186,16 +186,21 @@
         </label>
       </div>
 
-      <div class="hp-years">
-        <div class="hp-years-label">비교할 학년도</div>
-        <div class="year-chips" id="yearChips"></div>
-        <div class="hp-quick-actions">
-          <button id="selectAll">전체 선택</button>
-          <button id="selectNew">신리트만 (2020~)</button>
-          <button id="selectRecent">최근 5개년</button>
-          <button id="selectClear">선택 해제</button>
+      <details class="hp-years" id="hpYearsPicker" open>
+        <summary class="hp-years-summary">
+          <span class="hp-years-label">비교할 학년도</span>
+          <span class="hp-years-current" id="hpYearsCurrent">선택 학년도</span>
+        </summary>
+        <div class="hp-years-body">
+          <div class="year-chips" id="yearChips"></div>
+          <div class="hp-quick-actions">
+            <button id="selectAll">전체 선택</button>
+            <button id="selectNew">신리트만 (2020~)</button>
+            <button id="selectRecent">최근 5개년</button>
+            <button id="selectClear">선택 해제</button>
+          </div>
         </div>
-      </div>
+      </details>
     </div>
   </section>
 
@@ -811,8 +816,8 @@
 <script src="data/leet.js?v=20260528r"></script>
 <script src="data/meta.js?v=20260528r"></script>
 <script src="data/schools.js?v=20260528r"></script>
-<script src="auth.js?v=20260529mob"></script>
-<script src="app.js?v=20260528r"></script>
+<script src="auth.js?v=20260529impl"></script>
+<script src="app.js?v=20260529hero"></script>
 <script src="admin.js?v=20260528r"></script>
 </body>
 </html>

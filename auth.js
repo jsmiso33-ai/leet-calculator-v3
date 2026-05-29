@@ -4,7 +4,11 @@
 const SUPABASE_URL = 'https://bokmpwwcjiqqzffxrxnk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJva21wd3djamlxcXpmZnhyeG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDAzOTUsImV4cCI6MjA5Mjc3NjM5NX0.xbRnEVxIiOZ1JwNJlcPl9WpkC8WmpgVQVzCnwfue5A8';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  // Safari ITP가 PKCE의 code_verifier를 리다이렉트 사이에 지워 로그인이 간헐 실패해서,
+  // 토큰을 복귀 URL로 바로 받는 implicit 흐름을 쓴다.
+  auth: { flowType: 'implicit', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true },
+});
 let currentUser = null;  // null이면 게스트 모드
 
 // 동기화 인디케이터 업데이트
@@ -48,13 +52,13 @@ async function signIn(provider = 'google') {
   try {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.href, skipBrowserRedirect: true },
+      options: { redirectTo: window.location.origin + window.location.pathname, skipBrowserRedirect: true },
     });
     if (error) throw error;
-    if (!data || !data.url) { alert('로그인 URL을 받지 못했습니다.'); return; }
+    if (!data || !data.url) { toast('로그인 URL을 받지 못했습니다.', { type: 'error' }); return; }
     window.location.href = data.url;
   } catch (e) {
-    alert('로그인 실패: ' + (e && e.message ? e.message : String(e)));
+    toast('로그인 실패: ' + (e && e.message ? e.message : String(e)), { type: 'error' });
   }
 }
 
