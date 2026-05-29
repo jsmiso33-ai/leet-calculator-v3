@@ -10,8 +10,8 @@
     /* 잉크 (텍스트) */
     --ink: #18181B;             /* 차콜 (거의 검정, 파란 기 없음) */
     --ink-soft: #27272A;        /* 본문 메인 */
-    --ink-mute: #71717A;        /* 보조 텍스트 (중성 그레이) */
-    --ink-tertiary: #A1A1AA;    /* 약한 텍스트 (캡션) */
+    --ink-mute: #52525B;        /* 보조 텍스트 (중성 그레이) */
+    --ink-tertiary: #71717A;    /* 약한 텍스트 (캡션) */
     --ink-on-dark: #FAFAFA;     /* 다크 배경 위 텍스트 */
     --ink-on-dark-mute: #A1A1AA; /* 다크 배경 위 보조 텍스트 */
 
@@ -799,12 +799,46 @@
     padding-top: 24px;
     margin-top: 40px;
     font-family: var(--font-sans);
-    font-size: 11px;
-    color: var(--ink-tertiary);
+    font-size: 12px;
+    color: var(--ink-mute);
     line-height: 1.7;
     letter-spacing: 0;
   }
   footer.foot strong { color: var(--ink-mute); font-weight: 600; }
+  .foot-guide {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+  .foot-links a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .foot-links a:hover { text-decoration: underline; }
+  .foot-section {
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+  }
+  .foot-section summary {
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 13px;
+    list-style-position: outside;
+  }
+  .foot-section p {
+    margin-top: 7px;
+    color: var(--ink-mute);
+  }
 
   .empty-state {
     text-align: center;
@@ -2332,6 +2366,16 @@
       min-width: max-content;
     }
   }
+  @media (max-width: 640px) {
+    .tab-btn[data-short-label] {
+      font-size: 0;
+    }
+    .tab-btn[data-short-label]::after {
+      content: attr(data-short-label);
+      font-size: 13px;
+      line-height: 1;
+    }
+  }
   @media (max-width: 380px) {
     .tab-btn { padding: 11px 12px; font-size: 13px; }
   }
@@ -2400,7 +2444,7 @@
     .result-card .head { padding-bottom: 8px; margin-bottom: 12px; }
     .result-card .head .name { font-size: 15px; }
     table.score-table { font-size: 12px; }
-    table.score-table th { padding: 6px 8px; font-size: 10px; }
+    table.score-table th { padding: 7px 8px; font-size: 11px; }
     table.score-table td { padding: 8px; }
     table.score-table td.std { font-size: 14px; }
   }
@@ -2486,7 +2530,7 @@
   /* 점수 입력 영역 */
   @media (max-width: 640px) {
     .section-label { font-size: 15px; }
-    .section-desc { font-size: 11px; }
+    .section-desc { font-size: 12px; line-height: 1.7; }
     .input-area { padding: 16px; }
     .info-callout { padding: 10px 12px; font-size: 11px; }
     .info-callout ul { margin-left: 10px; }
@@ -2813,7 +2857,9 @@
 
   /* 풋터 */
   @media (max-width: 640px) {
-    .foot { padding: 16px; font-size: 10px; line-height: 1.6; }
+    .foot { padding: 16px 0; font-size: 12px; line-height: 1.7; }
+    .foot-guide { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .foot-section summary { font-size: 13px; }
   }
 
   /* ===== 관리자 모드 ===== */
