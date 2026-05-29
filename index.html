@@ -86,8 +86,13 @@
   }
   // 네이버 앱
   if (ua.match(/naver/i) && ua.match(/inapp/i)) {
-    location.href = 'intent://' + target.replace(/https?:\/\//i, '') +
-      '#Intent;scheme=https;package=com.android.chrome;end';
+    // iOS는 intent 스킴을 무시하므로 외부 브라우저 안내만 가능
+    if (/iphone|ipad|ipod/i.test(ua)) {
+      alert('원활한 이용을 위해 Safari에서 열어주세요.\n\n하단 또는 우측 메뉴 → "Safari로 열기"를 눌러주세요.');
+    } else {
+      location.href = 'intent://' + target.replace(/https?:\/\//i, '') +
+        '#Intent;scheme=https;package=com.android.chrome;end';
+    }
     return;
   }
   // 에브리타임, 인스타그램, 페이스북, 밴드, 기타 인앱 WebView
