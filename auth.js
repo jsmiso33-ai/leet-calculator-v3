@@ -46,13 +46,15 @@ function updateAuthUI() {
 // 소셜 로그인
 async function signIn(provider = 'google') {
   try {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.href },
+      options: { redirectTo: window.location.href, skipBrowserRedirect: true },
     });
     if (error) throw error;
+    if (!data || !data.url) { alert('로그인 URL을 받지 못했습니다.'); return; }
+    window.location.href = data.url;
   } catch (e) {
-    toast('로그인 실패: ' + e.message, { type: 'error' });
+    alert('로그인 실패: ' + (e && e.message ? e.message : String(e)));
   }
 }
 
