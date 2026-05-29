@@ -113,6 +113,41 @@ const state = {
 // ===========================================================================
 // UI
 // ===========================================================================
+function updateSelectedYearsSummary() {
+  const el = document.getElementById('hpYearsCurrent');
+  if (!el) return;
+  const years = [...state.selectedYears].filter(y => LEET[y]).sort((a, b) => b - a);
+  if (years.length === 0) {
+    el.textContent = '선택 없음';
+  } else if (years.length === 1) {
+    el.textContent = `${years[0]}학년도`;
+  } else if (years.length <= 3) {
+    el.textContent = years.map(y => String(y)).join(', ');
+  } else {
+    el.textContent = `${years.length}개 선택 · 최신 ${years[0]}`;
+  }
+}
+
+function setupMobileYearPicker() {
+  const picker = document.getElementById('hpYearsPicker');
+  if (!picker || !window.matchMedia) return;
+  const mq = window.matchMedia('(max-width: 640px)');
+  const sync = () => {
+    if (mq.matches) {
+      if (!picker.dataset.mobileInitialized) {
+        picker.open = false;
+        picker.dataset.mobileInitialized = '1';
+      }
+    } else {
+      picker.open = true;
+      delete picker.dataset.mobileInitialized;
+    }
+  };
+  sync();
+  if (mq.addEventListener) mq.addEventListener('change', sync);
+  else mq.addListener(sync);
+}
+
 function buildYearChips() {
   const wrap = document.getElementById('yearChips');
   wrap.innerHTML = '';
@@ -139,6 +174,7 @@ function buildYearChips() {
     });
     wrap.appendChild(chip);
   });
+  updateSelectedYearsSummary();
 }
 
 function buildYearTabs() {
@@ -215,6 +251,7 @@ function render() {
   document.getElementById('chuRawDisplay').textContent = state.chuRaw !== null ? state.chuRaw : '—';
   document.getElementById('eonHeadMax').textContent = state.eonRaw !== null ? `${state.eonRaw} / 30` : '— / 30';
   document.getElementById('chuHeadMax').textContent = state.chuRaw !== null ? `${state.chuRaw} / 40` : '— / 40';
+  updateSelectedYearsSummary();
 
   const years = [...state.selectedYears].sort((a,b) => a-b);
   const results = years.map(y => calcForYear(y, state.eonRaw, state.chuRaw)).filter(r => r);
@@ -540,6 +577,7 @@ if (state.eonRaw !== null) document.getElementById('eonInput').value = state.eon
 if (state.chuRaw !== null) document.getElementById('chuInput').value = state.chuRaw;
 
 buildYearChips();
+setupMobileYearPicker();
 buildYearTabs();
 render();
 

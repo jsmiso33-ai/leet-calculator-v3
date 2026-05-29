@@ -396,11 +396,32 @@
 
   /* years selector inside hero-pulse */
   .hp-years { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .hp-years-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    list-style: none;
+  }
+  .hp-years-summary::-webkit-details-marker { display: none; }
   .hp-years-label {
     font-size: 11px; color: var(--ink-mute);
     font-weight: 600; letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+  .hp-years-current {
+    display: none;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .hp-years-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .hp-years:not([open]) .hp-years-body { display: none; }
   .hp-quick-actions {
     display: flex; flex-wrap: wrap; gap: 6px;
     margin-top: 4px;
@@ -436,6 +457,46 @@
     .hp-score { font-size: 64px; }
   }
   @media (max-width: 640px) {
+    .hp-years {
+      margin-top: 2px;
+      padding: 12px 14px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+    }
+    .hp-years-summary {
+      min-height: 28px;
+      cursor: pointer;
+    }
+    .hp-years-summary::after {
+      content: '+';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--ink-mute);
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1;
+      box-shadow: var(--shadow-xs);
+    }
+    .hp-years[open] .hp-years-summary::after {
+      content: '−';
+    }
+    .hp-years-current {
+      display: inline-flex;
+      align-items: center;
+      margin-left: auto;
+      padding: 3px 8px;
+      background: rgba(26, 86, 219, 0.08);
+      border-radius: 999px;
+    }
+    .hp-years-body {
+      margin-top: 10px;
+    }
     /* touch-friendly year chips inside hero-pulse on mobile */
     .hero-pulse .year-chips { gap: 4px; }
     .hero-pulse .y-chip {
@@ -3692,21 +3753,41 @@
     }
 
     .hp-input-grid {
-      grid-template-columns: 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
     }
 
     .hp-field {
-      padding: 11px 14px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      column-gap: 8px;
+      min-height: 58px;
+      padding: 9px 11px;
+    }
+
+    .hp-field-label {
+      margin-bottom: 0;
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: 0;
+      text-transform: none;
     }
 
     .hp-field-row {
       justify-content: space-between;
+      gap: 3px;
     }
 
     .hp-field input {
-      width: 100%;
+      width: 38px;
       min-width: 0;
+      font-size: 18px;
+      text-align: right;
+    }
+
+    .hp-field-max {
+      font-size: 11px;
     }
 
     .hero-pulse .year-chips,
