@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>로스쿨 환산점수·커트라인 25개교 정리 (2026) · LEET 표준점수 계산기</title>
+<meta name="description" content="전국 25개 로스쿨(법학전문대학원)의 LEET 반영 비율, 환산 방식, 2026학년도 합격자 커트라인을 학교별로 정리했습니다. 서울대·고려대·연세대부터 지방 로스쿨까지." />
+<meta name="keywords" content="로스쿨 환산점수,로스쿨 커트라인,로스쿨 입결,LEET 환산,법학전문대학원 환산점수,로스쿨 순위" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://leet-calculator.site/schools/" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="로스쿨 환산점수·커트라인 25개교 정리 (2026)" />
+<meta property="og:description" content="전국 25개 로스쿨(법학전문대학원)의 LEET 반영 비율, 환산 방식, 2026학년도 합격자 커트라인을 학교별로 정리했습니다. 서울대·고려대·연세대부터 지방 로스쿨까지." />
+<meta property="og:url" content="https://leet-calculator.site/schools/" />
+<meta property="og:site_name" content="LEET 표준점수 계산기" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content="https://leet-calculator.site/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://leet-calculator.site/og-image.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "LEET 표준점수 계산기", "item": "https://leet-calculator.site/"}, {"@type": "ListItem", "position": 2, "name": "학교별 환산점수", "item": "https://leet-calculator.site/schools/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "서울대 로스쿨", "url": "https://leet-calculator.site/schools/seoul/"}, {"@type": "ListItem", "position": 2, "name": "고려대 로스쿨", "url": "https://leet-calculator.site/schools/korea/"}, {"@type": "ListItem", "position": 3, "name": "연세대 로스쿨", "url": "https://leet-calculator.site/schools/yonsei/"}, {"@type": "ListItem", "position": 4, "name": "성균관대 로스쿨", "url": "https://leet-calculator.site/schools/skku/"}, {"@type": "ListItem", "position": 5, "name": "한양대 로스쿨", "url": "https://leet-calculator.site/schools/hanyang/"}, {"@type": "ListItem", "position": 6, "name": "이화여대 로스쿨", "url": "https://leet-calculator.site/schools/ewha/"}, {"@type": "ListItem", "position": 7, "name": "경희대 로스쿨", "url": "https://leet-calculator.site/schools/kyunghee/"}, {"@type": "ListItem", "position": 8, "name": "한국외대 로스쿨", "url": "https://leet-calculator.site/schools/hufs/"}, {"@type": "ListItem", "position": 9, "name": "서강대 로스쿨", "url": "https://leet-calculator.site/schools/sogang/"}, {"@type": "ListItem", "position": 10, "name": "중앙대 로스쿨", "url": "https://leet-calculator.site/schools/cau/"}, {"@type": "ListItem", "position": 11, "name": "서울시립대 로스쿨", "url": "https://leet-calculator.site/schools/uos/"}, {"@type": "ListItem", "position": 12, "name": "건국대 로스쿨", "url": "https://leet-calculator.site/schools/konkuk/"}, {"@type": "ListItem", "position": 13, "name": "아주대 로스쿨", "url": "https://leet-calculator.site/schools/ajou/"}, {"@type": "ListItem", "position": 14, "name": "인하대 로스쿨", "url": "https://leet-calculator.site/schools/inha/"}, {"@type": "ListItem", "position": 15, "name": "부산대 로스쿨", "url": "https://leet-calculator.site/schools/pusan/"}, {"@type": "ListItem", "position": 16, "name": "경북대 로스쿨", "url": "https://leet-calculator.site/schools/knu/"}, {"@type": "ListItem", "position": 17, "name": "전남대 로스쿨", "url": "https://leet-calculator.site/schools/jnu/"}, {"@type": "ListItem", "position": 18, "name": "전북대 로스쿨", "url": "https://leet-calculator.site/schools/jbnu/"}, {"@type": "ListItem", "position": 19, "name": "충남대 로스쿨", "url": "https://leet-calculator.site/schools/cnu/"}, {"@type": "ListItem", "position": 20, "name": "충북대 로스쿨", "url": "https://leet-calculator.site/schools/cbnu/"}, {"@type": "ListItem", "position": 21, "name": "강원대 로스쿨", "url": "https://leet-calculator.site/schools/kangwon/"}, {"@type": "ListItem", "position": 22, "name": "제주대 로스쿨", "url": "https://leet-calculator.site/schools/jeju/"}, {"@type": "ListItem", "position": 23, "name": "동아대 로스쿨", "url": "https://leet-calculator.site/schools/donga/"}, {"@type": "ListItem", "position": 24, "name": "원광대 로스쿨", "url": "https://leet-calculator.site/schools/wonkwang/"}, {"@type": "ListItem", "position": 25, "name": "영남대 로스쿨", "url": "https://leet-calculator.site/schools/yeungnam/"}]}</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+:root{--bg:#FAFAF9;--bg-card:#FFFFFF;--bg-tint:#F1F5F9;--bg-subtle:#F4F4F5;--ink:#18181B;--ink-soft:#27272A;--ink-mute:#71717A;--ink-tertiary:#A1A1AA;--line:rgba(24,24,27,.06);--line-strong:rgba(24,24,27,.12);--accent:#1A56DB;--accent-hover:#1747B8;--success:#15803D;--warning:#B45309;--danger:#B91C1C;--shadow-sm:0 1px 2px rgba(24,24,27,.04),0 0 0 1px rgba(24,24,27,.05);--shadow-md:0 1px 3px rgba(24,24,27,.05),0 0 0 1px rgba(24,24,27,.05);--radius-md:8px;--radius-lg:12px;--font-sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;--font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;line-height:1.6;padding:32px 24px 80px}
+.container{max-width:760px;margin:0 auto}
+.topnav{display:flex;justify-content:space-between;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.topnav a{color:var(--ink-mute);text-decoration:none;font-size:14px;font-weight:500;transition:color 150ms}
+.topnav a:hover{color:var(--accent)}.topnav .brand{font-weight:600;color:var(--ink);font-size:14px}
+.crumb{font-size:13px;color:var(--ink-tertiary);margin-bottom:14px}
+.crumb a{color:var(--ink-mute);text-decoration:none}.crumb a:hover{color:var(--accent)}
+header.page-header{margin-bottom:32px}
+.eyebrow{display:inline-block;font-size:13px;color:var(--accent);font-weight:600;margin-bottom:12px;letter-spacing:.02em}
+h1{font-size:31px;font-weight:700;letter-spacing:-.02em;line-height:1.25;color:var(--ink);margin-bottom:16px}
+.lede{font-size:17px;color:var(--ink-soft);line-height:1.7}
+.meta-row{display:flex;gap:16px;margin-top:16px;font-size:13px;color:var(--ink-tertiary)}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:28px 0 40px}
+.stat-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px 20px;box-shadow:var(--shadow-sm)}
+.stat-card .sl{font-size:12px;color:var(--ink-mute);font-weight:600;margin-bottom:8px}
+.stat-card .sv{font-size:24px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--font-mono);letter-spacing:-.02em}
+.stat-card .su{font-size:12px;color:var(--ink-tertiary);margin-left:3px;font-family:var(--font-sans)}
+section.content{margin-bottom:44px;scroll-margin-top:24px}
+section.content h2{font-size:23px;font-weight:700;letter-spacing:-.02em;color:var(--ink);margin-bottom:16px;padding-top:12px}
+section.content p{color:var(--ink-soft);font-size:16px;line-height:1.75;margin-bottom:14px}
+section.content p strong{color:var(--ink);font-weight:600}
+section.content ul{list-style:none;margin-bottom:16px}
+section.content ul li{position:relative;padding-left:20px;color:var(--ink-soft);font-size:16px;line-height:1.75;margin-bottom:6px}
+section.content ul li::before{content:'';position:absolute;left:6px;top:12px;width:4px;height:4px;background:var(--ink-tertiary);border-radius:50%}
+.callout{background:var(--bg-card);border:1px solid var(--line);border-left:4px solid var(--accent);padding:18px 22px;border-radius:var(--radius-md);margin:20px 0;box-shadow:var(--shadow-sm)}
+.callout-label{font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.callout p{font-size:15px;margin-bottom:0}
+.cmp-table{width:100%;border-collapse:collapse;margin:16px 0 20px;font-size:15px;background:var(--bg-card);border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-sm)}
+.cmp-table th,.cmp-table td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}
+.cmp-table th{background:var(--bg-subtle);font-weight:600;font-size:13px;color:var(--ink-mute)}
+.cmp-table td{color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.cmp-table td.num{font-family:var(--font-mono);font-weight:600;color:var(--ink)}
+.cmp-table tr:last-child th,.cmp-table tr:last-child td{border-bottom:none}
+.note-line{font-size:13px;color:var(--ink-tertiary);margin-top:-8px;margin-bottom:18px}
+.faq-item{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px 22px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.faq-q{font-weight:600;color:var(--ink);font-size:16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px}
+.faq-q::before{content:'Q';flex-shrink:0;width:22px;height:22px;background:var(--accent);color:#fff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:var(--font-mono);margin-top:1px}
+.faq-a{color:var(--ink-soft);font-size:15px;line-height:1.75;padding-left:30px}
+.cta-section{margin-top:56px;padding:40px 32px;background:var(--ink);color:#fff;border-radius:var(--radius-lg);text-align:center}
+.cta-section h2{font-size:23px;font-weight:700;margin-bottom:12px;letter-spacing:-.02em}
+.cta-section p{color:rgba(255,255,255,.7);margin-bottom:24px;font-size:15px}
+.cta-btn{display:inline-block;padding:14px 32px;background:var(--accent);color:#fff;text-decoration:none;border-radius:var(--radius-md);font-weight:600;font-size:15px;transition:background 150ms}
+.cta-btn:hover{background:var(--accent-hover)}
+.related{margin-top:44px;padding:24px 28px;background:var(--bg-tint);border-radius:var(--radius-lg)}
+.related-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-mute);margin-bottom:12px}
+.related a{color:var(--accent);text-decoration:none;font-weight:600;font-size:15px}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip-row a{display:inline-block;padding:7px 13px;background:var(--bg-card);border:1px solid var(--line-strong);border-radius:999px;font-size:14px;font-weight:500;color:var(--ink-soft);text-decoration:none;transition:all 150ms}
+.chip-row a:hover{border-color:var(--accent);color:var(--accent)}
+footer{margin-top:48px;padding-top:24px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-tertiary);text-align:center}
+footer a{color:var(--ink-mute);text-decoration:none}
+.hub-group{margin-bottom:36px}
+.hub-group h2{font-size:15px;font-weight:700;color:var(--ink-mute);margin-bottom:14px;text-transform:uppercase;letter-spacing:.04em}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.hub-card{display:block;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius-md);padding:18px 20px;text-decoration:none;box-shadow:var(--shadow-sm);transition:all 150ms}
+.hub-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.hub-card .hn{font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.hub-card .hm{font-size:13px;color:var(--ink-mute);font-variant-numeric:tabular-nums}
+@media(max-width:640px){body{padding:20px 16px 60px}h1{font-size:24px}section.content h2{font-size:20px}.stat-grid{grid-template-columns:1fr;gap:10px}.cta-section{padding:32px 20px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav class="topnav">
+    <a href="/">← 메인으로</a>
+    <span class="brand">LEET 표준점수 계산기</span>
+  </nav>
+  <header class="page-header">
+    <span class="eyebrow">로스쿨 환산점수 · 2026학년도</span>
+    <h1>전국 25개 로스쿨 환산점수 · 커트라인</h1>
+    <p class="lede">학교마다 LEET를 반영하는 방식과 비중이 다릅니다. 지원할 로스쿨을 골라 환산 방식과 2026학년도 합격자 커트라인을 확인하세요.</p>
+  </header>
+  <div class="hub-group"><h2>서울</h2><div class="hub-grid"><a class="hub-card" href="/schools/seoul/"><div class="hn">서울대 로스쿨</div><div class="hm">LEET 반영 30% · 50% 58.83 / 60</div></a><a class="hub-card" href="/schools/korea/"><div class="hn">고려대 로스쿨</div><div class="hm">LEET 반영 41.74% · 50% 140.9</div></a><a class="hub-card" href="/schools/yonsei/"><div class="hn">연세대 로스쿨</div><div class="hm">LEET 반영 35.7% · 50% 140.7 / 150</div></a><a class="hub-card" href="/schools/skku/"><div class="hn">성균관대 로스쿨</div><div class="hm">LEET 반영 35.3% · 50% 136.6</div></a><a class="hub-card" href="/schools/hanyang/"><div class="hn">한양대 로스쿨</div><div class="hm">LEET 반영 50% · 50% 31.71 / 40</div></a><a class="hub-card" href="/schools/ewha/"><div class="hn">이화여대 로스쿨</div><div class="hm">LEET 반영 35% · 50% 62.33 / 70</div></a><a class="hub-card" href="/schools/kyunghee/"><div class="hn">경희대 로스쿨</div><div class="hm">LEET 반영 50.9% · 50% 135.3</div></a><a class="hub-card" href="/schools/hufs/"><div class="hn">한국외대 로스쿨</div><div class="hm">LEET 반영 45.8% · 50% 131.8</div></a><a class="hub-card" href="/schools/sogang/"><div class="hn">서강대 로스쿨</div><div class="hm">LEET 반영 50% · 50% 125.6</div></a><a class="hub-card" href="/schools/cau/"><div class="hn">중앙대 로스쿨</div><div class="hm">LEET 반영 38.4% · 50% 99 / 100</div></a><a class="hub-card" href="/schools/uos/"><div class="hn">서울시립대 로스쿨</div><div class="hm">LEET 반영 50% · 50% 132</div></a><a class="hub-card" href="/schools/konkuk/"><div class="hn">건국대 로스쿨</div><div class="hm">LEET 반영 34.97% · 50% 129.7</div></a></div></div><div class="hub-group"><h2>경기/인천</h2><div class="hub-grid"><a class="hub-card" href="/schools/ajou/"><div class="hn">아주대 로스쿨</div><div class="hm">LEET 반영 45.5% · 50% 134</div></a><a class="hub-card" href="/schools/inha/"><div class="hn">인하대 로스쿨</div><div class="hm">LEET 반영 35% · 50% 125.2</div></a></div></div><div class="hub-group"><h2>지방</h2><div class="hub-grid"><a class="hub-card" href="/schools/pusan/"><div class="hn">부산대 로스쿨</div><div class="hm">LEET 반영 40% · 50% 19.74 / 30</div></a><a class="hub-card" href="/schools/knu/"><div class="hn">경북대 로스쿨</div><div class="hm">LEET 반영 46.4% · 50% 127.5</div></a><a class="hub-card" href="/schools/jnu/"><div class="hn">전남대 로스쿨</div><div class="hm">LEET 반영 42.6% · 50% 125.2</div></a><a class="hub-card" href="/schools/jbnu/"><div class="hn">전북대 로스쿨</div><div class="hm">LEET 반영 53.3% · 50% 123.1</div></a><a class="hub-card" href="/schools/cnu/"><div class="hn">충남대 로스쿨</div><div class="hm">LEET 반영 69.77% · 50% 66.24 / 120</div></a><a class="hub-card" href="/schools/cbnu/"><div class="hn">충북대 로스쿨</div><div class="hm">LEET 반영 89.3% · 50% 168.61 / 200</div></a><a class="hub-card" href="/schools/kangwon/"><div class="hn">강원대 로스쿨</div><div class="hm">LEET 반영 44% · 50% 125.4</div></a><a class="hub-card" href="/schools/jeju/"><div class="hn">제주대 로스쿨</div><div class="hm">LEET 반영 66.7% · 50% 25.096 / 40</div></a><a class="hub-card" href="/schools/donga/"><div class="hn">동아대 로스쿨</div><div class="hm">LEET 반영 51.3% · 50% 120.9</div></a><a class="hub-card" href="/schools/wonkwang/"><div class="hn">원광대 로스쿨</div><div class="hm">LEET 반영 54.5% · 50% 116.2</div></a><a class="hub-card" href="/schools/yeungnam/"><div class="hn">영남대 로스쿨</div><div class="hm">LEET 반영 58.8% · 50% 120.5</div></a></div></div>
+  <section class="cta-section">
+    <h2>내 점수로 25개 학교 한 번에 비교</h2>
+    <p>LEET 표준점수·학점·영어를 입력하면 모든 로스쿨 환산점수가 자동 계산됩니다.</p>
+    <a class="cta-btn" href="/">계산기로 이동 →</a>
+  </section>
+  <footer>
+    <p>2026학년도 모집요강과 공개 입시결과 기반. 정확한 기준은 각 학교 입학처 공식 자료를 확인하세요.</p>
+    <p style="margin-top:8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
+  </footer>
+</div>
+</body>
+</html>
