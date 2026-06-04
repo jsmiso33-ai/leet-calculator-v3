@@ -1528,6 +1528,29 @@
   }
   .info-callout li { margin-bottom: 6px; }
 
+  details.info-callout {
+    display: block;
+  }
+  details.info-callout summary {
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+    color: var(--ink);
+    font-weight: 700;
+  }
+  details.info-callout summary::-webkit-details-marker { display: none; }
+  details.info-callout summary::after {
+    content: '+';
+    color: var(--ink-mute);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  details.info-callout[open] summary::after { content: '-'; }
+  details.info-callout[open] ul { margin-top: 10px; }
+
   .schools-controls {
     display: flex;
     align-items: center;
@@ -2766,6 +2789,221 @@
   }
   @media (max-width: 380px) {
     .tab-btn { padding: 11px 12px; font-size: 13px; }
+  }
+
+  /* Mobile optimization pass: forms, fixed affordances, dense cards */
+  @media (max-width: 640px) {
+    html {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary {
+      touch-action: manipulation;
+    }
+
+    .auth-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .auth-actions .auth-btn {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .auth-mode {
+      min-height: 34px;
+    }
+
+    .hp-result {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    .hp-era-badge {
+      font-size: 12px;
+      padding: 6px 13px;
+    }
+
+    .hp-score {
+      font-size: clamp(54px, 16vw, 70px);
+    }
+
+    .hp-score-meta {
+      font-size: 12px;
+    }
+
+    .hp-stat {
+      min-width: 0;
+      flex: 1 1 120px;
+      padding: 9px 12px;
+    }
+
+    .hp-stat-val {
+      font-size: 20px;
+    }
+
+    .hp-years-trigger {
+      padding: 12px;
+      gap: 8px;
+    }
+
+    .hp-years-current {
+      max-width: 58%;
+      justify-content: flex-end;
+      text-align: right;
+      white-space: normal;
+      line-height: 1.35;
+    }
+
+    .log-actions,
+    .fb-actions,
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .log-actions .btn-primary,
+    .log-actions .btn-secondary,
+    .fb-actions button,
+    .confirm-actions button {
+      width: 100%;
+      min-height: 46px;
+      justify-content: center;
+    }
+
+    details.guidance-callout {
+      padding: 0;
+      border-left-width: 0;
+      overflow: hidden;
+    }
+
+    details.guidance-callout summary {
+      min-height: 46px;
+      padding: 0 14px;
+      background: var(--bg-subtle);
+    }
+
+    details.guidance-callout ul {
+      margin: 0;
+      padding: 12px 16px 14px 28px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--line);
+    }
+
+    .school-search-clear,
+    .favorite-btn,
+    .adm-favorite-btn {
+      min-width: 44px;
+      width: 44px;
+      height: 44px;
+    }
+
+    .favorite-btn {
+      margin-top: -7px;
+      margin-right: -7px;
+    }
+
+    .school-card {
+      padding: 14px 16px;
+    }
+
+    .sc-total-row {
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .sc-total-val {
+      font-size: 22px;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .sc-row {
+      grid-template-columns: 48px minmax(64px, 1fr) minmax(52px, auto);
+    }
+
+    .adm-summary-item {
+      min-width: 0;
+    }
+
+    table.adm-table tr {
+      gap: 7px 10px;
+    }
+
+    table.adm-table td.school-name {
+      padding-right: 6px;
+    }
+
+    .fb-fab {
+      right: 14px;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      justify-content: center;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.22);
+    }
+
+    .fb-fab-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .fb-overlay {
+      align-items: flex-end;
+      padding: 12px;
+    }
+
+    .fb-modal {
+      max-height: min(86vh, 620px);
+      padding: 18px;
+      border-radius: var(--radius-lg);
+    }
+
+    footer.foot {
+      padding-bottom: 12px;
+    }
+
+    .foot-links {
+      gap: 8px 14px;
+    }
+
+    .foot-links a {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .hp-score {
+      font-size: 50px;
+    }
+
+    .hp-stat {
+      flex-basis: 100%;
+    }
+
+    .sc-row {
+      grid-template-columns: 42px minmax(56px, 1fr) minmax(48px, auto);
+    }
   }
 
   /* 통합표 — 모바일에서 학년도별 카드 리스트로 변환 */
@@ -4504,5 +4742,92 @@
     .qgrade-grid,
     .admin-grid {
       grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  /* Final mobile overrides: keep touch controls usable after legacy blocks */
+  @media (max-width: 640px) {
+    body {
+      padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    .log-actions,
+    .fb-actions,
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .log-actions .btn-primary,
+    .log-actions .btn-secondary,
+    .fb-actions button,
+    .confirm-actions button {
+      width: 100%;
+      min-height: 46px;
+    }
+
+    details.guidance-callout {
+      padding: 0;
+      border-left-width: 0;
+      overflow: hidden;
+    }
+
+    details.guidance-callout summary {
+      min-height: 46px;
+      padding: 0 14px;
+      background: var(--bg-subtle);
+    }
+
+    details.guidance-callout ul {
+      margin: 0;
+      padding: 12px 16px 14px 28px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--line);
+    }
+
+    .school-search-clear,
+    .favorite-btn,
+    .adm-favorite-btn {
+      min-width: 44px;
+      width: 44px;
+      height: 44px;
+    }
+
+    .favorite-btn {
+      margin-top: -7px;
+      margin-right: -7px;
+    }
+
+    .fb-fab {
+      position: static;
+      width: calc(100% - 24px);
+      max-width: 420px;
+      min-height: 48px;
+      height: auto;
+      margin: 18px auto 0;
+      padding: 12px 16px;
+      justify-content: center;
+      border-radius: var(--radius-lg);
+    }
+
+    .fb-fab-label {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+
+    .fb-overlay {
+      align-items: flex-end;
+      padding: 12px;
+    }
+
+    .fb-modal {
+      max-height: min(86vh, 620px);
+      padding: 18px;
+      border-radius: var(--radius-lg);
     }
   }
