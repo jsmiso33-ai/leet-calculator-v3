@@ -395,13 +395,14 @@ function renderChart(results) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const chartWrap = canvas.parentElement;
-  if (typeof Chart === 'undefined') {
-    chartWrap?.classList.add('chart-unavailable');
+  const summaryEl = document.getElementById('chartSummary');
+  if (chartInstance) chartInstance.destroy();
+  if (results.length === 0) {
+    if (summaryEl) summaryEl.innerHTML = '';
+    chartWrap?.classList.remove('chart-unavailable');
+    chartWrap?.classList.add('chart-empty');
     return;
   }
-  chartWrap?.classList.remove('chart-unavailable');
-  if (chartInstance) chartInstance.destroy();
-  if (results.length === 0) return;
 
   const sorted = [...results].sort((a,b) => a.year - b.year);
   const labels = sorted.map(r => r.year);
@@ -413,13 +414,48 @@ function renderChart(results) {
 
   // y축 범위를 데이터에 맞춰 동적 계산 (위아래 여유)
   const validData = totalData.filter(v => v !== null && !isNaN(v));
+  if (validData.length === 0) {
+    if (summaryEl) summaryEl.innerHTML = '';
+    chartWrap?.classList.remove('chart-unavailable');
+    chartWrap?.classList.add('chart-empty');
+    return;
+  }
   const dataMin = Math.min(...validData);
   const dataMax = Math.max(...validData);
+  const minIndex = totalData.findIndex(v => v === dataMin);
+  const maxIndex = totalData.findIndex(v => v === dataMax);
+  const spread = dataMax - dataMin;
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div class="chart-pill chart-pill-strong">
+        <span class="chart-pill-label">최고</span>
+        <span class="chart-pill-value">${labels[maxIndex]} · ${dataMax.toFixed(1)}</span>
+      </div>
+      <div class="chart-pill">
+        <span class="chart-pill-label">최저</span>
+        <span class="chart-pill-value">${labels[minIndex]} · ${dataMin.toFixed(1)}</span>
+      </div>
+      <div class="chart-pill">
+        <span class="chart-pill-label">변동폭</span>
+        <span class="chart-pill-value">${spread.toFixed(1)}</span>
+      </div>`;
+  }
+  if (typeof Chart === 'undefined') {
+    chartWrap?.classList.remove('chart-empty');
+    chartWrap?.classList.add('chart-unavailable');
+    return;
+  }
+  chartWrap?.classList.remove('chart-empty');
+  chartWrap?.classList.remove('chart-unavailable');
   const range = dataMax - dataMin;
   const padTop = Math.max(range * 0.25, 4);
   const padBottom = Math.max(range * 0.15, 2);
   const yMin = Math.floor((dataMin - padBottom) * 2) / 2;
   const yMax = Math.ceil((dataMax + padTop) * 2) / 2;
+  const fillGradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 360);
+  fillGradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+  fillGradient.addColorStop(0.62, 'rgba(37, 99, 235, 0.08)');
+  fillGradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
 
   chartInstance = new Chart(ctx, {
     type: 'line',
@@ -429,15 +465,24 @@ function renderChart(results) {
         {
           label: '표준점수 합계',
           data: totalData,
-          borderColor: '#1A56DB',
-          backgroundColor: 'rgba(26, 86, 219, 0.08)',
-          borderWidth: 3,
-          pointRadius: 6,
-          pointHoverRadius: 9,
-          pointBackgroundColor: '#1A56DB',
-          pointBorderColor: '#fff',
-          pointBorderWidth: 2,
-          tension: 0.3,
+          borderColor: '#2563EB',
+          backgroundColor: fillGradient,
+          borderWidth: 2.75,
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointBackgroundColor: c => {
+            const value = c.parsed && c.parsed.y;
+            if (value === dataMax) return '#2563EB';
+            if (value === dataMin) return '#0F766E';
+            return '#FFFFFF';
+          },
+          pointBorderColor: c => {
+            const value = c.parsed && c.parsed.y;
+            return value === dataMin ? '#0F766E' : '#2563EB';
+          },
+          pointBorderWidth: 2.5,
+          pointHitRadius: 14,
+          tension: 0.36,
           fill: true,
         },
       ],
@@ -447,15 +492,21 @@ function renderChart(results) {
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       // 좌우 여유를 두어서 첫/마지막 포인트 라벨이 잘리지 않도록
-      layout: { padding: { top: 36, right: 32, bottom: 12, left: 24 } },
+      layout: { padding: { top: 32, right: 26, bottom: 10, left: 18 } },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(17,17,17,0.95)',
+          backgroundColor: 'rgba(255,255,255,0.98)',
+          borderColor: 'rgba(15, 23, 42, 0.12)',
+          borderWidth: 1,
+          titleColor: '#0F172A',
+          bodyColor: '#334155',
           titleFont: { family: 'JetBrains Mono, monospace', size: 13, weight: 'bold' },
           bodyFont: { family: 'Pretendard, -apple-system, sans-serif', size: 12 },
           padding: 14,
           displayColors: false,
+          cornerRadius: 8,
+          caretPadding: 8,
           callbacks: {
             title: items => items[0].label + '학년도',
             label: ctx => {
@@ -478,20 +529,22 @@ function renderChart(results) {
           beginAtZero: false,
           min: yMin,
           max: yMax,
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: { font: { family: 'JetBrains Mono, monospace', size: 11 }, color: '#71717A' },
+          border: { display: false },
+          grid: { color: 'rgba(15, 23, 42, 0.07)', drawTicks: false },
+          ticks: { padding: 10, font: { family: 'JetBrains Mono, monospace', size: 11 }, color: '#64748B' },
           title: {
             display: true,
-            text: '표준점수 합계 (언어 + 추리)',
-            font: { family: 'Pretendard, -apple-system, sans-serif', size: 11, weight: '500' },
-            color: '#27272A',
+            text: '합계 표준점수',
+            font: { family: 'Pretendard, -apple-system, sans-serif', size: 11, weight: '700' },
+            color: '#334155',
           },
         },
         x: {
+          border: { display: false },
           grid: { display: false },
           // 첫/마지막 포인트가 axis와 겹치지 않도록 여유 추가
           offset: true,
-          ticks: { font: { family: 'JetBrains Mono, monospace', size: 12, weight: '600' }, color: '#18181B' },
+          ticks: { padding: 8, font: { family: 'JetBrains Mono, monospace', size: 12, weight: '700' }, color: '#334155' },
         },
       },
     },
@@ -503,8 +556,8 @@ function renderChart(results) {
         const dataset = chart.data.datasets[0];
         const meta = chart.getDatasetMeta(0);
         ctx.save();
-        ctx.font = "600 11px JetBrains Mono, monospace";
-        ctx.fillStyle = '#111111';
+        ctx.font = "700 11px JetBrains Mono, monospace";
+        ctx.fillStyle = '#0F172A';
         ctx.textBaseline = 'middle';
         meta.data.forEach((point, i) => {
           const v = dataset.data[i];
@@ -531,8 +584,8 @@ function renderChart(results) {
           ctx.textAlign = textAlign;
 
           // 가독성을 위한 흰색 외곽선
-          ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(255,255,255,0.94)';
+          ctx.lineWidth = 4;
           ctx.strokeText(text, labelX, labelY);
           ctx.fillText(text, labelX, labelY);
         });
@@ -1948,15 +2001,16 @@ function renderLogChart(sortedByDate) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const chartWrap = canvas.parentElement;
-  if (typeof Chart === 'undefined') {
-    chartWrap?.classList.add('chart-unavailable');
-    return;
-  }
-  chartWrap?.classList.remove('chart-unavailable');
+  const summaryEl = document.getElementById('logChartSummary');
   if (logChartInstance) logChartInstance.destroy();
 
   const valid = sortedByDate.filter(e => e.total !== null);
-  if (valid.length === 0) return;
+  if (valid.length === 0) {
+    if (summaryEl) summaryEl.innerHTML = '';
+    chartWrap?.classList.remove('chart-unavailable');
+    chartWrap?.classList.add('chart-empty');
+    return;
+  }
 
   const labels = valid.map(e => e.date.slice(5).replace('-', '/') + ` (${e.year})`);
   const data = valid.map(e => e.total);
@@ -1967,11 +2021,41 @@ function renderLogChart(sortedByDate) {
   // y축 범위 동적 계산
   const dataMin = Math.min(...data);
   const dataMax = Math.max(...data);
+  const minIndex = data.findIndex(v => v === dataMin);
+  const maxIndex = data.findIndex(v => v === dataMax);
+  const recent = valid[valid.length - 1];
+  const spread = dataMax - dataMin;
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div class="chart-pill chart-pill-strong">
+        <span class="chart-pill-label">최근</span>
+        <span class="chart-pill-value">${recent.date.slice(5).replace('-', '/')} · ${recent.total.toFixed(1)}</span>
+      </div>
+      <div class="chart-pill">
+        <span class="chart-pill-label">최고</span>
+        <span class="chart-pill-value">${labels[maxIndex]} · ${dataMax.toFixed(1)}</span>
+      </div>
+      <div class="chart-pill">
+        <span class="chart-pill-label">변동폭</span>
+        <span class="chart-pill-value">${spread.toFixed(1)}</span>
+      </div>`;
+  }
+  if (typeof Chart === 'undefined') {
+    chartWrap?.classList.remove('chart-empty');
+    chartWrap?.classList.add('chart-unavailable');
+    return;
+  }
+  chartWrap?.classList.remove('chart-empty');
+  chartWrap?.classList.remove('chart-unavailable');
   const range = dataMax - dataMin;
   const padTop = Math.max(range * 0.25, 4);
   const padBottom = Math.max(range * 0.15, 2);
   const yMin = Math.floor((dataMin - padBottom) * 2) / 2;
   const yMax = Math.ceil((dataMax + padTop) * 2) / 2;
+  const fillGradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 360);
+  fillGradient.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+  fillGradient.addColorStop(0.62, 'rgba(37, 99, 235, 0.08)');
+  fillGradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
 
   logChartInstance = new Chart(ctx, {
     type: 'line',
@@ -1980,15 +2064,24 @@ function renderLogChart(sortedByDate) {
       datasets: [{
         label: '표점 합계',
         data,
-        borderColor: '#1A56DB',
-        backgroundColor: 'rgba(26, 86, 219, 0.08)',
-        borderWidth: 3,
-        pointRadius: 6,
-        pointHoverRadius: 9,
-        pointBackgroundColor: '#1A56DB',
-        pointBorderColor: '#fff',
-        pointBorderWidth: 2,
-        tension: 0.3,
+        borderColor: '#2563EB',
+        backgroundColor: fillGradient,
+        borderWidth: 2.75,
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointBackgroundColor: c => {
+          const value = c.parsed && c.parsed.y;
+          if (value === dataMax) return '#2563EB';
+          if (value === dataMin) return '#0F766E';
+          return '#FFFFFF';
+        },
+        pointBorderColor: c => {
+          const value = c.parsed && c.parsed.y;
+          return value === dataMin ? '#0F766E' : '#2563EB';
+        },
+        pointBorderWidth: 2.5,
+        pointHitRadius: 14,
+        tension: 0.36,
         fill: true,
       }],
     },
@@ -1996,15 +2089,21 @@ function renderLogChart(sortedByDate) {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
-      layout: { padding: { top: 36, right: 32, bottom: 12, left: 24 } },
+      layout: { padding: { top: 32, right: 26, bottom: 10, left: 18 } },
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(17,17,17,0.95)',
+          backgroundColor: 'rgba(255,255,255,0.98)',
+          borderColor: 'rgba(15, 23, 42, 0.12)',
+          borderWidth: 1,
+          titleColor: '#0F172A',
+          bodyColor: '#334155',
           titleFont: { family: 'JetBrains Mono, monospace', size: 13, weight: 'bold' },
           bodyFont: { family: 'Pretendard, -apple-system, sans-serif', size: 12 },
           padding: 14,
           displayColors: false,
+          cornerRadius: 8,
+          caretPadding: 8,
           callbacks: {
             label: ctx => {
               const i = ctx.dataIndex;
@@ -2022,14 +2121,16 @@ function renderLogChart(sortedByDate) {
           beginAtZero: false,
           min: yMin,
           max: yMax,
-          grid: { color: 'rgba(0,0,0,0.05)' },
-          ticks: { font: { family: 'JetBrains Mono, monospace', size: 11 }, color: '#71717A' },
-          title: { display: true, text: '표준점수 합계', font: { family: 'Pretendard, -apple-system, sans-serif', size: 11, weight: '500' }, color: '#27272A' },
+          border: { display: false },
+          grid: { color: 'rgba(15, 23, 42, 0.07)', drawTicks: false },
+          ticks: { padding: 10, font: { family: 'JetBrains Mono, monospace', size: 11 }, color: '#64748B' },
+          title: { display: true, text: '합계 표준점수', font: { family: 'Pretendard, -apple-system, sans-serif', size: 11, weight: '700' }, color: '#334155' },
         },
         x: {
+          border: { display: false },
           grid: { display: false },
           offset: true,
-          ticks: { font: { family: 'JetBrains Mono, monospace', size: 11 }, color: '#18181B', maxRotation: 45, minRotation: 0 },
+          ticks: { padding: 8, font: { family: 'JetBrains Mono, monospace', size: 11, weight: '700' }, color: '#334155', maxRotation: 45, minRotation: 0 },
         },
       },
     },
@@ -2040,8 +2141,8 @@ function renderLogChart(sortedByDate) {
         const dataset = chart.data.datasets[0];
         const meta = chart.getDatasetMeta(0);
         ctx.save();
-        ctx.font = "600 11px JetBrains Mono, monospace";
-        ctx.fillStyle = '#111111';
+        ctx.font = "700 11px JetBrains Mono, monospace";
+        ctx.fillStyle = '#0F172A';
         ctx.textBaseline = 'middle';
         meta.data.forEach((point, i) => {
           const v = dataset.data[i];
@@ -2063,8 +2164,8 @@ function renderLogChart(sortedByDate) {
           }
           ctx.textAlign = textAlign;
 
-          ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = 'rgba(255,255,255,0.94)';
+          ctx.lineWidth = 4;
           ctx.strokeText(text, labelX, labelY);
           ctx.fillText(text, labelX, labelY);
         });

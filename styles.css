@@ -698,13 +698,52 @@
 
   .chart-card {
     background: var(--bg-card);
-    border: none;
+    border: 1px solid var(--line);
     border-radius: var(--radius-lg);
     padding: 24px 28px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     margin-bottom: 20px;
   }
-  .chart-wrap { position: relative; height: 360px; margin-top: 16px; }
+  .chart-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .chart-summary:empty { display: none; }
+  .chart-pill {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+    color: var(--ink-soft);
+  }
+  .chart-pill-strong {
+    background: var(--bg-tint);
+    border-color: rgba(37, 99, 235, 0.18);
+  }
+  .chart-pill-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ink-mute);
+  }
+  .chart-pill-value {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-hover);
+  }
+  .chart-wrap {
+    position: relative;
+    height: 360px;
+    margin-top: 18px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.7), rgba(255, 255, 255, 0));
+  }
 
   .combined {
     background: var(--bg-card);
@@ -2719,6 +2758,27 @@
 
   .chart-wrap.chart-unavailable::after {
     content: "차트 라이브러리를 불러오지 못했습니다. 표 계산 결과는 계속 사용할 수 있습니다.";
+    max-width: 360px;
+    padding: 0 16px;
+    color: var(--ink-mute);
+    font-size: 13px;
+    line-height: 1.6;
+    text-align: center;
+  }
+  .chart-wrap.chart-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+  }
+  .chart-wrap.chart-empty canvas {
+    display: none;
+  }
+  .chart-wrap.chart-empty::after {
+    content: "원점수와 비교할 학년도를 선택하면 연도별 표준점수 추이가 표시됩니다.";
     max-width: 360px;
     padding: 0 16px;
     color: var(--ink-mute);
@@ -4749,6 +4809,41 @@
   @media (max-width: 640px) {
     body {
       padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+    .chart-card {
+      padding: 18px 16px;
+    }
+
+    .chart-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .chart-pill {
+      min-width: 0;
+      min-height: 54px;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 3px;
+      padding: 8px 10px;
+    }
+
+    .chart-pill-label {
+      font-size: 10px;
+    }
+
+    .chart-pill-value {
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .chart-wrap {
+      height: 300px;
+      margin-top: 12px;
     }
 
     .log-actions,

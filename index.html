@@ -254,6 +254,7 @@
   <section class="chart-card">
     <div class="section-label">연도별 표준점수 합계 추이</div>
     <div class="section-desc">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
+    <div class="chart-summary" id="chartSummary" aria-live="polite"></div>
     <div class="chart-wrap"><canvas id="chart"></canvas></div>
   </section>
 
@@ -458,6 +459,7 @@
     <section class="chart-card" id="logChartCard" style="display:none;">
       <div class="section-label">시간순 표준점수 추이</div>
       <div class="section-desc">푼 날짜 순으로 표준점수 합계 변화를 보여줍니다.</div>
+      <div class="chart-summary" id="logChartSummary" aria-live="polite"></div>
       <div class="chart-wrap"><canvas id="logChart"></canvas></div>
     </section>
 
