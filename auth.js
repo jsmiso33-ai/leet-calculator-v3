@@ -4,11 +4,13 @@
 const SUPABASE_URL = 'https://bokmpwwcjiqqzffxrxnk.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJva21wd3djamlxcXpmZnhyeG5rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDAzOTUsImV4cCI6MjA5Mjc3NjM5NX0.xbRnEVxIiOZ1JwNJlcPl9WpkC8WmpgVQVzCnwfue5A8';
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+const supabaseClient = window.supabase && window.supabase.createClient
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   // Safari ITP가 PKCE의 code_verifier를 리다이렉트 사이에 지워 로그인이 간헐 실패해서,
   // 토큰을 복귀 URL로 바로 받는 implicit 흐름을 쓴다.
   auth: { flowType: 'implicit', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true },
-});
+})
+  : null;
 let currentUser = null;  // null이면 게스트 모드
 
 // 동기화 인디케이터 업데이트
@@ -29,7 +31,7 @@ function updateAuthUI() {
   const providerBtns = document.querySelectorAll('.auth-provider-btn');
 
   if (currentUser) {
-    mode.textContent = '☁️ 클라우드 동기화';
+    mode.textContent = '클라우드 동기화';
     mode.classList.add('signed-in');
     btn.textContent = '로그아웃';
     btn.classList.add('signed-in');
@@ -37,7 +39,7 @@ function updateAuthUI() {
     const email = currentUser.email || '';
     info.textContent = email ? `${email} · 모든 기기에서 동기화됨` : '모든 기기에서 동기화됨';
   } else {
-    mode.textContent = '📱 게스트 모드';
+    mode.textContent = '게스트 모드';
     mode.classList.remove('signed-in');
     btn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" style="vertical-align:-3px;margin-right:8px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Google';
     btn.classList.remove('signed-in');
@@ -49,6 +51,10 @@ function updateAuthUI() {
 
 // 소셜 로그인
 async function signIn(provider = 'google') {
+  if (!supabaseClient) {
+    toast('로그인 모듈을 불러오지 못했습니다. 계산기는 게스트 모드로 계속 사용할 수 있습니다.', { type: 'error' });
+    return;
+  }
   try {
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider,
@@ -64,6 +70,7 @@ async function signIn(provider = 'google') {
 
 // 로그아웃
 async function signOut() {
+  if (!supabaseClient) return;
   const ok = await confirmAsync(
     '클라우드 데이터는 그대로 유지되고, 다음에 로그인하면 다시 보입니다.',
     { title: '로그아웃하시겠어요?' }
@@ -83,7 +90,7 @@ async function signOut() {
 
 // 클라우드에서 기록 가져오기
 async function fetchCloudLogs() {
-  if (!currentUser) return [];
+  if (!currentUser || !supabaseClient) return [];
   setSyncStatus('syncing', '불러오는 중...');
   try {
     const { data, error } = await withTimeout(
@@ -124,7 +131,7 @@ function withTimeout(promise, ms, label) {
 
 // 클라우드에 기록 추가
 async function pushCloudLog(entry) {
-  if (!currentUser) return null;
+  if (!currentUser || !supabaseClient) return null;
   setSyncStatus('syncing', '저장 중...');
   try {
     const { data, error } = await withTimeout(
@@ -159,7 +166,7 @@ async function pushCloudLog(entry) {
 
 // 클라우드에서 기록 삭제
 async function deleteCloudLog(id) {
-  if (!currentUser) return false;
+  if (!currentUser || !supabaseClient) return false;
   setSyncStatus('syncing', '삭제 중...');
   try {
     const { error } = await withTimeout(
@@ -183,6 +190,7 @@ async function deleteCloudLog(id) {
 
 // 게스트 모드 → 로그인 시 로컬 데이터 마이그레이션
 async function migrateLocalToCloud() {
+  if (!supabaseClient) return;
   const localLogs = loadLog();
   if (localLogs.length === 0) return;
 
@@ -213,6 +221,11 @@ async function migrateLocalToCloud() {
 
 // 로그인 상태 초기화 + 변화 감지
 async function initAuth() {
+  if (!supabaseClient) {
+    currentUser = null;
+    updateAuthUI();
+    return;
+  }
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     currentUser = session.user;

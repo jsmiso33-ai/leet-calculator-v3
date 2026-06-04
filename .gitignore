@@ -1,0 +1,6 @@
+# 스크린샷 검증용 임시 파일 (Playwright)
+node_modules/
+package.json
+package-lock.json
+shot*.mjs
+shots/

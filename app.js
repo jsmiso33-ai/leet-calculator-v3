@@ -128,41 +128,59 @@ function updateSelectedYearsSummary() {
   }
 }
 
-function setupMobileYearPicker() {
+function setupYearPopover() {
   const picker = document.getElementById('hpYearsPicker');
-  if (!picker || !window.matchMedia) return;
-  const mq = window.matchMedia('(max-width: 640px)');
-  const sync = () => {
-    if (mq.matches) {
-      if (!picker.dataset.mobileInitialized) {
-        picker.open = false;
-        picker.dataset.mobileInitialized = '1';
-      }
-    } else {
-      picker.open = true;
-      delete picker.dataset.mobileInitialized;
-    }
+  const trigger = document.getElementById('hpYearsTrigger');
+  const pop = document.getElementById('hpYearsPopover');
+  if (!picker || !trigger || !pop) return;
+
+  const setOpen = (open) => {
+    pop.classList.toggle('open', open);
+    trigger.classList.toggle('open', open);
+    trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
   };
-  sync();
-  if (mq.addEventListener) mq.addEventListener('change', sync);
-  else mq.addListener(sync);
+
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    setOpen(!pop.classList.contains('open'));
+  });
+  // 팝오버 내부 클릭은 닫히지 않도록
+  pop.addEventListener('click', (e) => e.stopPropagation());
+  // 바깥 클릭 시 닫기
+  document.addEventListener('click', (e) => {
+    if (!picker.contains(e.target)) setOpen(false);
+  });
+  // Esc로 닫기
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setOpen(false);
+  });
 }
 
 function buildYearChips() {
   const wrap = document.getElementById('yearChips');
   wrap.innerHTML = '';
   const years = Object.keys(LEET).map(Number).sort((a,b) => a-b);
-  let breakInserted = false;
+  let oldLabelInserted = false;
+  let newLabelInserted = false;
   years.forEach(y => {
-    if (!breakInserted && y >= 2020) {
-      const br = document.createElement('div');
-      br.className = 'year-row-break';
-      wrap.appendChild(br);
-      breakInserted = true;
+    const isOld = LEET[y].era === 'old';
+    if (isOld && !oldLabelInserted) {
+      const lbl = document.createElement('div');
+      lbl.className = 'year-era-label';
+      lbl.textContent = '구 리트';
+      wrap.appendChild(lbl);
+      oldLabelInserted = true;
+    }
+    if (!isOld && !newLabelInserted) {
+      const lbl = document.createElement('div');
+      lbl.className = 'year-era-label';
+      lbl.textContent = '신 리트';
+      wrap.appendChild(lbl);
+      newLabelInserted = true;
     }
     const chip = document.createElement('div');
     chip.className = 'y-chip';
-    if (LEET[y].era === 'old') chip.classList.add('era-old');
+    if (isOld) chip.classList.add('era-old');
     if (state.selectedYears.has(y)) chip.classList.add('active');
     chip.textContent = y;
     chip.addEventListener('click', () => {
@@ -271,7 +289,6 @@ function renderHeroPulse() {
   const eraYearEl = document.getElementById('heroEraYear');
   const scoreEl = document.getElementById('heroScoreValue');
   const pctEl = document.getElementById('heroPercentileText');
-  const deltaEl = document.getElementById('heroDelta');
   const eonMaxEl = document.getElementById('eonMaxLabel');
   const chuMaxEl = document.getElementById('chuMaxLabel');
   if (!scoreEl) return;
@@ -295,7 +312,7 @@ function renderHeroPulse() {
     scoreEl.textContent = '—';
     scoreEl.classList.remove('has-value');
     pctEl.innerHTML = '원점수를 입력하세요';
-    deltaEl.style.display = 'none';
+    pctEl.classList.remove('has-stats');
     return;
   }
 
@@ -303,39 +320,16 @@ function renderHeroPulse() {
   scoreEl.textContent = total.toFixed(1);
   scoreEl.classList.add('has-value');
 
-  let pctText = `원점수 <b>${state.eonRaw}+${state.chuRaw}</b>`;
   const eonPct = heroResult.eon.pct;
   const chuPct = heroResult.chu.pct;
+  let statsHtml = '';
   if (eonPct !== null && eonPct !== undefined && chuPct !== null && chuPct !== undefined) {
     const combinedPct = Math.sqrt(eonPct * chuPct);
-    pctText = `백분위 <b>${combinedPct.toFixed(1)}</b> · ${pctText}`;
+    statsHtml += `<div class="hp-stat"><span class="hp-stat-label">백분위</span><span class="hp-stat-val">${combinedPct.toFixed(1)}</span></div>`;
   }
-  pctEl.innerHTML = pctText;
-
-  // 전년 대비 델타: 같은 era 안에서만 (구↔신 시험제도 변경 구간은 비교 무의미)
-  const prevYear = heroYear - 1;
-  const prevData = LEET[prevYear];
-  if (!prevData || prevData.era !== heroData.era) {
-    deltaEl.style.display = 'none';
-    return;
-  }
-  const prevResult = calcForYear(prevYear, state.eonRaw, state.chuRaw);
-  const prevEonStd = prevResult && prevResult.eon ? prevResult.eon.std : null;
-  const prevChuStd = prevResult && prevResult.chu ? prevResult.chu.std : null;
-  if (prevEonStd === null || prevChuStd === null) {
-    deltaEl.style.display = 'none';
-    return;
-  }
-  const prevTotal = prevEonStd + prevChuStd;
-  const delta = total - prevTotal;
-  const sign = delta >= 0 ? '+' : '';
-  const cls = delta >= 0 ? 'up' : 'down';
-  const verb = delta >= 0 ? '상승' : '하락';
-  const svg = delta >= 0
-    ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>'
-    : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="14 17 21 17 21 10"/></svg>';
-  deltaEl.innerHTML = `<span class="ico ${cls}">${svg}</span>${prevYear}학년도 동일 원점수 대비 <span class="${cls}">${sign}${delta.toFixed(1)}</span> ${verb}`;
-  deltaEl.style.display = 'inline-flex';
+  statsHtml += `<div class="hp-stat"><span class="hp-stat-label">원점수</span><span class="hp-stat-val">${state.eonRaw}+${state.chuRaw}</span></div>`;
+  pctEl.innerHTML = statsHtml;
+  pctEl.classList.add('has-stats');
 }
 
 function renderSubjectTable(tableId, results, key, raw) {
@@ -397,7 +391,15 @@ function renderCombined(results) {
 }
 
 function renderChart(results) {
-  const ctx = document.getElementById('chart').getContext('2d');
+  const canvas = document.getElementById('chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const chartWrap = canvas.parentElement;
+  if (typeof Chart === 'undefined') {
+    chartWrap?.classList.add('chart-unavailable');
+    return;
+  }
+  chartWrap?.classList.remove('chart-unavailable');
   if (chartInstance) chartInstance.destroy();
   if (results.length === 0) return;
 
@@ -577,7 +579,7 @@ if (state.eonRaw !== null) document.getElementById('eonInput').value = state.eon
 if (state.chuRaw !== null) document.getElementById('chuInput').value = state.chuRaw;
 
 buildYearChips();
-setupMobileYearPicker();
+setupYearPopover();
 buildYearTabs();
 render();
 
@@ -1017,6 +1019,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const target = btn.dataset.tab;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
     document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + target));
+    updateTabLamp(btn);
     if (target === 'log') renderLog();
     if (target === 'admission') { buildAdmChips(); renderAdmission(); }
     if (target === 'exams') renderExams();
@@ -1056,9 +1059,6 @@ function renderExams() {
 }
 
 
-initAuth();
-
-
 // 입력 상태
 const SCH_STORAGE_KEY = 'leet_schools_input_v1';
 function loadSchInput() {
@@ -1085,6 +1085,9 @@ const schState = Object.assign({
   selectedSchools: null,  // null = 전체 표시, 배열이면 해당 학교만 표시
   favoriteSchools: [],
 }, loadSchInput());
+
+// 학교 이름 검색어 (저장하지 않음 — 세션 내에서만 유지)
+let schoolSearchQuery = '';
 
 schState.favoriteSchools = normalizeFavoriteSchools(schState.favoriteSchools);
 
@@ -1246,10 +1249,19 @@ function renderSchools() {
     filteredSchools = [];
   }
 
+  // 학교 이름 라이브 검색 (모바일 긴 스크롤 해결): 입력 즉시 카드 필터
+  const searchQuery = (schoolSearchQuery || '').trim();
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filteredSchools = filteredSchools.filter(s => s.name.toLowerCase().includes(q));
+  }
+
   // 학교 선택 카운트 표시
   const countEl = document.getElementById('schoolFilterCount');
   if (countEl) {
-    if (!Array.isArray(schState.selectedSchools)) {
+    if (searchQuery) {
+      countEl.textContent = `"${searchQuery}" 검색: ${filteredSchools.length}개`;
+    } else if (!Array.isArray(schState.selectedSchools)) {
       countEl.textContent = `전체 ${LAW_SCHOOLS.length}개 표시 중`;
     } else {
       countEl.textContent = `${filteredSchools.length} / ${LAW_SCHOOLS.length}개 표시 중`;
@@ -1275,7 +1287,9 @@ function renderSchools() {
   }
 
   if (schools.length === 0) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.</div>`;
+    grid.innerHTML = searchQuery
+      ? `<div class="empty-state" style="grid-column: 1 / -1;">"${escapeHtml(searchQuery)}" 검색 결과가 없습니다. 다른 학교 이름으로 검색해 보세요.</div>`
+      : `<div class="empty-state" style="grid-column: 1 / -1;">선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.</div>`;
     return;
   }
 
@@ -1416,6 +1430,25 @@ function attachSchoolEvents() {
   document.querySelectorAll('.sort-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.sort === schState.sortBy);
   });
+
+  // 학교 이름 라이브 검색
+  const schoolSearchInput = document.getElementById('schoolSearch');
+  const schoolSearchClear = document.getElementById('schoolSearchClear');
+  if (schoolSearchInput) {
+    schoolSearchInput.addEventListener('input', e => {
+      schoolSearchQuery = e.target.value;
+      if (schoolSearchClear) schoolSearchClear.style.display = schoolSearchQuery ? 'flex' : 'none';
+      renderSchools();
+    });
+  }
+  if (schoolSearchClear) {
+    schoolSearchClear.addEventListener('click', () => {
+      schoolSearchQuery = '';
+      if (schoolSearchInput) { schoolSearchInput.value = ''; schoolSearchInput.focus(); }
+      schoolSearchClear.style.display = 'none';
+      renderSchools();
+    });
+  }
 
   // 학교 선택 칩 빌드 + 이벤트
   buildSchoolChips();
@@ -1683,6 +1716,8 @@ document.addEventListener('click', (event) => {
   document.getElementById('authBtn')?.click();
 });
 
+initAuth();
+
 // 학년도 셀렉트 채우기
 function buildLogYearSelect() {
   const sel = document.getElementById('logYear');
@@ -1909,7 +1944,15 @@ function escapeHtml(s) {
 }
 
 function renderLogChart(sortedByDate) {
-  const ctx = document.getElementById('logChart').getContext('2d');
+  const canvas = document.getElementById('logChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const chartWrap = canvas.parentElement;
+  if (typeof Chart === 'undefined') {
+    chartWrap?.classList.add('chart-unavailable');
+    return;
+  }
+  chartWrap?.classList.remove('chart-unavailable');
   if (logChartInstance) logChartInstance.destroy();
 
   const valid = sortedByDate.filter(e => e.total !== null);
@@ -2881,6 +2924,39 @@ function clearFieldErrors() {
 // ===========================================================================
 // 탭 키보드 네비게이션 (← → 키로 탭 이동, ARIA 동기화)
 // ===========================================================================
+function getActiveTabButton() {
+  return document.querySelector('.tab-nav .tab-btn.active');
+}
+
+function updateTabLamp(activeBtn = getActiveTabButton()) {
+  const tabNav = document.querySelector('.tab-nav');
+  if (!tabNav || !activeBtn) return;
+
+  let lamp = tabNav.querySelector('.tab-lamp');
+  if (!lamp) {
+    lamp = document.createElement('span');
+    lamp.className = 'tab-lamp';
+    lamp.setAttribute('aria-hidden', 'true');
+    tabNav.prepend(lamp);
+  }
+
+  if (activeBtn.offsetParent === null) {
+    lamp.style.setProperty('--tab-lamp-opacity', '0');
+    return;
+  }
+
+  const navRect = tabNav.getBoundingClientRect();
+  const btnRect = activeBtn.getBoundingClientRect();
+  const x = btnRect.left - navRect.left + tabNav.scrollLeft;
+  const y = btnRect.top - navRect.top + tabNav.scrollTop;
+
+  lamp.style.setProperty('--tab-lamp-x', `${x}px`);
+  lamp.style.setProperty('--tab-lamp-y', `${y}px`);
+  lamp.style.setProperty('--tab-lamp-width', `${btnRect.width}px`);
+  lamp.style.setProperty('--tab-lamp-height', `${btnRect.height}px`);
+  lamp.style.setProperty('--tab-lamp-opacity', '1');
+}
+
 (function initTabA11y() {
   const tabs = Array.from(document.querySelectorAll('.tab-nav .tab-btn'));
   if (!tabs.length) return;
@@ -2936,13 +3012,23 @@ function clearFieldErrors() {
       if (tabNav && window.innerWidth <= 820) {
         requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
       }
-      requestAnimationFrame(updateTabNavScrollHint);
+      requestAnimationFrame(() => {
+        updateTabNavScrollHint();
+        updateTabLamp(btn);
+      });
     });
   });
 
   if (tabNav) {
     tabNav.addEventListener('scroll', updateTabNavScrollHint, { passive: true });
-    window.addEventListener('resize', updateTabNavScrollHint);
-    requestAnimationFrame(updateTabNavScrollHint);
+    tabNav.addEventListener('scroll', () => updateTabLamp(), { passive: true });
+    window.addEventListener('resize', () => {
+      updateTabNavScrollHint();
+      updateTabLamp();
+    });
+    requestAnimationFrame(() => {
+      updateTabNavScrollHint();
+      updateTabLamp();
+    });
   }
 })();
