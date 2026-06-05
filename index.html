@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LEET 표준점수 계산기 · 기출문제 · 로스쿨 환산점수</title>
 
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N0BCX2Z9D9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-N0BCX2Z9D9');
+</script>
+
 <!-- SEO 기본 -->
 <meta name="description" content="LEET 표준점수 계산기. 2009~2026 원점수→표준점수 환산, 기출문제 PDF 다운로드, 25개 로스쿨 환산점수 비교와 입시결과 커트라인 분석.">
 <meta name="keywords" content="LEET,법학적성시험,표준점수,계산기,로스쿨,법학전문대학원,환산점수,입시결과,커트라인,언어이해,추리논증,2026학년도,법전원">
@@ -114,6 +123,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="stylesheet" href="styles.css?v=20260604ui" />
+<link rel="stylesheet" href="admission-tailwind.css?v=20260606tw" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -600,29 +610,37 @@
 
   </div><!-- /tab-schools -->
 
-  <div class="tab-panel" id="tab-admission">
+  <div class="tab-panel tw:space-y-4" id="tab-admission">
 
-    <section class="input-area">
-      <div class="section-label">2026학년도 입시결과 비교</div>
-      <div class="section-desc">25개 로스쿨 합격자 상위50%(중위값) 기준. 학교별 환산점수 탭에 입력한 LEET·학점·영어 점수가 자동 연동됩니다.</div>
+    <section class="input-area adm-intro tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-5 tw:!py-5 tw:!shadow-sm tw:md:!px-8 tw:md:!py-7">
+      <div class="section-label tw:!text-2xl tw:!font-extrabold tw:!leading-tight tw:!text-slate-950 tw:md:!text-3xl">입시결과 비교 분석</div>
+      <div class="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">나의 LEET·학점 입력값과 2026학년도 25개 로스쿨 입시결과를 비교해 추천 쇼트리스트와 학교별 비교표를 구성합니다.</div>
     </section>
 
-    <!-- 내 점수 요약 -->
-    <section class="adm-summary" id="admSummary"></section>
+    <section class="adm-summary tw:!mb-4 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-4" id="admSummary"></section>
 
-    <!-- 정렬 컨트롤 -->
-    <section class="schools-controls">
-      <div class="ctrl-label">정렬:</div>
-      <div class="ctrl-buttons">
-        <button class="sort-btn active" data-adm-sort="diff">내 LEET 여유 큰 순</button>
-        <button class="sort-btn" data-adm-sort="leet-cut">LEET 표점합 높은 순</button>
-        <button class="sort-btn" data-adm-sort="enrolled">등록인원 많은 순</button>
-        <button class="sort-btn" data-adm-sort="alpha">학교명 가나다순</button>
+    <section class="adm-decision-toolbar tw:!mb-3 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-2 tw:!shadow-sm" aria-label="입시결과 보기 옵션">
+      <div class="adm-grade-tabs tw:!flex tw:!flex-wrap tw:!gap-2" id="admGradeTabs" role="tablist" aria-label="지원권 필터">
+        <button type="button" class="active tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="all">전체 <span>0</span></button>
+        <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="safe">안정 <span>0</span></button>
+        <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="match">적정 <span>0</span></button>
+        <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="reach">도전 <span>0</span></button>
+        <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="hard">위험 <span>0</span></button>
+      </div>
+    </section>
+
+    <section class="schools-controls adm-sort-controls tw:!mb-3 tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2">
+      <div class="ctrl-label tw:!text-xs tw:!font-bold tw:!text-slate-500">정렬:</div>
+      <div class="ctrl-buttons tw:!flex tw:!flex-wrap tw:!gap-2">
+        <button class="sort-btn active tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="diff">내 LEET 여유 큰 순</button>
+        <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="leet-cut">LEET 표점합 높은 순</button>
+        <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="enrolled">등록인원 많은 순</button>
+        <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="alpha">학교명 가나다순</button>
       </div>
     </section>
 
     <!-- 학교 선택 -->
-    <details class="school-filter-card" id="admFilterCard">
+    <details class="school-filter-card tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="admFilterCard">
       <summary>
         <span class="sf-label">학교 선택</span>
         <span class="sf-count" id="admFilterCount"></span>
@@ -633,32 +651,63 @@
       </div>
     </details>
 
-    <!-- 테이블 -->
-    <section class="adm-table-wrap">
-      <table class="adm-table" id="admTable">
-        <colgroup>
-          <col class="col-name">
-          <col class="col-enrolled">
-          <col class="col-leet">
-          <col class="col-leet75">
-          <col class="col-diff">
-          <col class="col-gpa">
-          <col class="col-eng">
-        </colgroup>
-        <thead>
-          <tr>
-            <th data-col="name" style="text-align:left;">학교명</th>
-            <th data-col="enrolled">등록</th>
-            <th data-col="leet50">LEET 50%</th>
-            <th data-col="leet75">LEET 75%</th>
-            <th data-col="leetDiff">50% 대비</th>
-            <th data-col="gpa50">학점 50%</th>
-            <th data-col="eng50">영어 50%</th>
-          </tr>
-        </thead>
-        <tbody id="admTableBody"></tbody>
-      </table>
+    <section class="adm-shortlist-panel tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:md:!p-5">
+      <div class="adm-panel-head tw:!mb-4 tw:!flex tw:!items-start tw:!justify-between tw:!gap-3 tw:max-sm:!flex-col">
+        <div>
+          <h3 class="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">추천 쇼트리스트</h3>
+          <p class="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">지원권과 기준선을 함께 고려해 최대 10개 학교를 먼저 보여줍니다.</p>
+        </div>
+        <span class="tw:!shrink-0 tw:!rounded-lg tw:!bg-slate-100 tw:!px-2.5 tw:!py-1.5 tw:!font-mono tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500 tw:max-sm:!w-full tw:max-sm:!text-center" id="admShortlistMeta"></span>
+      </div>
+      <section class="adm-card-list tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" id="admCards" aria-label="추천 쇼트리스트"></section>
     </section>
+
+    <section class="adm-compare-panel tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:md:!p-5">
+      <div class="adm-panel-head tw:!mb-4 tw:!flex tw:!items-start tw:!justify-between tw:!gap-3 tw:max-sm:!flex-col">
+        <div>
+          <h3 class="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">선택 학교 비교</h3>
+          <p class="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">관심 학교를 최대 3개까지 골라 같은 기준으로 나란히 비교합니다.</p>
+        </div>
+        <div class="adm-compare-actions tw:!flex tw:!shrink-0 tw:!items-center tw:!gap-2 tw:max-sm:!w-full tw:max-sm:!flex-col tw:max-sm:!items-stretch">
+          <span class="adm-compare-status tw:!min-h-8 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-slate-50 tw:!px-2.5 tw:!py-2 tw:!text-center tw:!text-[11px] tw:!font-extrabold tw:!leading-tight tw:!text-slate-500" id="admCompareStatus" aria-live="polite"></span>
+          <button type="button" class="adm-compare-clear tw:!inline-flex tw:!min-h-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!text-xs tw:!font-extrabold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" id="admCompareClear">선택 초기화</button>
+        </div>
+      </div>
+      <div class="adm-compare-slots tw:!mb-3 tw:!grid tw:!grid-cols-1 tw:!gap-2 tw:md:!grid-cols-3" id="admCompareSlots"></div>
+      <div class="adm-compare-table-wrap tw:!overflow-x-auto tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white" id="admCompareTableWrap"></div>
+    </section>
+
+    <details class="adm-table-details tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+      <summary class="tw:!flex tw:!min-h-12 tw:!cursor-pointer tw:!items-center tw:!justify-between tw:!gap-3 tw:!px-4 tw:!text-sm tw:!font-extrabold tw:!text-slate-900 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500">
+        <span>전체 상세 표</span>
+        <span class="adm-table-meta tw:!ml-auto tw:!font-mono tw:!text-[11px] tw:!font-medium tw:!text-slate-500" id="admTableMeta"></span>
+      </summary>
+      <section class="adm-table-wrap tw:!border-0 tw:!border-t tw:!border-slate-200">
+        <table class="adm-table" id="admTable">
+          <colgroup>
+            <col class="col-name">
+            <col class="col-enrolled">
+            <col class="col-leet">
+            <col class="col-leet75">
+            <col class="col-diff">
+            <col class="col-gpa">
+            <col class="col-eng">
+          </colgroup>
+          <thead>
+            <tr>
+              <th data-col="name" style="text-align:left;">학교명</th>
+              <th data-col="enrolled">등록</th>
+              <th data-col="leet50">LEET 50%</th>
+              <th data-col="leet75">LEET 75%</th>
+              <th data-col="leetDiff">50% 대비</th>
+              <th data-col="gpa50">학점 50%</th>
+              <th data-col="eng50">영어 50%</th>
+            </tr>
+          </thead>
+          <tbody id="admTableBody"></tbody>
+        </table>
+      </section>
+    </details>
 
   </div><!-- /tab-admission -->
 
@@ -836,8 +885,9 @@
 <script src="data/meta.js?v=20260528r"></script>
 <script src="data/schools.js?v=20260528r"></script>
 <script src="auth.js?v=20260529impl"></script>
-<script src="app.js?v=20260604ui"></script>
+<script src="app.js?v=20260606evt"></script>
 <script src="admin.js?v=20260528r"></script>
 <script src="feedback.js?v=20260529fb"></script>
+<script src="analytics.js?v=20260606evt"></script>
 </body>
 </html>

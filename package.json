@@ -1,0 +1,27 @@
+{
+  "name": "leet-calculator-v3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "admin.js",
+  "scripts": {
+    "build:admission-css": "tailwindcss -i ./src/admission-tailwind.css -o ./admission-tailwind.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsmiso33-ai/leet-calculator-v3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jsmiso33-ai/leet-calculator-v3/issues"
+  },
+  "homepage": "https://github.com/jsmiso33-ai/leet-calculator-v3#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.0",
+    "playwright": "^1.60.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

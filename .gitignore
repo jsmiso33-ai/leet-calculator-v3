@@ -1,6 +1,7 @@
 # 스크린샷 검증용 임시 파일 (Playwright)
 node_modules/
-package.json
-package-lock.json
 shot*.mjs
 shots/
+
+# 사이드바 레이아웃 초안 보관용 (라이브 미적용)
+sidebar-draft/
