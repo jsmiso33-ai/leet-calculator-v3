@@ -42,6 +42,17 @@
   }
   window.track = track;
 
+  // 디바운스 버전 — 검색/점수입력처럼 연속으로 발생하는 동작은
+  // 마지막 입력 후 일정 시간(기본 1.2초) 멈췄을 때 한 번만 기록
+  const _debTimers = {};
+  function trackDebounced(name, props, opts) {
+    const key = (opts && opts.key) || name;
+    const delay = (opts && opts.delay) || 1200;
+    clearTimeout(_debTimers[key]);
+    _debTimers[key] = setTimeout(function () { track(name, props); }, delay);
+  }
+  window.trackDebounced = trackDebounced;
+
   // ---- 자동 추적 -----------------------------------------------------------
   function init() {
     // 페이지 진입

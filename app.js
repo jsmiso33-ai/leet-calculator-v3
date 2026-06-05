@@ -1567,6 +1567,7 @@ document.querySelectorAll('[data-adm-sort]').forEach(btn => {
   btn.addEventListener('click', () => {
     admSortKey = btn.dataset.admSort;
     document.querySelectorAll('[data-adm-sort]').forEach(b => b.classList.toggle('active', b === btn));
+    if (window.track) track('admission_sort', { sort: admSortKey });
     renderAdmission();
   });
 });
@@ -1576,6 +1577,7 @@ document.querySelectorAll('[data-adm-grade]').forEach(btn => {
     admGradeFilter = btn.dataset.admGrade || 'all';
     admFocusedSchool = null;
     document.querySelectorAll('[data-adm-grade]').forEach(b => b.classList.toggle('active', b === btn));
+    if (window.track) track('admission_grade_filter', { grade: admGradeFilter });
     renderAdmission();
   });
 });
@@ -1982,6 +1984,7 @@ function attachSchoolEvents() {
       const v = e.target.value;
       schState[key] = (v === '' || isNaN(parseFloat(v))) ? null : parseFloat(v);
       saveSchInput(schState);
+      if (window.trackDebounced) trackDebounced('school_calc_input', { field: key }, { key: 'school_calc_input', delay: 1500 });
       renderSchools();
     });
   });
@@ -2001,6 +2004,7 @@ function attachSchoolEvents() {
       schState.sortBy = sort;
       saveSchInput(schState);
       document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+      if (window.track) track('school_sort', { sort });
       renderSchools();
     });
   });
@@ -2016,6 +2020,9 @@ function attachSchoolEvents() {
     schoolSearchInput.addEventListener('input', e => {
       schoolSearchQuery = e.target.value;
       if (schoolSearchClear) schoolSearchClear.style.display = schoolSearchQuery ? 'flex' : 'none';
+      if (window.trackDebounced && schoolSearchQuery.trim()) {
+        trackDebounced('school_search', { query: schoolSearchQuery.trim() }, { key: 'school_search', delay: 1200 });
+      }
       renderSchools();
     });
   }
