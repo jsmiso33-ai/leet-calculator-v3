@@ -1973,8 +1973,10 @@
   .adm-summary-distrib .as-distrib {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 6px;
-    margin-top: 2px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0;
   }
   .grade-pill {
     display: inline-flex;
@@ -5105,21 +5107,65 @@
 
   #tab-admission .adm-summary {
     grid-template-columns: minmax(280px, 1.7fr) repeat(3, minmax(150px, 1fr));
+    align-items: stretch;
     gap: 10px;
     margin-bottom: 14px;
   }
 
+  #tab-admission .adm-summary-react {
+    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
+    align-items: stretch;
+    gap: 12px;
+  }
+
   .adm-summary-lead,
   #tab-admission .adm-summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     background: var(--bg-card);
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     min-width: 0;
+    min-height: 118px;
+  }
+
+  #tab-admission .adm-report-card {
+    min-height: 100%;
+    border-color: rgba(37, 99, 235, 0.24);
+    background:
+      linear-gradient(135deg, rgba(239, 246, 255, 0.96), rgba(255, 255, 255, 0.98) 62%),
+      var(--bg-card);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.08);
+  }
+
+  #tab-admission .adm-report-kicker {
+    color: #1d4ed8;
+  }
+
+  #tab-admission .adm-summary-stack {
+    min-width: 0;
+  }
+
+  #tab-admission .adm-metric-card {
+    min-height: 118px;
+    transition:
+      transform var(--motion-fast) var(--ease-out),
+      border-color var(--motion-fast) var(--ease-out),
+      box-shadow var(--motion-fast) var(--ease-out);
+  }
+
+  #tab-admission .adm-metric-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(37, 99, 235, 0.28);
+    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.09);
   }
 
   .adm-summary-lead {
-    padding: 18px 20px;
+    padding: 12px 14px;
   }
 
   .adm-summary-lead .as-label,
@@ -5134,41 +5180,49 @@
 
   .adm-summary-lead strong {
     display: block;
-    margin-top: 7px;
+    margin-top: 6px;
     color: var(--ink);
-    font-size: 22px;
-    line-height: 1.25;
+    font-size: 24px;
+    line-height: 1.2;
     letter-spacing: 0;
+    max-width: 100%;
   }
 
   .adm-summary-lead p {
-    margin-top: 8px;
+    margin-top: 5px;
     color: var(--ink-soft);
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12px;
+    line-height: 1.45;
     word-break: keep-all;
+    max-width: 100%;
   }
 
   .adm-readiness {
     display: inline-flex;
     align-items: center;
-    min-height: 28px;
-    margin-top: 12px;
-    padding: 5px 10px;
+    min-height: 24px;
+    margin-top: 8px;
+    padding: 4px 9px;
     border-radius: var(--radius-sm);
     background: var(--bg-subtle);
     color: var(--ink-soft);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
   }
 
   #tab-admission .adm-summary-item {
-    padding: 18px 16px;
+    padding: 12px 14px;
   }
 
   #tab-admission .adm-summary-item .as-val {
-    margin-top: 8px;
-    font-size: 25px;
+    margin-top: 6px;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  #tab-admission .adm-summary-item .as-sub {
+    margin-top: 6px;
+    text-align: center;
   }
 
   .adm-decision-toolbar {
@@ -5669,6 +5723,10 @@
   @media (max-width: 1100px) {
     #tab-admission .adm-summary {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #tab-admission .adm-summary-react {
+      grid-template-columns: 1fr;
     }
 
     .adm-summary-lead {

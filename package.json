@@ -4,7 +4,9 @@
   "description": "",
   "main": "admin.js",
   "scripts": {
-    "build:admission-css": "tailwindcss -i ./src/admission-tailwind.css -o ./admission-tailwind.css --minify",
+    "build:admission": "node tools/build-admission.mjs",
+    "build:site-css": "tailwindcss -i ./src/site-tailwind.css -o ./site-tailwind.css --minify",
+    "build": "npm run build:admission && npm run build:site-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,7 +23,9 @@
   "homepage": "https://github.com/jsmiso33-ai/leet-calculator-v3#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
-    "playwright": "^1.60.0",
+    "esbuild": "^0.28.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.0"
   }
 }

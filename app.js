@@ -1206,6 +1206,173 @@ function classifyAdm(school, ad, leetSum) {
 
 const ADM_GRADE_LABEL = { safe: '안정', match: '적정', reach: '도전', hard: '위험' };
 
+function getAdmFilterGroupsForReact() {
+  const selected = (admSelectedSchools === null)
+    ? new Set(Object.keys(ADMISSION_2026))
+    : new Set(admSelectedSchools);
+  const groups = { '서울': [], '경기/인천': [], '지방': [] };
+  for (const name of Object.keys(ADMISSION_2026)) {
+    const school = LAW_SCHOOLS.find(s => s.name === name);
+    if (!school) continue;
+    const group = school.group || '지방';
+    if (!groups[group]) groups[group] = [];
+    groups[group].push({ name, selected: selected.has(name) });
+  }
+  return Object.entries(groups)
+    .filter(([, schools]) => schools.length)
+    .map(([name, schools]) => ({ name, schools }));
+}
+
+function getAdmFilterCountText() {
+  const total = Object.keys(ADMISSION_2026).length;
+  if (admSelectedSchools === null) return `전체 ${total}개 표시 중`;
+  return `${admSelectedSchools.length} / ${total}개 표시 중`;
+}
+
+function getAdmPlainRowForReact(row, leetSum, gpaPct) {
+  const grade = row.grade || 'pending';
+  const myValue = getAdmMyCompareValue(row, leetSum);
+  const myGpaLabel = gpaPct !== null ? `${gpaPct.toFixed(1)}%` : '입력 필요';
+  const diffTone = getAdmDiffToneTw(row.leetDiffClass);
+  const leetLabel = row.leet50IsConverted ? '자체환산 50%' : 'LEET 50%';
+  return {
+    name: row.name,
+    enrolled: row.enrolled,
+    grade: row.grade,
+    gradeLabel: getAdmGradeLabel(row.grade),
+    initial: row.name.slice(0, 1),
+    regionText: row.regionText,
+    regionCls: row.regionCls,
+    favorite: row.favorite,
+    subText: stripHtml(row.subText || ''),
+    leet50: stripHtml(row.leet50Text),
+    leet75: stripHtml(row.leet75Text),
+    gpa50: stripHtml(row.gpa50Text),
+    eng50: stripHtml(row.eng50Text),
+    diffClass: row.leetDiffClass,
+    diffText: row.leetDiffText,
+    diffDisplay: row.leetDiffDisplay,
+    myValue: formatAdmValue(myValue),
+    lines: [
+      { label: '내 기준점수', value: formatAdmValue(myValue) },
+      { label: leetLabel, value: stripHtml(row.leet50Text) },
+      { label: '학점 50%', value: stripHtml(row.gpa50Text) },
+      { label: '내 학점', value: myGpaLabel },
+      { label: '합격 가능성', value: `${getAdmGradeLabel(row.grade)} · ${row.leetDiffDisplay || '-'}`, tone: diffTone },
+    ],
+    tone: grade,
+  };
+}
+
+function buildAdmissionReactModel(rows, cardRows, leetSum, gpaPct, gradeCounts, totalGraded, recTitle, recCopy, missingInputs) {
+  const compareRows = getAdmCompareRows(rows, cardRows);
+  const filterLabel = admGradeFilter === 'all' ? '전체' : getAdmGradeLabel(admGradeFilter);
+  const tableRows = rows.map((row, index) => {
+    const plain = getAdmPlainRowForReact(row, leetSum, gpaPct);
+    plain.separatorBefore = (admSortKey === 'leet-cut' || admSortKey === 'diff')
+      && index > 0
+      && !rows[index - 1].leet50IsConverted
+      && row.leet50IsConverted;
+    return plain;
+  });
+  return {
+    leetSum,
+    gpaPct,
+    myGpaLabel: gpaPct !== null ? `${gpaPct.toFixed(1)}%` : '입력 필요',
+    recTitle,
+    recCopy,
+    readinessText: missingInputs.length ? `입력 필요: ${missingInputs.join(', ')}` : '필수 입력값 반영 완료',
+    gradeCounts,
+    totalGraded,
+    totalRows: rows.length,
+    gradeFilter: admGradeFilter,
+    sortKey: admSortKey,
+    filterGroups: getAdmFilterGroupsForReact(),
+    filterCountText: getAdmFilterCountText(),
+    shortlistRows: cardRows.map(row => getAdmPlainRowForReact(row, leetSum, gpaPct)),
+    shortlistMeta: getAdmShortlistMeta(cardRows, rows.length),
+    compareRows: compareRows.map(row => getAdmPlainRowForReact(row, leetSum, gpaPct)),
+    compareSelected: [...admCompareSchools],
+    compareLimit: ADM_COMPARE_LIMIT,
+    compareStatus: admCompareSchools.length
+      ? `비교 선택 ${compareRows.length}/${ADM_COMPARE_LIMIT}`
+      : '추천 상위 3개 자동 비교',
+    tableRows,
+    tableMeta: `${filterLabel} 카드 ${cardRows.length}개 · 상세 표 ${rows.length}개`,
+  };
+}
+
+function getAdmissionReactActions() {
+  return {
+    setGrade(grade) {
+      admGradeFilter = grade || 'all';
+      admFocusedSchool = null;
+      if (window.track) track('admission_grade_filter', { grade: admGradeFilter });
+      renderAdmission();
+    },
+    setSort(sort) {
+      admSortKey = sort || 'diff';
+      if (window.track) track('admission_sort', { sort: admSortKey });
+      renderAdmission();
+    },
+    toggleSchool(name) {
+      const current = (admSelectedSchools === null)
+        ? new Set(Object.keys(ADMISSION_2026))
+        : new Set(admSelectedSchools);
+      if (current.has(name)) current.delete(name);
+      else current.add(name);
+      admSelectedSchools = current.size === Object.keys(ADMISSION_2026).length ? null : [...current];
+      renderAdmission();
+    },
+    setSchoolQuickAction(action) {
+      if (action === 'all') {
+        admSelectedSchools = null;
+      } else if (action === 'favorites') {
+        const admNames = new Set(Object.keys(ADMISSION_2026));
+        admSelectedSchools = getFavoriteSchoolNames().filter(name => admNames.has(name));
+      } else if (action === 'clear') {
+        admSelectedSchools = [];
+      } else if (action === 'seoul') {
+        admSelectedSchools = Object.keys(ADMISSION_2026).filter(name => {
+          const school = LAW_SCHOOLS.find(s => s.name === name);
+          return school && school.group === '서울';
+        });
+      } else if (action === 'metro') {
+        admSelectedSchools = Object.keys(ADMISSION_2026).filter(name => {
+          const school = LAW_SCHOOLS.find(s => s.name === name);
+          return school && (school.group === '서울' || school.group === '경기/인천');
+        });
+      }
+      renderAdmission();
+    },
+    toggleCompare(name) {
+      const wasSelected = admCompareSchools.includes(name);
+      const replacedSchool = !wasSelected && admCompareSchools.length >= ADM_COMPARE_LIMIT
+        ? admCompareSchools[0]
+        : null;
+      toggleAdmCompareSchool(name);
+      renderAdmission();
+      if (window.track) track('school_compare', { school: name, action: wasSelected ? 'remove' : 'add' });
+      const message = wasSelected
+        ? `${name} 비교에서 제거`
+        : `${name} 비교에 추가${replacedSchool ? ` · ${replacedSchool} 제외` : ''}`;
+      toast(message, { type: 'success', duration: 1600 });
+    },
+    clearCompare() {
+      const hadSelection = admCompareSchools.length > 0;
+      admCompareSchools = [];
+      renderAdmission();
+      if (window.track && hadSelection) track('school_compare_clear');
+    },
+    toggleFavorite(name) {
+      toggleFavoriteSchool(name);
+      buildSchoolChips();
+      renderSchools();
+      renderAdmission();
+    },
+  };
+}
+
 function renderAdmission() {
   // 내 점수 요약 (KPI 렌더링은 행 빌드 + 등급 계산 후 아래에서)
   const sum = document.getElementById('admSummary');
@@ -1403,7 +1570,7 @@ function renderAdmission() {
   } else {
     distribHtml = `<div class="as-val empty">${leetSum === null ? 'LEET 입력 필요' : '데이터 없음'}</div>`;
   }
-  sum.innerHTML = `
+  if (sum) sum.innerHTML = `
     <div class="adm-summary-item">
       <div class="as-label">내 LEET 표점합</div>
       <div class="as-val ${leetSum === null ? 'empty' : ''}">${leetSum !== null ? leetSum.toFixed(1) : '학교별 탭에서 입력'}</div>
@@ -1441,30 +1608,32 @@ function renderAdmission() {
     recCopy = 'LEET 50%선 대비 차이가 큰 학교부터 확인하고 지원 조합을 보수적으로 잡는 편이 좋습니다.';
   }
   const decisionDistribHtml = totalGraded > 0
-    ? `<div class="as-distrib tw:!flex tw:!flex-wrap tw:!gap-1.5">
-        <span class="grade-pill grade-safe tw:!rounded-full tw:!bg-emerald-50 tw:!px-2 tw:!py-1 tw:!text-[11px] tw:!font-extrabold tw:!text-emerald-700">안정 ${gradeCounts.safe}</span>
-        <span class="grade-pill grade-match tw:!rounded-full tw:!bg-sky-50 tw:!px-2 tw:!py-1 tw:!text-[11px] tw:!font-extrabold tw:!text-sky-700">적정 ${gradeCounts.match}</span>
-        <span class="grade-pill grade-reach tw:!rounded-full tw:!bg-amber-50 tw:!px-2 tw:!py-1 tw:!text-[11px] tw:!font-extrabold tw:!text-amber-700">도전 ${gradeCounts.reach}</span>
-        <span class="grade-pill grade-hard tw:!rounded-full tw:!bg-zinc-100 tw:!px-2 tw:!py-1 tw:!text-[11px] tw:!font-extrabold tw:!text-zinc-600">위험 ${gradeCounts.hard}</span>
+    ? `<div class="as-distrib tw:!flex tw:!flex-wrap tw:!items-center tw:!justify-center tw:!gap-2">
+        <span class="grade-pill grade-safe tw:!rounded-full tw:!bg-emerald-50 tw:!px-2.5 tw:!py-1.5 tw:!text-xs tw:!font-extrabold tw:!text-emerald-700">안정 ${gradeCounts.safe}</span>
+        <span class="grade-pill grade-match tw:!rounded-full tw:!bg-sky-50 tw:!px-2.5 tw:!py-1.5 tw:!text-xs tw:!font-extrabold tw:!text-sky-700">적정 ${gradeCounts.match}</span>
+        <span class="grade-pill grade-reach tw:!rounded-full tw:!bg-amber-50 tw:!px-2.5 tw:!py-1.5 tw:!text-xs tw:!font-extrabold tw:!text-amber-700">도전 ${gradeCounts.reach}</span>
+        <span class="grade-pill grade-hard tw:!rounded-full tw:!bg-zinc-100 tw:!px-2.5 tw:!py-1.5 tw:!text-xs tw:!font-extrabold tw:!text-zinc-600">위험 ${gradeCounts.hard}</span>
       </div>`
     : `<div class="as-val empty tw:!text-sm tw:!font-extrabold tw:!text-slate-400">${leetSum === null ? 'LEET 입력 필요' : '데이터 없음'}</div>`;
-  sum.innerHTML = `
-    <div class="adm-summary-lead tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:xl:!col-span-1">
+  if (sum) sum.innerHTML = `
+    <div class="adm-summary-lead tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm tw:xl:!col-span-1">
       <div class="as-label tw:!text-[11px] tw:!font-extrabold tw:!uppercase tw:!tracking-normal tw:!text-slate-500">나의 지원 위치</div>
-      <strong class="tw:!mt-2 tw:!block tw:!text-xl tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">${recTitle}</strong>
-      <p class="tw:!mt-2 tw:!text-xs tw:!leading-5 tw:!text-slate-600">${recCopy}</p>
-      <div class="adm-readiness tw:!mt-3 tw:!inline-flex tw:!rounded-lg tw:!bg-slate-100 tw:!px-2.5 tw:!py-1.5 tw:!text-[11px] tw:!font-extrabold tw:!text-slate-600">${missingInputs.length ? `입력 필요: ${missingInputs.join(', ')}` : '필수 입력값 반영 완료'}</div>
+      <strong class="tw:!mt-1.5 tw:!block tw:!truncate tw:!text-2xl tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">${recTitle}</strong>
+      <p class="tw:!mt-1.5 tw:!truncate tw:!text-xs tw:!leading-5 tw:!text-slate-600">${recCopy}</p>
+      <div class="adm-readiness tw:!mt-2 tw:!inline-flex tw:!rounded-lg tw:!bg-slate-100 tw:!px-2.5 tw:!py-1 tw:!text-[11px] tw:!font-extrabold tw:!text-slate-600">${missingInputs.length ? `입력 필요: ${missingInputs.join(', ')}` : '필수 입력값 반영 완료'}</div>
     </div>
-    <div class="adm-summary-item tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
+    <div class="adm-summary-item tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm">
       <div class="as-label tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">LEET 표점합</div>
-      <div class="as-val ${leetSum === null ? 'empty' : ''} tw:!mt-2 tw:!font-mono tw:!text-2xl tw:!font-extrabold ${leetSum === null ? 'tw:!text-slate-400' : 'tw:!text-slate-950'}">${leetSum !== null ? leetSum.toFixed(1) : '입력 필요'}</div>
+      <div class="as-val ${leetSum === null ? 'empty' : ''} tw:!mt-1.5 tw:!font-mono tw:!text-2xl tw:!font-extrabold ${leetSum === null ? 'tw:!text-slate-400' : 'tw:!text-slate-950'}">${leetSum !== null ? leetSum.toFixed(1) : '입력 필요'}</div>
+      <div class="as-sub tw:!mt-1.5 tw:!text-[11px] tw:!font-semibold tw:!text-slate-500">학교별 환산점수 기준</div>
     </div>
-    <div class="adm-summary-item tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
+    <div class="adm-summary-item tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm">
       <div class="as-label tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">학점 백분위</div>
-      <div class="as-val ${gpaPct === null ? 'empty' : ''} tw:!mt-2 tw:!font-mono tw:!text-2xl tw:!font-extrabold ${gpaPct === null ? 'tw:!text-slate-400' : 'tw:!text-slate-950'}">${gpaPct !== null ? gpaPct.toFixed(1) + '%' : '입력 필요'}</div>
+      <div class="as-val ${gpaPct === null ? 'empty' : ''} tw:!mt-1.5 tw:!font-mono tw:!text-2xl tw:!font-extrabold ${gpaPct === null ? 'tw:!text-slate-400' : 'tw:!text-slate-950'}">${gpaPct !== null ? gpaPct.toFixed(1) + '%' : '입력 필요'}</div>
+      <div class="as-sub tw:!mt-1.5 tw:!text-[11px] tw:!font-semibold tw:!text-slate-500">입력 학점 백분위</div>
     </div>
-    <div class="adm-summary-item adm-summary-distrib tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
-      <div class="as-label tw:!mb-3 tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">지원권 분포 ${totalGraded > 0 ? `(${totalGraded}개교)` : ''}</div>
+    <div class="adm-summary-item adm-summary-distrib tw:!flex tw:!flex-col tw:!items-center tw:!justify-center tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!text-center tw:!shadow-sm">
+      <div class="as-label tw:!mb-3 tw:!text-xs tw:!font-extrabold tw:!text-slate-500">지원권 분포 ${totalGraded > 0 ? `(${totalGraded}개교)` : ''}</div>
       ${decisionDistribHtml}
     </div>
   `;
@@ -1515,6 +1684,10 @@ function renderAdmission() {
   if (tableMeta) {
     const filterLabel = admGradeFilter === 'all' ? '전체' : getAdmGradeLabel(admGradeFilter);
     tableMeta.textContent = `${filterLabel} 카드 ${cardRows.length}개 · 상세 표 ${rows.length}개`;
+  }
+  if (window.AdmissionReact && typeof window.AdmissionReact.render === 'function') {
+    const reactModel = buildAdmissionReactModel(rows, cardRows, leetSum, gpaPct, gradeCounts, totalGraded, recTitle, recCopy, missingInputs);
+    if (window.AdmissionReact.render(reactModel, getAdmissionReactActions())) return;
   }
   renderAdmissionCards(cardRows, leetSum, rows.length, gpaPct);
   renderAdmComparePanel(rows, cardRows, leetSum, gpaPct);
@@ -1616,10 +1789,10 @@ function examRow(year, subj) {
   const aName = `${year}학년도 ${subj} 정답.pdf`;
   const q = encodeURI(`exams/${qName}`);
   const a = encodeURI(`exams/${aName}`);
-  return `<div class="exam-row">
-    <span class="exam-subj">${subj}</span>
-    <a class="exam-link" href="${q}" download="${qName}">문제</a>
-    <a class="exam-link exam-link-ans" href="${a}" download="${aName}">정답</a>
+  return `<div class="exam-row tw:!flex tw:!items-center tw:!justify-between tw:!gap-2 tw:!border-t tw:!border-slate-100 tw:!py-3">
+    <span class="exam-subj tw:!text-sm tw:!font-extrabold tw:!text-slate-700">${subj}</span>
+    <a class="exam-link tw:!inline-flex tw:!min-h-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!text-xs tw:!font-extrabold tw:!text-slate-700 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" href="${q}" download="${qName}">문제</a>
+    <a class="exam-link exam-link-ans tw:!inline-flex tw:!min-h-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-blue-200 tw:!bg-blue-50 tw:!px-3 tw:!text-xs tw:!font-extrabold tw:!text-blue-700 tw:transition-colors tw:hover:!border-blue-300" href="${a}" download="${aName}">정답</a>
   </div>`;
 }
 
@@ -1628,9 +1801,9 @@ function renderExams() {
   if (!grid || grid.dataset.rendered) return;
   const years = [];
   for (let y = 2026; y >= 2009; y--) years.push(y);
-  grid.innerHTML = years.map(y => `<div class="exam-card">
-    <a class="exam-year" href="exams/${y}/">${y}학년도</a>
-    <div class="exam-rows">
+  grid.innerHTML = years.map(y => `<div class="exam-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:transition tw:duration-200 tw:hover:!-translate-y-0.5 tw:hover:!border-blue-200 tw:hover:!shadow-lg tw:motion-reduce:!transform-none tw:motion-reduce:!transition-none">
+    <a class="exam-year tw:!mb-2 tw:!block tw:!text-lg tw:!font-extrabold tw:!text-slate-950 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" href="exams/${y}/">${y}학년도</a>
+    <div class="exam-rows tw:!grid">
       ${examRow(y, '언어이해')}
       ${examRow(y, '추리논증')}
     </div>
@@ -1885,8 +2058,8 @@ function renderSchools() {
 
     // 총점 표시
     const totalHtml = c.total !== null
-      ? `<span class="sc-total-val">${c.total.toFixed(1)}<span class="denom">/${c.totalDenom}</span></span>`
-      : `<span class="sc-total-val empty">— 점수 입력 필요</span>`;
+      ? `<span class="sc-total-val tw:!font-mono tw:!text-2xl tw:!font-extrabold tw:!text-blue-600">${c.total.toFixed(1)}<span class="denom tw:!text-sm tw:!font-bold tw:!text-slate-500">/${c.totalDenom}</span></span>`
+      : `<span class="sc-total-val empty tw:!text-sm tw:!font-bold tw:!text-slate-400">— 점수 입력 필요</span>`;
 
     const totalPctHtml = '';
 
@@ -1903,51 +2076,51 @@ function renderSchools() {
 
     let engHtml;
     if (s.engType === 'pf') {
-      engHtml = `<div class="sc-row">
-        <div class="sc-area">영어</div>
+      engHtml = `<div class="sc-row tw:!grid tw:!grid-cols-[52px_minmax(0,1fr)_auto] tw:!items-center tw:!gap-3">
+        <div class="sc-area tw:!text-xs tw:!font-extrabold tw:!text-slate-500">영어</div>
         <div class="sc-bar"></div>
-        <div class="sc-val"><span class="sc-eng-pf">P/F</span></div>
+        <div class="sc-val tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-900"><span class="sc-eng-pf">P/F</span></div>
       </div>`;
     } else {
       const engVal = c.eng !== null
         ? `${c.eng.toFixed(1)}<span class="denom"> / ${c.engDenom}</span>`
         : '<span class="empty">—</span>';
       const engBarPct = c.eng !== null ? (c.eng / c.engDenom * 100) : 0;
-      engHtml = `<div class="sc-row">
-        <div class="sc-area">영어</div>
+      engHtml = `<div class="sc-row tw:!grid tw:!grid-cols-[52px_minmax(0,1fr)_auto] tw:!items-center tw:!gap-3">
+        <div class="sc-area tw:!text-xs tw:!font-extrabold tw:!text-slate-500">영어</div>
         <div class="sc-bar"><div class="sc-bar-fill eng" style="width:${engBarPct}%"></div></div>
-        <div class="sc-val">${engVal}</div>
+        <div class="sc-val tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-900">${engVal}</div>
       </div>`;
     }
 
-    const noteHtml = s.note ? `<div class="sc-note">${s.note}</div>` : '';
+    const noteHtml = s.note ? `<div class="sc-note tw:!mt-4 tw:!rounded-lg tw:!bg-slate-50 tw:!p-3 tw:!text-xs tw:!leading-5 tw:!text-slate-500">${s.note}</div>` : '';
 
     return `
-      <div class="school-card ${tier}">
-        <div class="sc-head">
-          <div class="sc-title-row">
-            <div class="sc-name">${s.name}</div>
-            <button class="favorite-btn ${isFavorite ? 'active' : ''}" type="button" data-favorite-school="${escapeHtml(s.name)}" aria-pressed="${isFavorite}" aria-label="${s.name} ${favoriteLabel}" title="${favoriteLabel}">${isFavorite ? '★' : '☆'}</button>
+      <div class="school-card ${tier} tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:transition tw:duration-200 tw:hover:!-translate-y-0.5 tw:hover:!border-blue-200 tw:hover:!shadow-lg tw:motion-reduce:!transform-none tw:motion-reduce:!transition-none">
+        <div class="sc-head tw:!mb-4">
+          <div class="sc-title-row tw:!flex tw:!items-start tw:!justify-between tw:!gap-3">
+            <div class="sc-name tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">${s.name}</div>
+            <button class="favorite-btn ${isFavorite ? 'active tw:!border-amber-300 tw:!bg-amber-50 tw:!text-amber-700' : 'tw:!border-slate-200 tw:!bg-white tw:!text-slate-500'} tw:!inline-flex tw:!h-8 tw:!w-8 tw:!items-center tw:!justify-center tw:!rounded-full tw:!border tw:!text-sm tw:!font-extrabold tw:transition-colors tw:hover:!border-amber-300 tw:hover:!text-amber-700 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" type="button" data-favorite-school="${escapeHtml(s.name)}" aria-pressed="${isFavorite}" aria-label="${s.name} ${favoriteLabel}" title="${favoriteLabel}">${isFavorite ? '★' : '☆'}</button>
           </div>
-          <div class="sc-leet-pct">LEET 실질반영 <span class="num">${s.leetRatio.toFixed(1)}%</span></div>
+          <div class="sc-leet-pct tw:!mt-1 tw:!text-xs tw:!font-bold tw:!text-slate-500">LEET 실질반영 <span class="num tw:!font-mono tw:!font-extrabold tw:!text-slate-700">${s.leetRatio.toFixed(1)}%</span></div>
         </div>
-        <div class="sc-total-row">
+        <div class="sc-total-row tw:!mb-4 tw:!flex tw:!items-end tw:!justify-between tw:!gap-3 tw:!rounded-xl tw:!bg-slate-50 tw:!p-3">
           <div>
-            <span class="sc-total-label">정량 환산점수</span>
+            <span class="sc-total-label tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">정량 환산점수</span>
             ${totalPctHtml}
           </div>
           ${totalHtml}
         </div>
-        <div class="sc-rows">
-          <div class="sc-row">
-            <div class="sc-area">LEET</div>
+        <div class="sc-rows tw:!grid tw:!gap-3">
+          <div class="sc-row tw:!grid tw:!grid-cols-[52px_minmax(0,1fr)_auto] tw:!items-center tw:!gap-3">
+            <div class="sc-area tw:!text-xs tw:!font-extrabold tw:!text-slate-500">LEET</div>
             <div class="sc-bar"><div class="sc-bar-fill" style="width:${leetBarPct}%"></div></div>
-            <div class="sc-val">${leetVal}</div>
+            <div class="sc-val tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-900">${leetVal}</div>
           </div>
-          <div class="sc-row">
-            <div class="sc-area">학점</div>
+          <div class="sc-row tw:!grid tw:!grid-cols-[52px_minmax(0,1fr)_auto] tw:!items-center tw:!gap-3">
+            <div class="sc-area tw:!text-xs tw:!font-extrabold tw:!text-slate-500">학점</div>
             <div class="sc-bar"><div class="sc-bar-fill gpa" style="width:${gpaBarPct}%"></div></div>
-            <div class="sc-val">${gpaVal}</div>
+            <div class="sc-val tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-900">${gpaVal}</div>
           </div>
           ${engHtml}
         </div>
@@ -2463,7 +2636,7 @@ function renderLog() {
   updateLoginNudges();
 
   if (logEntries.length === 0) {
-    list.innerHTML = `<div class="empty-state" style="padding: 40px 20px;">
+    list.innerHTML = `<div class="empty-state tw:!p-8 tw:!text-center tw:!text-sm tw:!leading-6 tw:!text-slate-500" style="padding: 40px 20px;">
       아직 기록이 없습니다.<br>위쪽에서 첫 기출 풀이 기록을 추가해보세요.
     </div>`;
     stats.style.display = 'none';
@@ -2509,21 +2682,21 @@ function renderLog() {
     const eonText = e.eon !== null ? `언어 ${e.eon}→${e.eonStd !== null ? e.eonStd.toFixed(1) : '—'}` : '';
     const chuText = e.chu !== null ? `추리 ${e.chu}→${e.chuStd !== null ? e.chuStd.toFixed(1) : '—'}` : '';
     const detailParts = [eonText, chuText].filter(s => s).join(' · ');
-    const memoHtml = e.memo ? `<div class="e-memo">"${escapeHtml(e.memo)}"</div>` : '';
+    const memoHtml = e.memo ? `<div class="e-memo tw:!mt-1 tw:!truncate tw:!text-xs tw:!text-slate-400">"${escapeHtml(e.memo)}"</div>` : '';
     const totalText = e.total !== null ? e.total.toFixed(1) : '—';
     return `
-      <div class="log-entry">
-        <div class="e-date">${dateFormatted}</div>
-        <div class="e-info">
-          <div class="e-year">${e.year}학년도 기출</div>
-          <div class="e-detail">${detailParts}</div>
+      <div class="log-entry tw:!grid tw:!grid-cols-[88px_minmax(0,1fr)_auto_auto] tw:!items-center tw:!gap-3 tw:!border-t tw:!border-slate-100 tw:!px-4 tw:!py-3 tw:transition-colors tw:hover:!bg-blue-50/40 tw:max-sm:!grid-cols-[1fr_auto]">
+        <div class="e-date tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-500">${dateFormatted}</div>
+        <div class="e-info tw:!min-w-0">
+          <div class="e-year tw:!text-sm tw:!font-extrabold tw:!text-slate-950">${e.year}학년도 기출</div>
+          <div class="e-detail tw:!mt-1 tw:!text-xs tw:!font-semibold tw:!text-slate-500">${detailParts}</div>
           ${memoHtml}
         </div>
-        <div class="e-scores">
-          <div class="e-total">${totalText}</div>
-          <div class="e-sub">표점 합계</div>
+        <div class="e-scores tw:!text-right">
+          <div class="e-total tw:!font-mono tw:!text-lg tw:!font-extrabold tw:!text-slate-950">${totalText}</div>
+          <div class="e-sub tw:!text-[11px] tw:!font-bold tw:!text-slate-500">표점 합계</div>
         </div>
-        <button class="e-delete" onclick="deleteLogEntry('${e.id}')" title="삭제">×</button>
+        <button class="e-delete tw:!inline-flex tw:!h-8 tw:!w-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!text-base tw:!font-bold tw:!text-slate-500 tw:transition-colors tw:hover:!border-red-300 tw:hover:!text-red-600 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" onclick="deleteLogEntry('${e.id}')" title="삭제">×</button>
       </div>`;
   }).join('');
 }

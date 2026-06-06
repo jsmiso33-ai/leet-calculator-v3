@@ -123,7 +123,7 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <link rel="stylesheet" href="styles.css?v=20260604ui" />
-<link rel="stylesheet" href="admission-tailwind.css?v=20260606tw" />
+<link rel="stylesheet" href="site-tailwind.css?v=20260606tw" />
 </head>
 <body>
 <a class="skip-link" href="#main">본문으로 건너뛰기</a>
@@ -162,9 +162,9 @@
     <button class="tab-btn admin-only" data-tab="admin" style="display:none;">메타데이터 관리</button>
   </nav>
 
-  <div class="tab-panel active" id="tab-calc">
+  <div class="tab-panel active tw:space-y-4" id="tab-calc">
 
-  <section class="hero-pulse" id="heroPulse">
+  <section class="hero-pulse tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="heroPulse">
     <div class="hero-pulse-bg"></div>
     <div class="hp-result">
       <div class="hp-era-badge">
@@ -223,7 +223,7 @@
     </div>
   </section>
 
-  <section class="combined" id="combinedSection" style="display:none">
+  <section class="combined tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="combinedSection" style="display:none">
     <div class="label-block">
       <div class="lbl">표준점수 합계</div>
       <div class="lbl-main">언어 + 추리</div>
@@ -236,8 +236,8 @@
     </div>
   </section>
 
-  <div class="results-area">
-    <div class="result-card">
+  <div class="results-area tw:!grid tw:!grid-cols-1 tw:!gap-4 tw:lg:!grid-cols-2">
+    <div class="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
       <div class="head">
         <span class="name">언어이해</span>
         <span class="max-info" id="eonHeadMax">— / 30</span>
@@ -248,7 +248,7 @@
         <tbody></tbody>
       </table>
     </div>
-    <div class="result-card">
+    <div class="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
       <div class="head">
         <span class="name">추리논증</span>
         <span class="max-info" id="chuHeadMax">— / 40</span>
@@ -261,14 +261,14 @@
     </div>
   </div>
 
-  <section class="chart-card">
-    <div class="section-label">연도별 표준점수 합계 추이</div>
-    <div class="section-desc">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
+  <section class="chart-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm">
+    <div class="section-label tw:!text-lg tw:!font-extrabold tw:!text-slate-950">연도별 표준점수 합계 추이</div>
+    <div class="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
     <div class="chart-summary" id="chartSummary" aria-live="polite"></div>
     <div class="chart-wrap"><canvas id="chart"></canvas></div>
   </section>
 
-  <details class="detail-viewer">
+  <details class="detail-viewer tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
     <summary>전체 환산표 (연도별 원점수–표준점수–백분위)</summary>
     <div class="viewer-body">
       <div class="year-tabs" id="yearTabs"></div>
@@ -277,24 +277,24 @@
   </details>
   </div><!-- /tab-calc -->
 
-  <div class="tab-panel" id="tab-exams">
-    <section class="input-area">
-      <div class="section-label">LEET 기출문제 다운로드</div>
-      <div class="section-desc">2009~2026학년도 법학적성시험 기출문제와 정답입니다. 과목을 클릭하면 새 탭에서 PDF가 열립니다. (출처: 법학전문대학원협의회 공개 자료)</div>
-      <p class="exams-copyright">※ 법학적성시험 문제·정답의 저작권 및 출판권은 법학전문대학원협의회에 있습니다.</p>
+  <div class="tab-panel tw:space-y-4" id="tab-exams">
+    <section class="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
+      <div class="section-label tw:!text-2xl tw:!font-extrabold tw:!text-slate-950">LEET 기출문제 다운로드</div>
+      <div class="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">2009~2026학년도 법학적성시험 기출문제와 정답입니다. 과목을 클릭하면 새 탭에서 PDF가 열립니다. (출처: 법학전문대학원협의회 공개 자료)</div>
+      <p class="exams-copyright tw:!mt-3 tw:!text-xs tw:!font-semibold tw:!text-slate-500">※ 법학적성시험 문제·정답의 저작권 및 출판권은 법학전문대학원협의회에 있습니다.</p>
     </section>
-    <section class="exams-grid" id="examsGrid"></section>
+    <section class="exams-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" id="examsGrid"></section>
   </div><!-- /tab-exams -->
 
-  <div class="tab-panel" id="tab-log">
+  <div class="tab-panel tw:space-y-4" id="tab-log">
 
     <!-- 입력 모드 토글 -->
-    <div class="grade-mode-toggle">
+    <div class="grade-mode-toggle tw:!mb-4 tw:!flex tw:!flex-wrap tw:!gap-2 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-2 tw:!shadow-sm">
       <button data-grade-mode="total" class="active">회차 단위 입력 (점수만)</button>
       <button data-grade-mode="per-question">문항별 채점 (O/X)</button>
     </div>
 
-    <section class="login-nudge-card" id="loginNudgeCard">
+    <section class="login-nudge-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm" id="loginNudgeCard">
       <div class="login-nudge-copy">
         <div class="login-nudge-kicker">게스트 기록 저장 중</div>
         <div class="login-nudge-title" id="loginNudgeTitle">
@@ -308,11 +308,11 @@
     </section>
 
     <!-- 회차 단위 입력 -->
-    <section class="input-area" id="modeTotal">
-      <div class="section-label">새 기출 기록 추가</div>
-      <div class="section-desc">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
+    <section class="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7" id="modeTotal">
+      <div class="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">새 기출 기록 추가</div>
+      <div class="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
 
-      <div class="log-input-grid">
+      <div class="log-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-4">
         <div class="field">
           <label>학년도 기출</label>
           <select id="logYear" class="log-select"></select>
@@ -351,11 +351,11 @@
     </section>
 
     <!-- 문항별 채점 모드 -->
-    <section class="qgrade-section" id="modePerQuestion" style="display:none;">
-      <div class="section-label">문항별 채점</div>
-      <div class="section-desc">학년도와 풀이 날짜를 선택하고 각 문항을 클릭해 정답·오답·헷갈림을 표시하세요. 메타데이터가 입력된 학년도는 카테고리·난이도가 자동으로 표시됩니다.</div>
+    <section class="qgrade-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7" id="modePerQuestion" style="display:none;">
+      <div class="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">문항별 채점</div>
+      <div class="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">학년도와 풀이 날짜를 선택하고 각 문항을 클릭해 정답·오답·헷갈림을 표시하세요. 메타데이터가 입력된 학년도는 카테고리·난이도가 자동으로 표시됩니다.</div>
 
-      <div class="qgrade-controls">
+      <div class="qgrade-controls tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-3">
         <div class="field">
           <label>학년도 기출</label>
           <select id="qgYear" class="log-select"></select>
@@ -437,7 +437,7 @@
     </section>
 
     <!-- 카테고리별 통계 -->
-    <section class="qstats-section" id="qstatsSection" style="display:none;">
+    <section class="qstats-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="qstatsSection" style="display:none;">
       <div class="qstats-header">
         <div class="section-label" style="margin:0;">유형별 정답률 분석</div>
         <span class="qstats-summary" id="qstatsSummary"></span>
@@ -446,7 +446,7 @@
     </section>
 
     <!-- 통계 카드 -->
-    <section class="log-stats" id="logStats" style="display:none;">
+    <section class="log-stats tw:!grid tw:!grid-cols-2 tw:!gap-3 tw:lg:!grid-cols-4" id="logStats" style="display:none;">
       <div class="stat-card">
         <div class="stat-label">총 풀이 기록</div>
         <div class="stat-value" id="statCount">—</div>
@@ -466,7 +466,7 @@
     </section>
 
     <!-- 추이 그래프 -->
-    <section class="chart-card" id="logChartCard" style="display:none;">
+    <section class="chart-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="logChartCard" style="display:none;">
       <div class="section-label">시간순 표준점수 추이</div>
       <div class="section-desc">푼 날짜 순으로 표준점수 합계 변화를 보여줍니다.</div>
       <div class="chart-summary" id="logChartSummary" aria-live="polite"></div>
@@ -474,7 +474,7 @@
     </section>
 
     <!-- 기록 목록 -->
-    <section class="log-list-card">
+    <section class="log-list-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
       <div style="display:flex;align-items:center;padding: 24px 28px 0;">
         <div class="section-label" style="margin:0;">기록 목록</div>
         <span class="sync-indicator" id="syncIndicator" style="display:none;">
@@ -492,12 +492,12 @@
 
   </div><!-- /tab-log -->
 
-  <div class="tab-panel" id="tab-schools">
+  <div class="tab-panel tw:space-y-4" id="tab-schools">
 
     <!-- 점수 입력 -->
-    <section class="input-area">
-      <div class="section-label">정량 점수 입력</div>
-      <div class="section-desc">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장됩니다.</div>
+    <section class="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
+      <div class="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">정량 점수 입력</div>
+      <div class="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장됩니다.</div>
 
       <!-- 기출 기록에서 불러오기 -->
       <div class="import-log-row" id="importLogRow">
@@ -509,7 +509,7 @@
         </div>
       </div>
 
-      <div class="schools-input-grid">
+      <div class="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
         <div class="field">
           <label>LEET 언어이해 표준점수</label>
           <input type="number" inputmode="decimal" id="schEonStd" min="0" max="100" step="0.1" placeholder="예: 62.5" />
@@ -520,7 +520,7 @@
         </div>
       </div>
 
-      <div class="schools-input-grid" style="margin-top:12px;">
+      <div class="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style="margin-top:12px;">
         <div class="field">
           <label>LEET 언어이해 백분위 <span class="max">(서울대·고려대·아주대·부산대용)</span></label>
           <input type="number" inputmode="decimal" id="schEonPct" min="0" max="100" step="0.1" placeholder="예: 88.5" />
@@ -531,7 +531,7 @@
         </div>
       </div>
 
-      <div class="schools-input-grid" style="margin-top:12px;">
+      <div class="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style="margin-top:12px;">
         <div class="field">
           <label>GPA 백분위 <span class="max">(0–100)</span></label>
           <input type="number" inputmode="decimal" id="schGpaPct" min="0" max="100" step="0.01" placeholder="예: 95.5" />
@@ -549,7 +549,7 @@
         </div>
       </div>
 
-      <div class="schools-input-grid" style="margin-top:12px;">
+      <div class="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style="margin-top:12px;">
         <div class="field">
           <label>공인영어 종류</label>
           <select id="schEngType" class="log-select">
@@ -577,9 +577,9 @@
     </section>
 
     <!-- 정렬 + 학교 선택 -->
-    <section class="schools-controls">
-      <div class="ctrl-label">정렬 기준:</div>
-      <div class="ctrl-buttons">
+    <section class="schools-controls tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2">
+      <div class="ctrl-label tw:!text-xs tw:!font-bold tw:!text-slate-500">정렬 기준:</div>
+      <div class="ctrl-buttons tw:!flex tw:!flex-wrap tw:!gap-2">
         <button class="sort-btn active" data-sort="leet">LEET 비중 높은 순</button>
         <button class="sort-btn" data-sort="alpha">학교명 가나다순</button>
         <button class="sort-btn" data-sort="myscore">내 점수율 높은 순</button>
@@ -587,7 +587,7 @@
     </section>
 
     <!-- 학교 선택 -->
-    <details class="school-filter-card" id="schoolFilterCard">
+    <details class="school-filter-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="schoolFilterCard">
       <summary>
         <span class="sf-label">학교 선택</span>
         <span class="sf-count" id="schoolFilterCount"></span>
@@ -599,14 +599,14 @@
     </details>
 
     <!-- 학교 이름 검색 (모바일 긴 스크롤 빠르게 좁히기) -->
-    <div class="school-search-bar">
+    <div class="school-search-bar tw:!flex tw:!items-center tw:!gap-2 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!shadow-sm">
       <svg class="school-search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm10 2-4.35-4.35"/></svg>
       <input type="search" id="schoolSearch" class="school-search-input" placeholder="학교 이름 검색 (예: 서울, 연세, 부산)" autocomplete="off" enterkeyhint="search" aria-label="학교 이름 검색" />
       <button type="button" id="schoolSearchClear" class="school-search-clear" aria-label="검색어 지우기" style="display:none;">✕</button>
     </div>
 
     <!-- 학교별 카드 -->
-    <section class="schools-grid" id="schoolsGrid"></section>
+    <section class="schools-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:lg:!grid-cols-3" id="schoolsGrid"></section>
 
   </div><!-- /tab-schools -->
 
@@ -617,25 +617,26 @@
       <div class="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">나의 LEET·학점 입력값과 2026학년도 25개 로스쿨 입시결과를 비교해 추천 쇼트리스트와 학교별 비교표를 구성합니다.</div>
     </section>
 
+    <div id="admissionReactRoot">
     <section class="adm-summary tw:!mb-4 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-4" id="admSummary"></section>
 
-    <section class="adm-decision-toolbar tw:!mb-3 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-2 tw:!shadow-sm" aria-label="입시결과 보기 옵션">
-      <div class="adm-grade-tabs tw:!flex tw:!flex-wrap tw:!gap-2" id="admGradeTabs" role="tablist" aria-label="지원권 필터">
+    <section class="adm-decision-toolbar tw:!mb-3 tw:!flex tw:!flex-wrap tw:!items-center tw:!justify-between tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm" aria-label="입시결과 보기 옵션">
+      <div class="adm-grade-tabs tw:!flex tw:!min-w-0 tw:!flex-wrap tw:!gap-2" id="admGradeTabs" role="tablist" aria-label="지원권 필터">
         <button type="button" class="active tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="all">전체 <span>0</span></button>
         <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="safe">안정 <span>0</span></button>
         <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="match">적정 <span>0</span></button>
         <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="reach">도전 <span>0</span></button>
         <button type="button" class="tw:!min-h-9 tw:!rounded-lg tw:!px-3 tw:!text-xs tw:!font-extrabold tw:transition-colors tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" data-adm-grade="hard">위험 <span>0</span></button>
       </div>
-    </section>
 
-    <section class="schools-controls adm-sort-controls tw:!mb-3 tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2">
+      <div class="schools-controls adm-sort-controls tw:!m-0 tw:!ml-auto tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2">
       <div class="ctrl-label tw:!text-xs tw:!font-bold tw:!text-slate-500">정렬:</div>
       <div class="ctrl-buttons tw:!flex tw:!flex-wrap tw:!gap-2">
         <button class="sort-btn active tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="diff">내 LEET 여유 큰 순</button>
         <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="leet-cut">LEET 표점합 높은 순</button>
         <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="enrolled">등록인원 많은 순</button>
         <button class="sort-btn tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-xs tw:!font-bold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700" data-adm-sort="alpha">학교명 가나다순</button>
+      </div>
       </div>
     </section>
 
@@ -708,6 +709,7 @@
         </table>
       </section>
     </details>
+    </div>
 
   </div><!-- /tab-admission -->
 
@@ -885,6 +887,7 @@
 <script src="data/meta.js?v=20260528r"></script>
 <script src="data/schools.js?v=20260528r"></script>
 <script src="auth.js?v=20260529impl"></script>
+<script src="admission-react.js?v=20260606react1"></script>
 <script src="app.js?v=20260606evt2"></script>
 <script src="admin.js?v=20260528r"></script>
 <script src="feedback.js?v=20260529fb"></script>
