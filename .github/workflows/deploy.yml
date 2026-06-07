@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+# main 브랜치에 푸시되면 Vite로 빌드해 GitHub Pages에 배포한다.
+# ⚠️ 활성화하려면 GitHub 저장소 Settings → Pages → "Build and deployment" → Source 를
+#    "GitHub Actions"로 변경해야 한다. (현재는 "Deploy from a branch" 라서 이 워크플로가 무시됨)
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

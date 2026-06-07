@@ -1468,3 +1468,5 @@ const ADMISSION_2026 = {
     eng:  { val: null, max: null, label: '영어', unit: '', note: 'TOEIC 965' },
   },
 };
+
+export { LAW_SCHOOLS, ADMISSION_2026 };

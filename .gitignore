@@ -5,3 +5,9 @@ shots/
 
 # 사이드바 레이아웃 초안 보관용 (라이브 미적용)
 sidebar-draft/
+
+# Vite 빌드 산출물
+dist/
+
+# 마이그레이션 참고용 임시 파일
+_orig_index_ref.html

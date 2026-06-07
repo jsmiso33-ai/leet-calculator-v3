@@ -777,3 +777,5 @@ function getMeta(year, section, no) {
   if (!yearData || !yearData[section]) return null;
   return yearData[section].find(q => q.no === no) || null;
 }
+
+export { LEET_TAXONOMY, DIFFICULTY_LEVELS, LEET_META, getMeta };

@@ -639,12 +639,11 @@ render();
 // ===========================================================================
 // 입시결과 비교 탭
 // ===========================================================================
-let admSortKey = 'diff';
+let admSortKey = 'leet-cut';
 let admSelectedSchools = null; // null = 전체, 배열 = 선택된 학교만
 let admGradeFilter = 'all';
 let admFocusedSchool = null;
 let admCompareSchools = [];
-const ADM_SHORTLIST_LIMIT = 10;
 const ADM_COMPARE_LIMIT = 3;
 
 const ADM_GRADE_LONG_LABEL = {
@@ -854,45 +853,16 @@ function sortAdmByAmbition(list) {
   });
 }
 
-function buildAdmRecommendedRows(rows) {
-  const picked = [];
-  const seen = new Set();
-  const add = (items, limit) => {
-    let count = 0;
-    for (const row of items) {
-      if (!row || seen.has(row.name)) continue;
-      picked.push(row);
-      seen.add(row.name);
-      count++;
-      if (limit && count >= limit) break;
-      if (picked.length >= ADM_SHORTLIST_LIMIT) break;
-    }
-  };
-
-  const safe = sortAdmByAmbition(rows.filter(r => r.grade === 'safe'));
-  const match = sortAdmByAmbition(rows.filter(r => r.grade === 'match'));
-  const reach = sortAdmByAmbition(rows.filter(r => r.grade === 'reach'));
-  const hard = sortAdmByAmbition(rows.filter(r => r.grade === 'hard'));
-
-  add(safe, 4);
-  add(match, 3);
-  add(reach, 3);
-  add(hard, 1);
-  add(rows.filter(r => r.favorite), 3);
-  add(rows, ADM_SHORTLIST_LIMIT);
-  return picked.slice(0, ADM_SHORTLIST_LIMIT);
-}
-
 function getAdmCardRows(rows) {
   const scoped = admGradeFilter === 'all'
-    ? buildAdmRecommendedRows(rows)
-    : sortAdmByAmbition(rows.filter(r => r.grade === admGradeFilter));
-  return scoped.slice(0, ADM_SHORTLIST_LIMIT);
+    ? rows
+    : rows.filter(r => r.grade === admGradeFilter);
+  return scoped;
 }
 
 function getAdmShortlistMeta(rows, totalRows) {
-  const label = admGradeFilter === 'all' ? '추천' : getAdmGradeLabel(admGradeFilter);
-  return `${label} ${rows.length}개 / 전체 ${totalRows}개`;
+  const label = admGradeFilter === 'all' ? '전체' : getAdmGradeLabel(admGradeFilter);
+  return `${label} ${rows.length}개 표시 중`;
 }
 
 function toggleAdmCompareSchool(name) {
@@ -944,7 +914,7 @@ function renderAdmissionCards(rows, leetSum, totalRows = rows.length, gpaPct = n
   if (!rows.length) {
     cards.innerHTML = `
       <div class="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
-        <strong>추천할 학교가 없습니다</strong>
+        <strong>표시할 학교가 없습니다</strong>
         <span>지원권 필터나 학교 선택 조건을 조정해보세요.</span>
       </div>`;
     return;
@@ -1023,7 +993,7 @@ function renderAdmComparePanel(allRows, shortlistRows, leetSum, gpaPct) {
   slots.innerHTML = Array.from({ length: ADM_COMPARE_LIMIT }, (_, idx) => {
     const row = compareRows[idx];
     if (!row) {
-      return `<div class="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!border-l-4 tw:!bg-slate-50 tw:!p-3"><span class="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-white tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">${idx + 1}</span><strong class="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-600">학교 선택</strong><small class="tw:!text-xs tw:!font-bold tw:!text-slate-400">쇼트리스트에서 추가</small></div>`;
+      return `<div class="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!border-l-4 tw:!bg-slate-50 tw:!p-3"><span class="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-white tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">${idx + 1}</span><strong class="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-600">학교 선택</strong><small class="tw:!text-xs tw:!font-bold tw:!text-slate-400">학교 카드에서 추가</small></div>`;
     }
     return `
       <div class="adm-compare-slot grade-${row.grade || 'pending'} ${getAdmSlotToneTw(row.grade)} tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!border-l-4 tw:!bg-white tw:!p-3 tw:!shadow-sm">
@@ -1037,7 +1007,7 @@ function renderAdmComparePanel(allRows, shortlistRows, leetSum, gpaPct) {
     wrap.innerHTML = `
       <div class="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
         <strong>비교할 학교가 없습니다</strong>
-        <span>쇼트리스트에서 학교를 선택하면 비교표가 표시됩니다.</span>
+        <span>학교 카드에서 학교를 선택하면 비교표가 표시됩니다.</span>
       </div>`;
     return;
   }
@@ -1269,7 +1239,7 @@ function buildAdmissionReactModel(rows, cardRows, leetSum, gpaPct, gradeCounts, 
   const filterLabel = admGradeFilter === 'all' ? '전체' : getAdmGradeLabel(admGradeFilter);
   const tableRows = rows.map((row, index) => {
     const plain = getAdmPlainRowForReact(row, leetSum, gpaPct);
-    plain.separatorBefore = (admSortKey === 'leet-cut' || admSortKey === 'diff')
+    plain.separatorBefore = admSortKey === 'leet-cut'
       && index > 0
       && !rows[index - 1].leet50IsConverted
       && row.leet50IsConverted;
@@ -1311,7 +1281,7 @@ function getAdmissionReactActions() {
       renderAdmission();
     },
     setSort(sort) {
-      admSortKey = sort || 'diff';
+      admSortKey = sort || 'leet-cut';
       if (window.track) track('admission_sort', { sort: admSortKey });
       renderAdmission();
     },
@@ -1657,19 +1627,6 @@ function renderAdmission() {
     rows.sort((a, b) => b.enrolled - a.enrolled);
   } else if (admSortKey === 'alpha') {
     rows.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-  } else if (admSortKey === 'diff') {
-    // 표점합 학교끼리, 자체환산 학교끼리 각각 여유 큰 순 정렬
-    rows.sort((a, b) => {
-      if (!a.leet50IsConverted && !b.leet50IsConverted) {
-        return (b.leetDiffVal ?? -999) - (a.leetDiffVal ?? -999);
-      }
-      if (!a.leet50IsConverted && b.leet50IsConverted) return -1;
-      if (a.leet50IsConverted && !b.leet50IsConverted) return 1;
-      // 둘 다 자체환산 → 만점 대비 비율로 정규화 비교
-      const aRatio = (a.leetDiffVal !== null && a.leet50Max) ? a.leetDiffVal / a.leet50Max : -999;
-      const bRatio = (b.leetDiffVal !== null && b.leet50Max) ? b.leetDiffVal / b.leet50Max : -999;
-      return bRatio - aRatio;
-    });
   }
 
   const cardRows = getAdmCardRows(rows);
@@ -1710,7 +1667,7 @@ function renderAdmission() {
     const engPlain = r.eng50Text.replace(/<[^>]*>/g, '');
     // 표점합→자체환산 경계에 구분선 추가
     let separator = '';
-    if ((admSortKey === 'leet-cut' || admSortKey === 'diff') && i > 0 && !rows[i-1].leet50IsConverted && r.leet50IsConverted) {
+    if (admSortKey === 'leet-cut' && i > 0 && !rows[i-1].leet50IsConverted && r.leet50IsConverted) {
       separator = `<tr class="adm-separator-row"><td colspan="7">▼ 이하 자체 환산점수 (표점합과 직접 비교 불가)</td></tr>`;
     }
     return `${separator}<tr data-grade="${r.grade || ''}">

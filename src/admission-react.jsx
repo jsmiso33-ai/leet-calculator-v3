@@ -1,5 +1,4 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 
 const gradeLabels = {
   all: '전체',
@@ -10,7 +9,6 @@ const gradeLabels = {
 };
 
 const sortLabels = {
-  diff: '내 LEET 여유 큰 순',
   'leet-cut': 'LEET 표점합 높은 순',
   enrolled: '등록인원 많은 순',
   alpha: '학교명 가나다순',
@@ -61,8 +59,8 @@ function Summary({ model }) {
         </strong>
         <p className="tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!font-semibold tw:!leading-6 tw:!text-slate-600">{model.recCopy}</p>
         <div className="adm-report-footer tw:!mt-4 tw:!flex tw:!flex-wrap tw:!items-center tw:!justify-center tw:!gap-2">
-          <span className="adm-readiness tw:!inline-flex tw:!rounded-lg tw:!bg-white tw:!px-3 tw:!py-1.5 tw:!text-[11px] tw:!font-extrabold tw:!text-slate-700 tw:!shadow-sm">{model.readinessText}</span>
-          <span className="tw:!inline-flex tw:!rounded-lg tw:!bg-blue-600 tw:!px-3 tw:!py-1.5 tw:!text-[11px] tw:!font-extrabold tw:!text-white">상세 표 {model.totalRows}개교</span>
+          <span className="adm-readiness tw:!m-0 tw:!inline-flex tw:!min-h-9 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!bg-white tw:!px-3 tw:!py-2 tw:!text-[11px] tw:!font-extrabold tw:!leading-tight tw:!text-slate-700 tw:!shadow-sm">{model.readinessText}</span>
+          <span className="tw:!inline-flex tw:!min-h-9 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!bg-blue-600 tw:!px-3 tw:!py-2 tw:!text-[11px] tw:!font-extrabold tw:!leading-tight tw:!text-white">상세 표 {model.totalRows}개교</span>
         </div>
       </div>
 
@@ -197,20 +195,20 @@ function Shortlist({ model, actions }) {
     <section className="adm-shortlist-panel tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:md:!p-5">
       <div className="adm-panel-head tw:!mb-4 tw:!flex tw:!items-start tw:!justify-between tw:!gap-3 tw:max-sm:!flex-col">
         <div>
-          <h3 className="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">추천 쇼트리스트</h3>
-          <p className="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">지원권과 기준선을 함께 고려해 최대 10개 학교를 먼저 보여줍니다.</p>
+          <h3 className="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">학교별 입시결과</h3>
+          <p className="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">선택한 정렬과 지원권 필터 기준으로 모든 학교를 카드로 보여줍니다.</p>
         </div>
         <span className="tw:!shrink-0 tw:!rounded-lg tw:!bg-slate-100 tw:!px-2.5 tw:!py-1.5 tw:!font-mono tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500 tw:max-sm:!w-full tw:max-sm:!text-center">
           {model.shortlistMeta}
         </span>
       </div>
 
-      <section className="adm-card-list tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" aria-label="추천 쇼트리스트">
+      <section className="adm-card-list tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" aria-label="학교별 입시결과">
         {model.shortlistRows.length ? model.shortlistRows.map((row, index) => (
           <ShortlistCard key={row.name} row={row} index={index} selected={model.compareSelected.includes(row.name)} actions={actions} />
         )) : (
           <div className="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
-            <strong>추천할 학교가 없습니다</strong>
+            <strong>표시할 학교가 없습니다</strong>
             <span>지원권 필터나 학교 선택 조건을 조정해보세요.</span>
           </div>
         )}
@@ -230,7 +228,7 @@ function ShortlistCard({ row, index, selected, actions }) {
           <span className="tw:!mt-1 tw:!block tw:!text-xs tw:!font-semibold tw:!text-slate-500">{row.regionText} · {row.gradeLabel}</span>
         </div>
         <span className="adm-short-rank tw:!rounded-lg tw:!bg-slate-100 tw:!px-2 tw:!py-1 tw:!text-[10px] tw:!font-extrabold tw:!text-slate-500 tw:max-sm:!col-start-2 tw:max-sm:!justify-self-start">
-          {index < 3 ? `추천 ${index + 1}지망` : `후보 ${index + 1}`}
+          {String(index + 1).padStart(2, '0')}
         </span>
       </div>
 
@@ -293,7 +291,7 @@ function ComparePanel({ model, actions }) {
         {compareRows.length ? <CompareTable model={model} /> : (
           <div className="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
             <strong>비교할 학교가 없습니다</strong>
-            <span>쇼트리스트에서 학교를 선택하면 비교표가 표시됩니다.</span>
+            <span>학교 카드에서 학교를 선택하면 비교표가 표시됩니다.</span>
           </div>
         )}
       </div>
@@ -306,7 +304,7 @@ function EmptyCompareSlot({ index }) {
     <div className="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!border-l-4 tw:!bg-slate-50 tw:!p-3">
       <span className="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-white tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{index + 1}</span>
       <strong className="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-600">학교 선택</strong>
-      <small className="tw:!text-xs tw:!font-bold tw:!text-slate-400">쇼트리스트에서 추가</small>
+      <small className="tw:!text-xs tw:!font-bold tw:!text-slate-400">학교 카드에서 추가</small>
     </div>
   );
 }
@@ -434,14 +432,4 @@ function AdmissionApp({ model, actions }) {
   );
 }
 
-let root = null;
-
-window.AdmissionReact = {
-  render(model, actions) {
-    const node = document.getElementById('admissionReactRoot');
-    if (!node) return false;
-    if (!root) root = createRoot(node);
-    root.render(<AdmissionApp model={model} actions={actions} />);
-    return true;
-  },
-};
+export { AdmissionApp };
