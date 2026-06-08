@@ -10,6 +10,7 @@ import './lib/analytics.js';
 // 기존 스타일 자산 그대로 사용 (semantic + tw: Tailwind 빌드 산출물)
 import '../styles.css';
 import '../site-tailwind.css';
+import './shadcn.css';
 
 createRoot(document.getElementById('root')).render(
   <AuthProvider>

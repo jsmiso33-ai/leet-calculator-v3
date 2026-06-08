@@ -24,6 +24,7 @@
   "homepage": "https://github.com/jsmiso33-ai/leet-calculator-v3#readme",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
+    "@tailwindcss/vite": "^4.3.0",
     "@vitejs/plugin-react": "^6.0.2",
     "esbuild": "^0.28.0",
     "react": "^19.2.7",
@@ -32,7 +33,12 @@
     "vite": "^8.0.16"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.16",
     "@supabase/supabase-js": "^2.107.0",
-    "chart.js": "^4.5.1"
+    "chart.js": "^4.5.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.17.0",
+    "tailwind-merge": "^3.6.0"
   }
 }
