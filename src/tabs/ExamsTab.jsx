@@ -26,7 +26,7 @@ export default function ExamsTab() {
       </section>
       <section className="exams-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" id="examsGrid">
         {YEARS.map((y) => (
-          <div key={y} className="exam-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:transition tw:duration-200 tw:hover:!-translate-y-0.5 tw:hover:!border-blue-200 tw:hover:!shadow-lg tw:motion-reduce:!transform-none tw:motion-reduce:!transition-none">
+          <div key={y} className="exam-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
             <a className="exam-year tw:!mb-2 tw:!block tw:!text-lg tw:!font-extrabold tw:!text-slate-950 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" href={`exams/${y}/`}>{y}학년도</a>
             <div className="exam-rows tw:!grid">
               <ExamRow year={y} subj="언어이해" />

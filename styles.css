@@ -354,6 +354,58 @@
   }
   .hp-percentile-text b { color: var(--ink); font-weight: 600; }
 
+  /* 백분위 미터 (상위 % 시각화) */
+  .hp-meter {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    animation: hpMeterIn var(--motion-medium) var(--ease-out-soft) both;
+  }
+  @keyframes hpMeterIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hp-meter-track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+  }
+  .hp-meter-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--gold) 100%);
+    transition: width var(--motion-slow) var(--ease-out);
+  }
+  .hp-meter-caption {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mute);
+    letter-spacing: 0;
+    text-align: center;
+  }
+  .hp-meter-caption b {
+    color: var(--accent-hover);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .hp-meter-sub {
+    color: var(--ink-tertiary);
+    font-weight: 500;
+    margin-left: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hp-meter { animation: none; }
+    .hp-meter-fill { transition: none; }
+    .hp-era-dot { animation: none; }
+  }
+
   /* input column */
   .hp-input {
     padding: 34px 32px;
@@ -1436,8 +1488,9 @@
     transition: all var(--motion-base) var(--ease-out);
   }
   .stat-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    border-color: rgba(37, 99, 235, 0.24);
+    box-shadow: var(--shadow-lg);
   }
   .stat-card::before {
     display: none;
@@ -1694,11 +1747,14 @@
     box-shadow: var(--shadow-sm);
     position: relative;
     overflow: hidden;
-    transition: transform var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
+    transition: transform var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out);
   }
+  /* 카드 hover 통일: -2px lift / accent-tint border / shadow-lg.
+     school·exam은 tw !important base(border-slate-200·shadow-sm)를 덮기 위해 !important 필요 */
   .school-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 16px 32px rgba(0,0,0,0.08);
+    border-color: rgba(37, 99, 235, 0.24) !important;
+    box-shadow: var(--shadow-lg) !important;
   }
   .school-card::before {
     content: '';
@@ -4337,6 +4393,13 @@
     border-radius: var(--radius-md);
     background: #fff;
     padding: 16px 18px;
+    transition: transform var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out);
+  }
+  /* 카드 hover 통일 (school-card와 동일 규격) */
+  .exam-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(37, 99, 235, 0.24) !important;
+    box-shadow: var(--shadow-lg) !important;
   }
   .exam-year {
     display: inline-block;
@@ -5159,9 +5222,9 @@
   }
 
   #tab-admission .adm-metric-card:hover {
-    transform: translateY(-1px);
-    border-color: rgba(37, 99, 235, 0.28);
-    box-shadow: 0 12px 26px rgba(15, 23, 42, 0.09);
+    transform: translateY(-2px);
+    border-color: rgba(37, 99, 235, 0.24);
+    box-shadow: var(--shadow-lg);
   }
 
   .adm-summary-lead {
@@ -5317,6 +5380,7 @@
     box-shadow: var(--shadow-sm);
     overflow: hidden;
     transition:
+      transform var(--motion-fast) var(--ease-out),
       border-color var(--motion-fast) var(--ease-out),
       box-shadow var(--motion-fast) var(--ease-out),
       background-color var(--motion-fast) var(--ease-out);
@@ -5328,13 +5392,15 @@
   .adm-school-card.grade-hard { border-left-color: #71717a; }
   .adm-school-card.grade-pending { border-left-color: rgba(113, 113, 122, 0.45); }
 
-  .adm-school-card:hover,
-  .adm-school-card.active {
+  .adm-school-card:hover {
+    transform: translateY(-2px);
     border-color: rgba(37, 99, 235, 0.24);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
   }
 
   .adm-school-card.active {
+    border-color: rgba(37, 99, 235, 0.24);
+    box-shadow: var(--shadow-md);
     background: #FBFDFF;
   }
 
@@ -5903,6 +5969,7 @@
     flex-direction: column;
     gap: 14px;
     border-top: 3px solid rgba(113, 113, 122, 0.35);
+    transition: transform var(--motion-fast) var(--ease-out), border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
   }
 
   .adm-short-card.grade-safe { border-top-color: #16a34a; }
@@ -6307,7 +6374,7 @@
     .adm-short-card:hover {
       transform: translateY(-2px);
       border-color: rgba(37, 99, 235, 0.24);
-      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.10);
+      box-shadow: var(--shadow-lg);
     }
 
     .adm-compare-toggle:hover,
@@ -6318,6 +6385,18 @@
 
     .adm-compare-toggle.active:hover {
       box-shadow: 0 10px 22px rgba(37, 99, 235, 0.22);
+    }
+  }
+
+  /* 카드 hover 통일 — 모션 최소화 사용자는 lift 비활성화 (school/exam의 tw motion-reduce 대체) */
+  @media (prefers-reduced-motion: reduce) {
+    .school-card:hover,
+    .exam-card:hover,
+    .stat-card:hover,
+    #tab-admission .adm-metric-card:hover,
+    .adm-school-card:hover,
+    .adm-short-card:hover {
+      transform: none;
     }
   }
 

@@ -23,6 +23,39 @@ function yearsSummary(set) {
 const parseRaw = (v) =>
   (v === '' || isNaN(parseInt(v, 10))) ? null : Math.max(0, Math.min(40, parseInt(v, 10)));
 
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
+
+// 숫자 카운트업: target이 바뀌면 이전 값에서 부드럽게 증가. null이면 애니메이션 없이 null 반환.
+function useCountUp(target, duration = 480) {
+  const [display, setDisplay] = useState(target);
+  const fromRef = useRef(target ?? 0);
+  const rafRef = useRef(0);
+  useEffect(() => {
+    if (target == null) { setDisplay(null); return undefined; }
+    const from = fromRef.current ?? target;
+    if (prefersReducedMotion() || from === target) {
+      fromRef.current = target;
+      setDisplay(target);
+      return undefined;
+    }
+    let start;
+    const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+    const step = (ts) => {
+      if (start === undefined) start = ts;
+      const p = Math.min(1, (ts - start) / duration);
+      setDisplay(from + (target - from) * ease(p));
+      if (p < 1) { rafRef.current = requestAnimationFrame(step); }
+      else { fromRef.current = target; setDisplay(target); }
+    };
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target, duration]);
+  return display;
+}
+
 export default function CalcTab() {
   const saved = useMemo(loadState, []);
   const [eonRaw, setEonRaw] = useState(saved?.eonRaw ?? null);
@@ -73,6 +106,10 @@ export default function CalcTab() {
   const chuPct = heroResult?.chu?.pct;
   const combinedPct = (hasHero && eonPct != null && chuPct != null) ? Math.sqrt(eonPct * chuPct) : null;
 
+  // 히어로 숫자 카운트업
+  const animTotal = useCountUp(hasHero ? heroTotal : null);
+  const animPct = useCountUp(combinedPct);
+
   const toggleYear = (y) => setSelectedYears((prev) => {
     const n = new Set(prev);
     if (n.has(y)) n.delete(y); else n.add(y);
@@ -107,19 +144,30 @@ export default function CalcTab() {
             <span className="hp-era-text"><span>{heroYear}</span>학년도 환산</span>
           </div>
           <div className="hp-score-block">
-            <div className={'hp-score' + (hasHero ? ' has-value' : '')}>{hasHero ? heroTotal.toFixed(1) : '—'}</div>
+            <div className={'hp-score' + (hasHero ? ' has-value' : '')}>{hasHero && animTotal != null ? animTotal.toFixed(1) : '—'}</div>
             <div className="hp-score-meta">합계 표준점수 <span className="dim">· 언어 + 추리</span></div>
           </div>
           <div className={'hp-percentile-text' + (hasHero ? ' has-stats' : '')}>
             {!hasHero ? '원점수를 입력하세요' : (
               <>
                 {combinedPct != null && (
-                  <div className="hp-stat"><span className="hp-stat-label">백분위</span><span className="hp-stat-val">{combinedPct.toFixed(1)}</span></div>
+                  <div className="hp-stat"><span className="hp-stat-label">백분위</span><span className="hp-stat-val">{(animPct ?? combinedPct).toFixed(1)}</span></div>
                 )}
                 <div className="hp-stat"><span className="hp-stat-label">원점수</span><span className="hp-stat-val">{eonRaw}+{chuRaw}</span></div>
               </>
             )}
           </div>
+          {hasHero && combinedPct != null && (
+            <div className="hp-meter" role="img" aria-label={`상위 ${(100 - combinedPct).toFixed(1)}% · 백분위 ${combinedPct.toFixed(1)}`}>
+              <div className="hp-meter-track">
+                <div className="hp-meter-fill" style={{ width: `${Math.max(2, Math.min(100, combinedPct))}%` }} />
+              </div>
+              <div className="hp-meter-caption">
+                상위 <b>{(100 - combinedPct).toFixed(1)}%</b>
+                <span className="hp-meter-sub">· 100명 중 약 {Math.max(1, Math.round(100 - combinedPct))}등</span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="hp-input">

@@ -241,7 +241,7 @@ function SchoolCard({ s, c, isFavorite, onToggleFavorite }) {
   const gpaBarPct = c.gpa !== null ? (c.gpa / c.gpaDenom * 100) : 0;
 
   return (
-    <div className={'school-card ' + tier + ' tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:transition tw:duration-200 tw:hover:!-translate-y-0.5 tw:hover:!border-blue-200 tw:hover:!shadow-lg tw:motion-reduce:!transform-none tw:motion-reduce:!transition-none'}>
+    <div className={'school-card ' + tier + ' tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm'}>
       <div className="sc-head tw:!mb-4">
         <div className="sc-title-row tw:!flex tw:!items-start tw:!justify-between tw:!gap-3">
           <div className="sc-name tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">{s.name}</div>
