@@ -2,7 +2,7 @@
   "name": "leet-calculator-v3",
   "version": "1.0.0",
   "description": "",
-  "main": "admin.js",
+  "main": "src/main.jsx",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node tools/copy-static.mjs",
