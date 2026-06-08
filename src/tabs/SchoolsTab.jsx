@@ -3,6 +3,8 @@ import { LAW_SCHOOLS } from '../../data/schools.js';
 import { calcSchool } from '../lib/schoolCalc.js';
 import { useSchoolInput } from '../context/SchoolInputContext.jsx';
 import { track } from '../lib/analytics.js';
+import { Input } from '../components/ui/input.jsx';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
 
 const SORTS = [
   ['leet', 'LEET 비중 높은 순'],
@@ -80,39 +82,44 @@ export default function SchoolsTab() {
         <div className="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
           <div className="field">
             <label>LEET 언어이해 표준점수</label>
-            <input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" defaultValue={initial.eonStd ?? ''} onChange={numChange('eonStd')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" defaultValue={initial.eonStd ?? ''} onChange={numChange('eonStd')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 표준점수</label>
-            <input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" defaultValue={initial.chuStd ?? ''} onChange={numChange('chuStd')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" defaultValue={initial.chuStd ?? ''} onChange={numChange('chuStd')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" defaultValue={initial.eonPct ?? ''} onChange={numChange('eonPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" defaultValue={initial.eonPct ?? ''} onChange={numChange('eonPct')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" defaultValue={initial.chuPct ?? ''} onChange={numChange('chuPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" defaultValue={initial.chuPct ?? ''} onChange={numChange('chuPct')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>GPA 백분위 <span className="max">(0–100)</span></label>
-            <input type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" defaultValue={initial.gpaPct ?? ''} onChange={numChange('gpaPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" defaultValue={initial.gpaPct ?? ''} onChange={numChange('gpaPct')} />
           </div>
           <div className="field">
             <label>GPA <span className="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
             <div style={{ display: 'flex', gap: '6px' }}>
-              <input type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} defaultValue={initial.gpaScore ?? ''} onChange={numChange('gpaScore')} />
-              <select className="log-select" style={{ width: '90px' }} value={schState.gpaScale} onChange={(e) => patch({ gpaScale: e.target.value })}>
-                <option value="4.5">4.5만점</option>
-                <option value="4.3">4.3만점</option>
-                <option value="4.0">4.0만점</option>
-              </select>
+              <Input type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} defaultValue={initial.gpaScore ?? ''} onChange={numChange('gpaScore')} />
+              <Select value={schState.gpaScale} onValueChange={(v) => patch({ gpaScale: v })}>
+                <SelectTrigger className="w-[104px] shrink-0" aria-label="GPA 만점 기준">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="4.5">4.5만점</SelectItem>
+                  <SelectItem value="4.3">4.3만점</SelectItem>
+                  <SelectItem value="4.0">4.0만점</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -120,15 +127,20 @@ export default function SchoolsTab() {
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>공인영어 종류</label>
-            <select className="log-select" value={schState.engType} onChange={(e) => patch({ engType: e.target.value })}>
-              <option value="toeic">TOEIC</option>
-              <option value="teps">TEPS (뉴텝스)</option>
-              <option value="toefl">TOEFL iBT</option>
-            </select>
+            <Select value={schState.engType} onValueChange={(v) => patch({ engType: v })}>
+              <SelectTrigger aria-label="공인영어 종류">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="toeic">TOEIC</SelectItem>
+                <SelectItem value="teps">TEPS (뉴텝스)</SelectItem>
+                <SelectItem value="toefl">TOEFL iBT</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="field">
             <label>영어 점수</label>
-            <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" defaultValue={initial.engScore ?? ''} onChange={numChange('engScore')} />
+            <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" defaultValue={initial.engScore ?? ''} onChange={numChange('engScore')} />
           </div>
         </div>
 

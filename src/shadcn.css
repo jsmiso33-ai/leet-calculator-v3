@@ -1,7 +1,10 @@
 /* shadcn/ui 테마 — preflight 없이(기존 styles.css/site-tailwind.css의 base를 건드리지 않음).
    프리픽스 없는 표준 Tailwind 유틸을 shadcn 컴포넌트에만 사용. @tailwindcss/vite가 src/ 스캔해 생성. */
 @import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
+/* utilities는 레이어에 넣지 않는다(unlayered): styles.css의 무레이어 전역 리셋
+   `* { margin:0; padding:0 }`이 @layer utilities를 항상 이겨 padding/box-shadow 유틸이
+   먹지 않던 문제 해결. unprefixed 유틸은 shadcn 컴포넌트에만 쓰이므로 사이트 영향 없음. */
+@import "tailwindcss/utilities.css";
 
 /* 사이트 팔레트(파랑 #2563EB 액센트, slate 계열)에 맞춘 shadcn 토큰 */
 @theme {
@@ -29,3 +32,11 @@
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
 }
+
+/* box-shadow 유틸리티 직접 정의.
+   theme/utilities만 부분 임포트해 Tailwind의 --tw-shadow 합성 인프라가 없어
+   shadow-* / focus:shadow-[..] / ring-* 유틸이 빈 box-shadow로 렌더되는 문제 우회.
+   unlayered 규칙이라 사이트 리셋을 특이도로 이기고, shadcn 컴포넌트에만 적용됨. */
+.sx-focus:focus,
+.sx-focus[data-state="open"] { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+.sx-elevated { box-shadow: 0 10px 32px -12px rgba(15, 23, 42, 0.28), 0 4px 10px -6px rgba(15, 23, 42, 0.14); }

@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { toast } from '../lib/ui.js';
 import LogChart from '../components/LogChart.jsx';
 import QGrade from '../components/QGrade.jsx';
+import { Input } from '../components/ui/input.jsx';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
 
 const YEARS_DESC = Object.keys(LEET).map(Number).sort((a, b) => b - a);
 
@@ -97,27 +99,32 @@ export default function LogTab() {
           <div className="log-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-4">
             <div className="field">
               <label>학년도 기출</label>
-              <select className="log-select" value={logYear} onChange={(e) => setLogYear(Number(e.target.value))}>
-                {YEARS_DESC.map((y) => <option key={y} value={y}>{y}학년도 (제{y - 2008}회)</option>)}
-              </select>
+              <Select value={String(logYear)} onValueChange={(v) => setLogYear(Number(v))}>
+                <SelectTrigger aria-label="학년도 기출">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {YEARS_DESC.map((y) => <SelectItem key={y} value={String(y)}>{y}학년도 (제{y - 2008}회)</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
             <div className="field">
               <label>푼 날짜</label>
-              <input type="date" className="log-date" value={logDate} onChange={(e) => { setLogDate(e.target.value); setDateError(''); }} />
+              <Input type="date" value={logDate} onChange={(e) => { setLogDate(e.target.value); setDateError(''); }} />
               {dateError && <div className="field-error" role="alert">{dateError}</div>}
             </div>
             <div className="field">
               <label>언어이해 원점수 <span className="max">/ {d ? d.items_eon : 30}</span></label>
-              <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_eon : 40} step="1" placeholder="0" value={logEon} onChange={(e) => setLogEon(e.target.value)} />
+              <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_eon : 40} step="1" placeholder="0" value={logEon} onChange={(e) => setLogEon(e.target.value)} />
             </div>
             <div className="field">
               <label>추리논증 원점수 <span className="max">/ {d ? d.items_chu : 40}</span></label>
-              <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_chu : 40} step="1" placeholder="0" value={logChu} onChange={(e) => setLogChu(e.target.value)} />
+              <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_chu : 40} step="1" placeholder="0" value={logChu} onChange={(e) => setLogChu(e.target.value)} />
             </div>
           </div>
           <div className="field" style={{ marginTop: '12px' }}>
             <label>메모 (선택)</label>
-            <input type="text" className="log-memo" placeholder="예: 시간 부족, 추리 연습장 활용 등" value={logMemo} onChange={(e) => setLogMemo(e.target.value)} />
+            <Input type="text" placeholder="예: 시간 부족, 추리 연습장 활용 등" value={logMemo} onChange={(e) => setLogMemo(e.target.value)} />
           </div>
 
           {showPreview && (

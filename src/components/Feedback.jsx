@@ -4,6 +4,9 @@ import { supabase } from '../lib/supabase.js';
 import { toast } from '../lib/ui.js';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog.jsx';
 import { Button } from './ui/button.jsx';
+import { Input } from './ui/input.jsx';
+import { Textarea } from './ui/textarea.jsx';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from './ui/select.jsx';
 
 // feedback.js 이식 → shadcn Dialog(Radix)로 교체. FAB은 기존 스타일 유지, 모달만 Dialog.
 const MAX_LEN = 2000;
@@ -64,18 +67,23 @@ export default function Feedback() {
 
           <div className="fb-field">
             <label htmlFor="fbCategory">분류</label>
-            <select id="fbCategory" className="log-select" value={category} onChange={(e) => setCategory(e.target.value)}>
-              {CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
-            </select>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger id="fbCategory" aria-label="분류">
+                <SelectValue placeholder="분류 선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((c) => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div className="fb-field">
             <label htmlFor="fbMessage">내용</label>
-            <textarea id="fbMessage" className="fb-textarea" rows="5" maxLength={MAX_LEN} placeholder="여기에 의견을 적어주세요" value={message} onChange={(e) => setMessage(e.target.value)} autoFocus />
+            <Textarea id="fbMessage" rows="5" maxLength={MAX_LEN} placeholder="여기에 의견을 적어주세요" value={message} onChange={(e) => setMessage(e.target.value)} autoFocus />
             <div className="fb-count"><span>{message.length}</span> / {MAX_LEN}</div>
           </div>
           <div className="fb-field">
             <label htmlFor="fbEmail">답변 받을 이메일 <span className="fb-optional">(선택)</span></label>
-            <input type="email" id="fbEmail" className="log-memo" placeholder="답변이 필요하면 적어주세요" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input type="email" id="fbEmail" placeholder="답변이 필요하면 적어주세요" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
 
           <DialogFooter>
