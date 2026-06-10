@@ -159,6 +159,12 @@ async function main() {
       continue;
     }
 
+    if (gen.passage.length < 1800) {
+      feedback = `지문이 ${gen.passage.length}자로 분량 미달입니다. 공백 포함 1,800자 이상 2,200자 이하로 다시 집필하세요. 기존 논의 구조를 유지하되 각 입장의 논거와 반론, 구체적 사례를 더 깊이 전개해 분량을 채우세요.`;
+      console.log(`  분량 미달 (${gen.passage.length}자) → 재시도`);
+      continue;
+    }
+
     console.log(`  생성 완료: "${gen.title}" — 블라인드 검증 중...`);
     const ver = await callClaude(VERIFY_PROMPT(gen.passage, gen.questions), VERIFY_SCHEMA, 8000);
 
