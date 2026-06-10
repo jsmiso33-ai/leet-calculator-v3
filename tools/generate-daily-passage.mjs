@@ -1,24 +1,24 @@
 // 오늘의 지문 자동 생성기 — GitHub Actions cron이 매일 실행.
-// 1) Claude로 LEET 언어이해 스타일 지문+3문항 생성 (structured output)
+// 1) Claude Code CLI(헤드리스, 구독 인증)로 LEET 언어이해 스타일 지문+3문항 생성 (structured output)
 // 2) 별도 호출로 정답을 가린 채 블라인드 풀이 → 출제 정답과 대조 (검증)
 // 3) 검증 통과분을 Supabase daily_passages에 pending으로 저장 → 관리자가 사이트에서 검수·발행
 //
-// 필요 환경변수: ANTHROPIC_API_KEY, SUPABASE_SERVICE_ROLE_KEY
+// 필요 환경변수: CLAUDE_CODE_OAUTH_TOKEN(구독 토큰), SUPABASE_SERVICE_ROLE_KEY
+// 선택 환경변수: PUBLISH_DATE(YYYY-MM-DD, 테스트용 발행일 덮어쓰기)
 
-import Anthropic from '@anthropic-ai/sdk';
+import { spawnSync } from 'node:child_process';
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://bokmpwwcjiqqzffxrxnk.supabase.co';
 const MODEL = 'claude-opus-4-8';
 const MAX_ATTEMPTS = 3;
 
-const { ANTHROPIC_API_KEY, SUPABASE_SERVICE_ROLE_KEY } = process.env;
-if (!ANTHROPIC_API_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error('ANTHROPIC_API_KEY / SUPABASE_SERVICE_ROLE_KEY 환경변수가 필요합니다.');
+const { CLAUDE_CODE_OAUTH_TOKEN, SUPABASE_SERVICE_ROLE_KEY } = process.env;
+if (!CLAUDE_CODE_OAUTH_TOKEN || !SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('CLAUDE_CODE_OAUTH_TOKEN / SUPABASE_SERVICE_ROLE_KEY 환경변수가 필요합니다.');
   process.exit(1);
 }
 
-const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // 발행 대상 날짜: KST 기준 내일 (검수 시간 확보용)
@@ -26,7 +26,7 @@ function kstDate(offsetDays = 0) {
   const d = new Date(Date.now() + 9 * 3600e3 + offsetDays * 86400e3);
   return d.toISOString().slice(0, 10);
 }
-const publishDate = kstDate(1);
+const publishDate = process.env.PUBLISH_DATE || kstDate(1);
 
 // LEET 언어이해 제재 영역 — 날짜 기반으로 순환시켜 다양성 확보
 const DOMAINS = [
@@ -134,26 +134,31 @@ ${questions.map((q) => `${q.no}. ${q.stem}\n${q.choices.map((c, i) => `  ${i + 1
 
 let totalIn = 0, totalOut = 0;
 
-async function callClaude(prompt, schema, maxTokens) {
-  const stream = anthropic.messages.stream({
-    model: MODEL,
-    max_tokens: maxTokens,
-    thinking: { type: 'adaptive' },
-    output_config: { format: { type: 'json_schema', schema } },
-    messages: [{ role: 'user', content: prompt }],
-  });
-  const msg = await stream.finalMessage();
-  const u = msg.usage;
-  totalIn += u.input_tokens; totalOut += u.output_tokens;
-  console.log(`  [usage] 입력 ${u.input_tokens} / 출력 ${u.output_tokens} 토큰`);
-  const text = msg.content.find((b) => b.type === 'text')?.text;
-  if (!text) throw new Error('응답에 텍스트 블록이 없습니다: ' + msg.stop_reason);
-  return JSON.parse(text);
+// Claude Code CLI 헤드리스 호출 (구독 인증 — API 과금 없음)
+async function callClaude(prompt, schema) {
+  const res = spawnSync('claude', [
+    '-p',
+    '--output-format', 'json',
+    '--json-schema', JSON.stringify(schema),
+    '--model', MODEL,
+    '--max-turns', '1',
+  ], { input: prompt, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, env: process.env });
+
+  if (res.error) throw res.error;
+  if (res.status !== 0) throw new Error(`claude CLI 종료 코드 ${res.status}: ${(res.stderr || res.stdout || '').slice(0, 2000)}`);
+
+  const envelope = JSON.parse(res.stdout);
+  if (envelope.is_error) throw new Error('claude CLI 오류: ' + String(envelope.result).slice(0, 2000));
+  const u = envelope.usage;
+  if (u) {
+    totalIn += u.input_tokens || 0; totalOut += u.output_tokens || 0;
+    console.log(`  [usage] 입력 ${u.input_tokens} / 출력 ${u.output_tokens} 토큰 (구독 사용량)`);
+  }
+  return envelope.structured_output ?? JSON.parse(envelope.result);
 }
 
 function logTotalCost() {
-  const usd = (totalIn * 5 + totalOut * 25) / 1e6;
-  console.log(`[비용] 이번 실행 합계: 입력 ${totalIn} / 출력 ${totalOut} 토큰 ≈ $${usd.toFixed(3)} (약 ${Math.round(usd * 1450)}원)`);
+  console.log(`[사용량] 이번 실행 합계: 입력 ${totalIn} / 출력 ${totalOut} 토큰 — 구독 요금제로 처리되어 추가 과금 없음`);
 }
 
 async function main() {
@@ -175,7 +180,7 @@ async function main() {
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     console.log(`[시도 ${attempt}/${MAX_ATTEMPTS}] 지문 생성 중... (제재: ${domain})`);
-    let gen = await callClaude(GENERATE_PROMPT(feedback), PASSAGE_SCHEMA, 16000);
+    let gen = await callClaude(GENERATE_PROMPT(feedback), PASSAGE_SCHEMA);
 
     if (!formatOk(gen)) {
       feedback = '문항 수(3개) 또는 선지 수(5개), 정답 범위(1~5)가 형식에 맞지 않았습니다.';
@@ -186,7 +191,7 @@ async function main() {
     // 분량 미달이면 재생성 대신 같은 지문을 확장 (재생성은 또 짧게 쓰는 경향이 있음)
     if (gen.passage.length < 1800) {
       console.log(`  분량 미달 (${gen.passage.length}자) → 확장 패스 실행`);
-      const expanded = await callClaude(EXPAND_PROMPT(gen), PASSAGE_SCHEMA, 16000);
+      const expanded = await callClaude(EXPAND_PROMPT(gen), PASSAGE_SCHEMA);
       if (formatOk(expanded) && expanded.passage.length >= 1700) gen = expanded;
       console.log(`  확장 결과: ${gen.passage.length}자`);
     }
@@ -199,7 +204,7 @@ async function main() {
     }
 
     console.log(`  생성 완료: "${gen.title}" — 블라인드 검증 중...`);
-    const ver = await callClaude(VERIFY_PROMPT(gen.passage, gen.questions), VERIFY_SCHEMA, 8000);
+    const ver = await callClaude(VERIFY_PROMPT(gen.passage, gen.questions), VERIFY_SCHEMA);
 
     const problems = [];
     for (const q of gen.questions) {

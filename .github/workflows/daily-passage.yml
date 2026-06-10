@@ -2,12 +2,17 @@ name: Generate daily passage
 
 # 매일 09:00 KST(00:00 UTC)에 다음 날 발행분 "오늘의 지문"을 생성해 Supabase에 pending으로 저장.
 # 관리자(?admin=1 + Google 로그인)가 사이트에서 검수 후 발행한다.
-# 필요 Secrets: CLAUDE(Anthropic API 키), SUPA(Supabase service role 키)
+# 생성은 Claude Code CLI 헤드리스(구독 인증) — API 과금 없음.
+# 필요 Secrets: CCLAUDE(claude setup-token으로 만든 구독 OAuth 토큰), SUPA(Supabase service role 키)
 
 on:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
+    inputs:
+      publish_date:
+        description: '발행일 덮어쓰기 (YYYY-MM-DD, 비우면 내일)'
+        required: false
 
 permissions:
   contents: read
@@ -22,7 +27,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm install -g @anthropic-ai/claude-code
       - run: node tools/generate-daily-passage.mjs
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CCLAUDE }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPA }}
+          PUBLISH_DATE: ${{ inputs.publish_date }}
