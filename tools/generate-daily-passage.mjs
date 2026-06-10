@@ -93,7 +93,7 @@ const GENERATE_PROMPT = (feedback) => `당신은 법학적성시험(LEET) 언어
 ${domain} 영역에서 학술적 깊이가 있는 소재를 하나 골라 완전히 새로운 지문을 집필하세요. 기존 기출문제나 특정 저작물을 재현하지 말고 순수 창작하되, 학술적으로 정확해야 합니다.
 
 ## 지문 요건
-- 분량: 공백 포함 1,800~2,200자. 이 분량은 필수 요건이므로 1,800자 미만이면 안 됩니다. 4~6개 문단 (문단 사이는 빈 줄)
+- 분량: 공백 포함 1,800~2,200자 (필수 요건). 문단 5개 내외, 각 문단 350~450자로 채우면 자연스럽게 충족됩니다. (문단 사이는 빈 줄)
 - LEET 언어이해 특유의 문체: 정보 밀도가 높고, 개념 간 관계(대비·인과·전제)가 정교하게 짜인 설명적·논증적 글
 - 둘 이상의 입장이나 이론이 등장하고 그 차이가 추론의 재료가 되도록 구성
 
@@ -109,6 +109,18 @@ ${domain} 영역에서 학술적 깊이가 있는 소재를 하나 골라 완전
 
 ${feedback ? `## 이전 시도 반려 사유 (반드시 보완할 것)\n${feedback}\n` : ''}
 정답이 둘로 해석될 여지가 있는 선지는 절대 만들지 마세요. 애매하면 선지를 더 명확한 결함이 있는 것으로 교체하세요.`;
+
+const EXPAND_PROMPT = (gen) => `당신은 LEET 언어이해 출제위원입니다. 아래 지문이 ${gen.passage.length}자로 분량 기준(공백 포함 1,800~2,200자)에 미달합니다.
+
+지문을 1,900~2,200자로 확장하세요. 논지와 입장 구조는 그대로 유지하되, 각 입장의 논거를 더 깊이 전개하고 반론·재반론이나 구체적 사례·함의를 추가해 분량을 채우세요. 문항 3개는 유지하되, 확장된 지문과 어긋나는 부분이 있으면 발문·선지·해설을 손질하세요. 정답은 확장된 지문 근거로 단 하나로 방어 가능해야 합니다.
+
+결과는 처음 출제와 동일한 JSON 형식(title, topic, difficulty, passage, questions)으로 전체를 다시 제출하세요.
+
+## 기존 지문
+${gen.passage}
+
+## 기존 문항
+${JSON.stringify(gen.questions, null, 2)}`;
 
 const VERIFY_PROMPT = (passage, questions) => `당신은 LEET 언어이해 만점자입니다. 아래 지문을 읽고 문항을 푸세요. 정답을 모르는 상태에서 순수하게 지문 근거만으로 판단해야 합니다.
 
@@ -148,20 +160,31 @@ async function main() {
   let result = null;
   let verification = null;
 
+  const formatOk = (g) => Array.isArray(g.questions) && g.questions.length === 3
+    && g.questions.every((q) => Array.isArray(q.choices) && q.choices.length === 5 && q.answer >= 1 && q.answer <= 5);
+
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     console.log(`[시도 ${attempt}/${MAX_ATTEMPTS}] 지문 생성 중... (제재: ${domain})`);
-    const gen = await callClaude(GENERATE_PROMPT(feedback), PASSAGE_SCHEMA, 16000);
+    let gen = await callClaude(GENERATE_PROMPT(feedback), PASSAGE_SCHEMA, 16000);
 
-    if (!Array.isArray(gen.questions) || gen.questions.length !== 3
-      || gen.questions.some((q) => !Array.isArray(q.choices) || q.choices.length !== 5 || q.answer < 1 || q.answer > 5)) {
+    if (!formatOk(gen)) {
       feedback = '문항 수(3개) 또는 선지 수(5개), 정답 범위(1~5)가 형식에 맞지 않았습니다.';
       console.log('  형식 불량 → 재시도');
       continue;
     }
 
+    // 분량 미달이면 재생성 대신 같은 지문을 확장 (재생성은 또 짧게 쓰는 경향이 있음)
     if (gen.passage.length < 1800) {
-      feedback = `지문이 ${gen.passage.length}자로 분량 미달입니다. 공백 포함 1,800자 이상 2,200자 이하로 다시 집필하세요. 기존 논의 구조를 유지하되 각 입장의 논거와 반론, 구체적 사례를 더 깊이 전개해 분량을 채우세요.`;
-      console.log(`  분량 미달 (${gen.passage.length}자) → 재시도`);
+      console.log(`  분량 미달 (${gen.passage.length}자) → 확장 패스 실행`);
+      const expanded = await callClaude(EXPAND_PROMPT(gen), PASSAGE_SCHEMA, 16000);
+      if (formatOk(expanded) && expanded.passage.length >= 1700) gen = expanded;
+      console.log(`  확장 결과: ${gen.passage.length}자`);
+    }
+    result = gen; // 이후 단계가 실패해도 마지막 생성분은 보관 (관리자가 직접 판단)
+
+    if (gen.passage.length < 1700) {
+      feedback = `지문이 ${gen.passage.length}자로 분량 미달입니다. 공백 포함 1,800자 이상 2,200자 이하로, 문단 5개 내외·각 문단 350~450자로 집필하세요.`;
+      console.log('  확장 후에도 분량 미달 → 재시도');
       continue;
     }
 
@@ -191,8 +214,9 @@ async function main() {
     }
     feedback = problems.join('\n');
     console.log('  검증 실패:\n  - ' + problems.join('\n  - '));
-    result = gen; // 마지막 시도분은 보관 (관리자가 직접 판단)
   }
+
+  if (!result) throw new Error('모든 시도에서 형식에 맞는 지문을 얻지 못했습니다.');
 
   const { error: insErr } = await supabase.from('daily_passages').insert({
     publish_date: publishDate,
