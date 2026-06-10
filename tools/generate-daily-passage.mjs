@@ -141,7 +141,7 @@ async function callClaude(prompt, schema) {
     '--output-format', 'json',
     '--json-schema', JSON.stringify(schema),
     '--model', MODEL,
-    '--max-turns', '1',
+    '--max-turns', '4', // 구조화 출력이 내부 툴 호출 턴을 사용하므로 1로 잠그면 안 됨
   ], { input: prompt, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, env: process.env });
 
   if (res.error) throw res.error;
