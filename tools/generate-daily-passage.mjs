@@ -132,6 +132,8 @@ ${passage}
 ## 문항
 ${questions.map((q) => `${q.no}. ${q.stem}\n${q.choices.map((c, i) => `  ${i + 1}) ${c}`).join('\n')}`).join('\n\n')}`;
 
+let totalIn = 0, totalOut = 0;
+
 async function callClaude(prompt, schema, maxTokens) {
   const stream = anthropic.messages.stream({
     model: MODEL,
@@ -141,9 +143,17 @@ async function callClaude(prompt, schema, maxTokens) {
     messages: [{ role: 'user', content: prompt }],
   });
   const msg = await stream.finalMessage();
+  const u = msg.usage;
+  totalIn += u.input_tokens; totalOut += u.output_tokens;
+  console.log(`  [usage] 입력 ${u.input_tokens} / 출력 ${u.output_tokens} 토큰`);
   const text = msg.content.find((b) => b.type === 'text')?.text;
   if (!text) throw new Error('응답에 텍스트 블록이 없습니다: ' + msg.stop_reason);
   return JSON.parse(text);
+}
+
+function logTotalCost() {
+  const usd = (totalIn * 5 + totalOut * 25) / 1e6;
+  console.log(`[비용] 이번 실행 합계: 입력 ${totalIn} / 출력 ${totalOut} 토큰 ≈ $${usd.toFixed(3)} (약 ${Math.round(usd * 1450)}원)`);
 }
 
 async function main() {
@@ -232,6 +242,7 @@ async function main() {
   if (insErr) throw insErr;
 
   console.log(`저장 완료: ${publishDate} / "${result.title}" / 검증 ${verification.passed ? '통과' : '미통과(관리자 확인 필요)'}`);
+  logTotalCost();
   if (!verification.passed) process.exitCode = 0; // 미통과여도 pending 저장 자체는 성공
 }
 
