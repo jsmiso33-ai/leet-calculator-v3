@@ -11,9 +11,11 @@ import LogTab from './tabs/LogTab.jsx';
 import SchoolsTab from './tabs/SchoolsTab.jsx';
 import AdmissionTab from './tabs/AdmissionTab.jsx';
 import AdminTab from './tabs/AdminTab.jsx';
+import DailyTab from './tabs/DailyTab.jsx';
 
 const ALL_TABS = [
   { id: 'calc', label: '표준점수 계산기', short: '계산기', Comp: CalcTab, panelClass: 'tab-panel tw:space-y-4' },
+  { id: 'daily', label: '오늘의 지문', short: '오늘', Comp: DailyTab, panelClass: 'tab-panel tw:space-y-4' },
   { id: 'exams', label: '기출문제', short: '기출', Comp: ExamsTab, panelClass: 'tab-panel tw:space-y-4' },
   { id: 'log', label: '기출 풀이 기록', short: '기록', Comp: LogTab, panelClass: 'tab-panel tw:space-y-4' },
   { id: 'schools', label: '학교별 환산점수', short: '환산', Comp: SchoolsTab, panelClass: 'tab-panel tw:space-y-4' },

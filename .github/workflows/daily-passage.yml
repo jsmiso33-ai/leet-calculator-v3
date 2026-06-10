@@ -1,0 +1,28 @@
+name: Generate daily passage
+
+# 매일 09:00 KST(00:00 UTC)에 다음 날 발행분 "오늘의 지문"을 생성해 Supabase에 pending으로 저장.
+# 관리자(?admin=1 + Google 로그인)가 사이트에서 검수 후 발행한다.
+# 필요 Secrets: ANTHROPIC_API_KEY, SUPABASE_SERVICE_ROLE_KEY
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node tools/generate-daily-passage.mjs
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
