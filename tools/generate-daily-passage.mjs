@@ -141,20 +141,34 @@ async function callClaude(prompt, schema) {
     '--output-format', 'json',
     '--json-schema', JSON.stringify(schema),
     '--model', MODEL,
-    '--max-turns', '4', // 구조화 출력이 내부 툴 호출 턴을 사용하므로 1로 잠그면 안 됨
+    '--max-turns', '8', // 구조화 출력이 내부 툴 호출 턴을 사용하므로 1로 잠그면 안 됨
+    // 모델이 결과를 파일로 쓰려고 Bash 등을 호출하다 턴을 소진하는 사고 방지 — 구조화 출력 외 도구 차단
+    '--disallowedTools', 'Bash,Edit,Write,Read,Glob,Grep,WebFetch,WebSearch,Task,TodoWrite,NotebookEdit',
+    '--append-system-prompt', '파일 작성이나 셸 명령 등 어떤 작업 도구도 사용하지 마세요. 최종 결과는 요구된 JSON 구조화 출력으로 즉시 제출하세요.',
   ], { input: prompt, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024, env: process.env });
 
   if (res.error) throw res.error;
-  if (res.status !== 0) throw new Error(`claude CLI 종료 코드 ${res.status}: ${(res.stderr || res.stdout || '').slice(0, 2000)}`);
 
-  const envelope = JSON.parse(res.stdout);
-  if (envelope.is_error) throw new Error('claude CLI 오류: ' + String(envelope.result).slice(0, 2000));
-  const u = envelope.usage;
+  let envelope = null;
+  try { envelope = JSON.parse(res.stdout); } catch { /* stdout이 JSON이 아니면 아래에서 오류 처리 */ }
+
+  const u = envelope?.usage;
   if (u) {
     totalIn += u.input_tokens || 0; totalOut += u.output_tokens || 0;
     console.log(`  [usage] 입력 ${u.input_tokens} / 출력 ${u.output_tokens} 토큰 (구독 사용량)`);
   }
-  return envelope.structured_output ?? JSON.parse(envelope.result);
+
+  // 세션 한도(429) 등으로 is_error여도 구조화 출력이 들어있으면 결과를 살려 쓴다
+  if (envelope?.structured_output) {
+    if (envelope.is_error || res.status !== 0) {
+      console.warn(`  [경고] CLI가 오류를 보고했지만 구조화 출력은 수신됨 (${envelope.subtype || ''}${envelope.api_error_status ? ' / HTTP ' + envelope.api_error_status : ''}): ${String(envelope.result).slice(0, 300)}`);
+    }
+    return envelope.structured_output;
+  }
+  if (res.status !== 0 || envelope?.is_error) {
+    throw new Error(`claude CLI 실패 (종료 코드 ${res.status}): ${String(envelope?.result ?? res.stderr ?? res.stdout ?? '').slice(0, 2000)}`);
+  }
+  return JSON.parse(envelope.result);
 }
 
 function logTotalCost() {
