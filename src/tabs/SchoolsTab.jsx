@@ -1,7 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LAW_SCHOOLS } from '../../data/schools.js';
 import { calcSchool } from '../lib/schoolCalc.js';
+import { calcForYear } from '../lib/score.js';
+import { loadLocalLog } from '../lib/useLogs.js';
 import { useSchoolInput } from '../context/SchoolInputContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
+import { withTimeout } from '../lib/supabase.js';
 import { track } from '../lib/analytics.js';
 import { Input } from '../components/ui/input.jsx';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
@@ -12,11 +16,124 @@ const SORTS = [
   ['myscore', '내 점수율 높은 순'],
 ];
 
+// ── 기출 풀이 기록에서 LEET 점수 불러오기 (레거시 import-log 위젯 이식) ────────
+// 게스트면 localStorage, 로그인 상태면 클라우드(leet_logs)에서 기록을 읽는다.
+function ImportLogRow({ onApply }) {
+  const { user, supabase } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [entries, setEntries] = useState(null); // null = 로딩 중
+  const [appliedYear, setAppliedYear] = useState(null);
+  const rowRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onDocClick = (e) => {
+      if (rowRef.current && !rowRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
+  }, [open]);
+
+  useEffect(() => {
+    if (!appliedYear) return undefined;
+    const t = setTimeout(() => setAppliedYear(null), 3000);
+    return () => clearTimeout(t);
+  }, [appliedYear]);
+
+  const toggle = async () => {
+    if (open) { setOpen(false); return; }
+    setOpen(true);
+    setEntries(null);
+    let list = [];
+    if (user) {
+      try {
+        const { data, error } = await withTimeout(
+          supabase.from('leet_logs').select('*'), 30000, '기록 불러오기'
+        );
+        if (!error && data) {
+          list = data.map((row) => ({
+            year: row.year, date: row.date, eon: row.eon, chu: row.chu,
+            memo: row.memo || '', createdAt: row.created_at,
+          }));
+        }
+      } catch { /* 빈 목록으로 처리 */ }
+    } else {
+      list = loadLocalLog();
+    }
+    list.sort((a, b) => {
+      if (a.date && b.date) return b.date.localeCompare(a.date);
+      return (b.createdAt || '').localeCompare(a.createdAt || '');
+    });
+    setEntries(list);
+  };
+
+  const items = (entries || [])
+    .map((entry) => ({ entry, result: calcForYear(entry.year, entry.eon, entry.chu) }))
+    .filter(({ result }) => result && result.eon && result.chu);
+
+  const fmt = (v) => (v !== null && v !== undefined ? v.toFixed(1) : '—');
+
+  return (
+    <div className="import-log-row" ref={rowRef}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <button type="button" className="import-log-btn" onClick={toggle}>
+          <span className="import-icon">↓</span> 기출 풀이 기록에서 불러오기
+        </button>
+        {appliedYear && <span className="import-log-applied">{appliedYear}학년도 적용됨</span>}
+      </div>
+      {open && (
+        <div className="import-log-dropdown">
+          <div className="import-log-list">
+            {entries === null && <div className="import-log-empty">불러오는 중...</div>}
+            {entries !== null && entries.length === 0 && (
+              <div className="import-log-empty">기출 풀이 기록이 없습니다.<br />기출 풀이 기록 탭에서 먼저 점수를 기록하세요.</div>
+            )}
+            {entries !== null && entries.length > 0 && items.length === 0 && (
+              <div className="import-log-empty">유효한 점수가 있는 기록이 없습니다.</div>
+            )}
+            {items.map(({ entry, result }, idx) => (
+              <div key={entry.id || idx} className="import-log-item" role="button" tabIndex={0}
+                onClick={() => { onApply(result); setAppliedYear(entry.year); setOpen(false); track('school_import_log', { year: entry.year }); }}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+                <span className="ili-year">{entry.year}</span>
+                <span className="ili-scores">
+                  언어 {fmt(result.eon.std)} / 추리 {fmt(result.chu.std)} · 백분위 {fmt(result.eon.pct)} / {fmt(result.chu.pct)}{entry.memo ? ` (${entry.memo})` : ''}
+                </span>
+                <span className="ili-date">{entry.date || ''}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SchoolsTab() {
   const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
   // 비제어 입력 초기값 (마운트 시 1회 캡처)
   const initial = useMemo(() => schState, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 기록 불러오기로 값을 주입할 때 비제어 입력의 표시값도 함께 갱신하기 위한 ref
+  const eonStdRef = useRef(null);
+  const chuStdRef = useRef(null);
+  const eonPctRef = useRef(null);
+  const chuPctRef = useRef(null);
+
+  const applyLogResult = (result) => {
+    const p = {};
+    const set = (key, val, ref) => {
+      if (val === null || val === undefined) return;
+      p[key] = parseFloat(val.toFixed(1));
+      if (ref.current) ref.current.value = p[key];
+    };
+    set('eonStd', result.eon.std, eonStdRef);
+    set('chuStd', result.chu.std, chuStdRef);
+    set('eonPct', result.eon.pct, eonPctRef);
+    set('chuPct', result.chu.pct, chuPctRef);
+    patch(p);
+  };
 
   const numChange = (key) => (e) => {
     const v = e.target.value;
@@ -79,25 +196,27 @@ export default function SchoolsTab() {
         <div className="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">정량 점수 입력</div>
         <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
 
+        <ImportLogRow onApply={applyLogResult} />
+
         <div className="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
           <div className="field">
             <label>LEET 언어이해 표준점수</label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" defaultValue={initial.eonStd ?? ''} onChange={numChange('eonStd')} />
+            <Input ref={eonStdRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" defaultValue={initial.eonStd ?? ''} onChange={numChange('eonStd')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 표준점수</label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" defaultValue={initial.chuStd ?? ''} onChange={numChange('chuStd')} />
+            <Input ref={chuStdRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" defaultValue={initial.chuStd ?? ''} onChange={numChange('chuStd')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" defaultValue={initial.eonPct ?? ''} onChange={numChange('eonPct')} />
+            <Input ref={eonPctRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" defaultValue={initial.eonPct ?? ''} onChange={numChange('eonPct')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" defaultValue={initial.chuPct ?? ''} onChange={numChange('chuPct')} />
+            <Input ref={chuPctRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" defaultValue={initial.chuPct ?? ''} onChange={numChange('chuPct')} />
           </div>
         </div>
 
