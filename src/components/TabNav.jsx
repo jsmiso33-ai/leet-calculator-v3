@@ -92,6 +92,7 @@ export default function TabNav({ tabs, activeTab, onSelect }) {
             onKeyDown={(e) => onKeyDown(e, idx)}
           >
             {t.label}
+            {t.badge && <span className="tab-badge" aria-hidden="true">{t.badge}</span>}
           </button>
         );
       })}
