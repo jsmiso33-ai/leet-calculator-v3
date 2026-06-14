@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext.jsx';
+import DdayBadge from './DdayBadge.jsx';
 
 function GoogleIcon() {
   return (
@@ -31,6 +32,7 @@ export default function Masthead() {
           <h1>LEET 표준점수 계산기</h1>
           <div className="subtitle">법학적성시험 · 2009 — 2026 학년도</div>
         </div>
+        <DdayBadge />
       </div>
       <div className="meta">
         <div id="authStatus" className="auth-status">

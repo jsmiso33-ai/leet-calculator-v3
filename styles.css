@@ -201,6 +201,70 @@
     letter-spacing: 0;
     text-transform: none;
   }
+  /* 시험 D-day 배지 — 검정 로고와 호응하는 다크 + 블루 글로우 */
+  .dday-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    margin-left: 4px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    background:
+      radial-gradient(120% 140% at 50% 0%, rgba(37, 99, 235, 0.45) 0%, rgba(37, 99, 235, 0) 60%),
+      linear-gradient(160deg, #1f2937 0%, #111827 100%);
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    box-shadow:
+      0 4px 16px rgba(37, 99, 235, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    position: relative;
+    z-index: 1;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .dday-badge::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.1) 48%, transparent 60%);
+    animation: ddayShine 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes ddayShine {
+    0%, 70%, 100% { transform: translateX(-120%); }
+    85% { transform: translateX(120%); }
+  }
+  .dday-cap {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--accent-on-dark);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .dday-num {
+    font-family: var(--font-mono);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #fff;
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 14px rgba(96, 165, 250, 0.55);
+  }
+  .dday-date {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1;
+  }
+  .dday-dow { color: var(--accent-on-dark); }
+  @media (prefers-reduced-motion: reduce) {
+    .dday-badge::before { animation: none; display: none; }
+  }
   .meta {
     text-align: right;
     font-family: var(--font-mono);
@@ -2613,6 +2677,9 @@
     .title-block::before { width: 38px; height: 38px; font-size: 17px; }
     .title-block { gap: 12px; }
     .masthead .subtitle { font-size: 11px; }
+    /* 모바일: D-day 배지 컴팩트 + 로고/제목 오른쪽으로 밀어 배치 */
+    .dday-badge { margin-left: auto; padding: 6px 12px; }
+    .dday-num { font-size: 18px; }
     .masthead .meta { font-size: 10px; text-align: left; flex-basis: 100%; }
     /* 모바일 auth 영역 컴팩트 */
     .auth-status { justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
