@@ -25,7 +25,6 @@ export default function DdayBadge() {
 
   return (
     <div className="dday-badge" role="img" aria-label={`2027학년도 LEET 시험 ${dday > 0 ? `${dday}일 전` : dday === 0 ? '당일' : `${Math.abs(dday)}일 경과`}`}>
-      <span className="dday-cap">2027 LEET</span>
       <span className="dday-num">{label}</span>
       <span className="dday-date">7.19<span className="dday-dow"> SAT</span></span>
     </div>
