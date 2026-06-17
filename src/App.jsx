@@ -50,7 +50,7 @@ export default function App() {
   return (
     <>
       <a className="skip-link" href="#main">본문으로 건너뛰기</a>
-      <div className="container" id="main">
+      <div className={'container' + (activeTab === 'daily' ? ' container--daily' : '')} id="main">
         <Masthead />
         <TabNav tabs={tabs} activeTab={activeTab} onSelect={onSelect} />
         {activeTab !== 'daily' && <DailyPromo onGo={() => onSelect('daily')} />}

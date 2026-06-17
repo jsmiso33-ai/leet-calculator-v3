@@ -57,6 +57,7 @@
     /* 폰트 */
     --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-serif: 'Noto Serif KR', 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif; /* 시험지(명조) — 오늘의 지문 */
 
     /* 간격 */
     --space-1: 4px;
@@ -119,7 +120,10 @@
     max-width: 1200px;
     margin: 0 auto;
     animation: pageFadeIn var(--motion-medium) var(--ease-out-soft);
+    transition: max-width var(--motion-medium) var(--ease-out);
   }
+  /* 오늘의 지문 탭: 시험지 가독성을 위해 사이트 폭을 좁힘 (좌우 2단은 유지) */
+  .container--daily { max-width: 960px; }
   @keyframes pageFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -6528,4 +6532,216 @@
     .adm-compare-table tbody tr {
       transition: none !important;
     }
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     오늘의 지문 — LEET 언어이해 시험지형 레이아웃 (DailyTab PassageCard)
+     명조체 본문 · 양끝맞춤 · 안내문 헤더 · 넓은 화면 좌우 2단
+     ════════════════════════════════════════════════════════════════════ */
+  .exam-paper {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    padding: 28px 22px;
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-serif);
+    color: var(--ink-soft);
+  }
+  @media (min-width: 768px) { .exam-paper { padding: 40px 44px; } }
+
+  .exam-meta {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--ink-tertiary);
+  }
+  .exam-title {
+    margin-top: 6px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  /* [1 ~ 3] 다음 글을 읽고 물음에 답하시오. */
+  .exam-instr {
+    margin: 18px 0 4px;
+    padding: 9px 0;
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1px solid var(--line-strong);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .exam-instr .range { margin-right: 6px; }
+
+  /* 본문 + 문항: 기본 1단, 넓은 화면(≥1024px)에서 좌우 2단 */
+  .exam-grid { margin-top: 22px; }
+  @media (min-width: 1024px) {
+    .exam-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 0;
+      align-items: start;
+    }
+    .exam-grid .exam-questions {
+      border-left: 1px solid var(--line-strong);
+      padding-left: 34px;
+      margin-left: 34px;
+    }
+  }
+
+  /* 지문 본문 */
+  .exam-passage {
+    font-size: 17.5px;
+    line-height: 2.1;
+    color: var(--ink);
+    text-align: justify;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+  .exam-passage p { text-indent: 1em; }
+  .exam-passage p + p { margin-top: 2px; }
+
+  /* 문항 */
+  .exam-questions { margin-top: 26px; }
+  @media (min-width: 1024px) { .exam-questions { margin-top: 0; } }
+  .exam-q + .exam-q { margin-top: 26px; }
+  .exam-stem {
+    font-size: 16.5px;
+    font-weight: 700;
+    line-height: 1.7;
+    color: var(--ink);
+    word-break: keep-all;
+  }
+  .exam-stem .qno { margin-right: 5px; }
+  .exam-qtype {
+    margin-left: 6px;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink-tertiary);
+  }
+
+  .exam-choices { margin-top: 12px; }
+  .exam-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    text-align: left;
+    font-family: var(--font-serif);
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--ink);
+    cursor: pointer;
+    word-break: keep-all;
+    transition: background var(--motion-fast) var(--ease-out);
+  }
+  .exam-choice:not(:disabled):hover { background: var(--bg-subtle); }
+  .exam-choice .num { flex: 0 0 auto; font-weight: 700; }
+
+  /* 선택(채점 전) — 흑백 톤: 옅은 회색 강조 */
+  .exam-choice.is-chosen { background: #ECECEE; font-weight: 700; color: var(--ink); }
+
+  /* 채점 후 */
+  .exam-choice:disabled { cursor: default; }
+  .exam-choice.is-correct { color: var(--success); font-weight: 700; }
+  .exam-choice.is-correct .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 1.45em; height: 1.45em; margin: 1px 0;
+    border: 1.5px solid var(--success); border-radius: 999px;
+  }
+  .exam-choice.is-wrong { color: var(--danger); }
+  .exam-choice.is-wrong .num { text-decoration: line-through; }
+  .exam-choice.is-dim { color: var(--ink-tertiary); }
+
+  .exam-explain {
+    margin-top: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-subtle);
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--ink-soft);
+    word-break: keep-all;
+  }
+  .exam-explain .verdict { display: block; margin-bottom: 4px; font-weight: 700; color: var(--ink); }
+  .exam-explain .label {
+    font-family: var(--font-sans); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.04em; color: var(--ink-tertiary);
+  }
+
+  .exam-actions {
+    margin-top: 26px; padding-top: 18px;
+    border-top: 1px solid var(--line-strong);
+    display: flex; align-items: center; gap: 14px;
+    font-family: var(--font-sans);
+  }
+  .exam-score { font-size: 14px; font-weight: 700; color: var(--ink); }
+  .exam-score b { color: var(--accent); }
+
+  /* ── 지문 메모 도구 (PassageAnnotator) ── */
+  .exam-passage-col { min-width: 0; }
+
+  .an-bar {
+    position: sticky; top: 8px; z-index: 6;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    margin-bottom: 12px; padding: 6px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-sans);
+  }
+  .an-btn {
+    padding: 5px 11px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    font-size: 13px; font-weight: 700; color: var(--ink-mute);
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--ease-out);
+  }
+  .an-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .an-btn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .an-colors { display: inline-flex; gap: 4px; padding: 0 2px; }
+  .an-color {
+    width: 22px; height: 22px; padding: 0;
+    border: 2px solid var(--bg-card); border-radius: 999px;
+    box-shadow: 0 0 0 1px var(--line-strong);
+    cursor: pointer;
+  }
+  .an-color.on { box-shadow: 0 0 0 2px var(--ink); }
+  .an-spacer { flex: 1 1 auto; }
+  .an-clear {
+    padding: 5px 10px; border: 1px solid transparent; border-radius: var(--radius-sm);
+    background: transparent; font-size: 12px; font-weight: 700; color: var(--ink-tertiary);
+    cursor: pointer;
+  }
+  .an-clear:hover { color: var(--danger); }
+
+  .an-stage { position: relative; }
+  .an-stage.an-mark .exam-passage { cursor: text; }
+  .an-stage.an-draw { cursor: crosshair; }
+  .an-canvas { position: absolute; inset: 0; z-index: 2; }
+
+  /* 형광펜 / 밑줄 */
+  .an-hl { background: rgba(250, 204, 21, 0.5); border-radius: 2px; }
+  .an-ul {
+    text-decoration: underline;
+    text-decoration-color: var(--danger);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
   }

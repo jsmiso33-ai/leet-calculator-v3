@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import { supabase, withTimeout } from '../lib/supabase.js';
 import { toast, confirmAsync } from '../lib/ui.js';
 import { track } from '../lib/analytics.js';
+import PassageAnnotator from '../components/PassageAnnotator.jsx';
 
 // 오늘의 지문 — AI 생성 언어이해 지문 1개 + 문항 3개를 매일 발행.
 // 발행분은 Supabase daily_passages(RLS: published만 공개)에서 읽는다.
@@ -55,76 +56,81 @@ function PassageCard({ row, preview }) {
     if (!preview) { const map = loadDone(); delete map[row.id]; saveDone(map); }
   };
 
+  const firstNo = questions[0]?.no ?? 1;
+  const lastNo = questions[questions.length - 1]?.no ?? questions.length;
+
   return (
-    <>
-      <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
-        <div className="tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2 tw:!text-xs tw:!font-bold tw:!text-slate-500">
-          <span>{fmtDate(row.publish_date)}</span>
-          <span className="tw:!rounded-full tw:!bg-blue-50 tw:!px-2.5 tw:!py-0.5 tw:!text-blue-700">{row.topic}</span>
-          {row.difficulty && <span className="tw:!rounded-full tw:!bg-amber-50 tw:!px-2.5 tw:!py-0.5 tw:!text-amber-700">난이도 {row.difficulty}</span>}
-        </div>
-        <h2 className="tw:!mt-2 tw:!text-xl tw:!font-extrabold tw:!text-slate-950 tw:md:!text-2xl">{row.passage_title}</h2>
-        <div className="tw:!mt-4 tw:!space-y-4 tw:!text-[15px] tw:!leading-7 tw:!text-slate-800">
-          {row.passage.split(/\n{2,}/).map((p, i) => <p key={i}>{p}</p>)}
-        </div>
-      </section>
-
-      {questions.map((q) => {
-        const chosen = answers[q.no];
-        return (
-          <section key={q.no} className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm">
-            <div className="tw:!text-sm tw:!font-extrabold tw:!text-slate-950">
-              <span className="tw:!mr-2 tw:!text-blue-700">{q.no}.</span>{q.stem}
-              <span className="tw:!ml-2 tw:!text-xs tw:!font-bold tw:!text-slate-400">[{q.qtype}]</span>
-            </div>
-            <div className="tw:!mt-3 tw:!space-y-1.5">
-              {q.choices.map((c, i) => {
-                const n = i + 1;
-                const isChosen = chosen === n;
-                const isAnswer = q.answer === n;
-                let cls = 'tw:!w-full tw:!rounded-lg tw:!border tw:!px-3 tw:!py-2.5 tw:!text-left tw:!text-sm tw:!leading-6 tw:transition-colors ';
-                if (submitted) {
-                  if (isAnswer) cls += 'tw:!border-green-400 tw:!bg-green-50 tw:!font-bold tw:!text-green-900';
-                  else if (isChosen) cls += 'tw:!border-red-300 tw:!bg-red-50 tw:!text-red-800';
-                  else cls += 'tw:!border-slate-200 tw:!bg-white tw:!text-slate-500';
-                } else {
-                  cls += isChosen
-                    ? 'tw:!border-blue-500 tw:!bg-blue-50 tw:!font-bold tw:!text-blue-900'
-                    : 'tw:!border-slate-200 tw:!bg-white tw:!text-slate-700 tw:hover:!border-blue-300 tw:hover:!bg-slate-50';
-                }
-                return (
-                  <button key={n} type="button" className={cls} disabled={submitted}
-                    onClick={() => setAnswers((a) => ({ ...a, [q.no]: n }))}>
-                    <span className="tw:!mr-1.5 tw:!font-bold">{NUMS[i]}</span>{c}
-                  </button>
-                );
-              })}
-            </div>
-            {submitted && (
-              <div className="tw:!mt-3 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-slate-50 tw:!p-3.5 tw:!text-sm tw:!leading-6 tw:!text-slate-700">
-                <div className="tw:!mb-1 tw:!font-extrabold tw:!text-slate-900">
-                  {chosen === q.answer ? '⭕ 정답' : `❌ 오답 (정답: ${NUMS[q.answer - 1]})`}
-                </div>
-                {q.explanation}
-              </div>
-            )}
-          </section>
-        );
-      })}
-
-      <div className="tw:!flex tw:!items-center tw:!gap-3">
-        {!submitted ? (
-          <button className="btn-primary" onClick={submit} disabled={!allAnswered}>채점하기</button>
-        ) : (
-          <>
-            <span className="tw:!text-sm tw:!font-extrabold tw:!text-slate-900">
-              {questions.length}문항 중 <span className="tw:!text-blue-700">{correctCount}개</span> 정답
-            </span>
-            <button className="btn-secondary" onClick={retry}>다시 풀기</button>
-          </>
-        )}
+    <div className="exam-paper">
+      <div className="exam-meta">{fmtDate(row.publish_date)}</div>
+      {row.passage_title && <h2 className="exam-title">{row.passage_title}</h2>}
+      <div className="exam-instr">
+        <span className="range">[{firstNo} ~ {lastNo}]</span>다음 글을 읽고 물음에 답하시오.
       </div>
-    </>
+
+      <div className="exam-grid">
+        {preview ? (
+          <div className="exam-passage">
+            {row.passage.split(/\n{2,}/).map((p, i) => <p key={i}>{p}</p>)}
+          </div>
+        ) : (
+          <PassageAnnotator key={row.id} passageId={row.id} paragraphs={row.passage.split(/\n{2,}/)} />
+        )}
+
+        <div className="exam-questions">
+          {questions.map((q) => {
+            const chosen = answers[q.no];
+            return (
+              <div key={q.no} className="exam-q">
+                <div className="exam-stem">
+                  <span className="qno">{q.no}.</span>{q.stem}
+                  {q.qtype && <span className="exam-qtype">[{q.qtype}]</span>}
+                </div>
+                <div className="exam-choices">
+                  {q.choices.map((c, i) => {
+                    const n = i + 1;
+                    const isChosen = chosen === n;
+                    const isAnswer = q.answer === n;
+                    let cls = 'exam-choice';
+                    if (submitted) {
+                      if (isAnswer) cls += ' is-correct';
+                      else if (isChosen) cls += ' is-wrong';
+                      else cls += ' is-dim';
+                    } else if (isChosen) cls += ' is-chosen';
+                    return (
+                      <button key={n} type="button" className={cls} disabled={submitted}
+                        onClick={() => setAnswers((a) => ({ ...a, [q.no]: n }))}>
+                        <span className="num">{NUMS[i]}</span><span>{c}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {submitted && (
+                  <div className="exam-explain">
+                    <span className="verdict">
+                      {chosen === q.answer ? '정답' : `오답 — 정답 ${NUMS[q.answer - 1]}`}
+                    </span>
+                    <span className="label">해설</span> {q.explanation}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+          <div className="exam-actions">
+            {!submitted ? (
+              <button className="btn-primary" onClick={submit} disabled={!allAnswered}>채점하기</button>
+            ) : (
+              <>
+                <span className="exam-score">
+                  {questions.length}문항 중 <b>{correctCount}개</b> 정답
+                </span>
+                <button className="btn-secondary" onClick={retry}>다시 풀기</button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
