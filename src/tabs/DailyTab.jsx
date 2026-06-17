@@ -11,6 +11,7 @@ import PassageAnnotator from '../components/PassageAnnotator.jsx';
 // 관리자(?admin=1 + 소유자 Google 로그인)는 같은 탭 하단에서 pending 검수·발행.
 
 const DONE_KEY = 'leet_daily_v1';
+const SOLVER_KEY = 'leet_solver_id_v1'; // 게스트 익명 식별자(브라우저별 1개)
 const NUMS = ['①', '②', '③', '④', '⑤'];
 
 function loadDone() {
@@ -23,9 +24,26 @@ function fmtDate(iso) {
   const [y, m, d] = iso.split('-');
   return `${y}년 ${Number(m)}월 ${Number(d)}일`;
 }
+function fmtTime(iso) {
+  try {
+    return new Date(iso).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch { return iso; }
+}
+// 게스트 익명 ID (로그인 사용자는 auth uid를 쓰므로 호출 안 함)
+function getGuestId() {
+  try {
+    let id = localStorage.getItem(SOLVER_KEY);
+    if (!id) {
+      id = (crypto.randomUUID ? crypto.randomUUID() : 'g-' + Date.now() + '-' + Math.random().toString(36).slice(2));
+      localStorage.setItem(SOLVER_KEY, id);
+    }
+    return id;
+  } catch { return 'guest-anon'; }
+}
 
 // ── 지문 + 문항 풀이 카드 (일반/관리자 미리보기 공용) ──────────────────────────
 function PassageCard({ row, preview }) {
+  const { user } = useAuth();
   const doneMap = loadDone();
   const saved = !preview ? doneMap[row.id] : null;
   const [answers, setAnswers] = useState(saved?.answers || {});
@@ -49,7 +67,27 @@ function PassageCard({ row, preview }) {
       map[row.id] = { answers, correct: correctCount, total: questions.length, at: new Date().toISOString() };
       saveDone(map);
       track('daily_submit', { passage_date: row.publish_date, correct: correctCount });
+      recordAnswer(); // 서버에 제출 기록(관리자 집계용) — 실패해도 무시
     }
+  };
+  // 누가 어떤 답을 골랐는지 Supabase에 저장. 로그인=auth uid, 게스트=익명 ID.
+  // RLS상 관리자만 읽고 anon/authenticated는 insert만 가능(upsert는 ON CONFLICT 가시성 때문에 불가).
+  // 재제출 시 새 행이 쌓이고, 관리자 표에서 solver별 최신 1건만 보여준다.
+  const recordAnswer = () => {
+    const md = user?.user_metadata || {};
+    supabase.from('daily_passage_answers').insert({
+      passage_id: row.id,
+      solver_id: user?.id || getGuestId(),
+      user_email: user?.email || null,
+      user_name: md.full_name || md.name || md.user_name || null,
+      is_guest: !user,
+      answers,
+      correct_count: correctCount,
+      total: questions.length,
+      submitted_at: new Date().toISOString(),
+    }).then(({ error }) => {
+      if (error) console.warn('답 기록 실패(무시):', error.message);
+    });
   };
   const retry = () => {
     setAnswers({}); setSubmitted(false);
@@ -224,6 +262,102 @@ function AdminReview({ onPublished }) {
   );
 }
 
+// ── 관리자 응답 기록 테이블 (현재 보고 있는 지문 기준) ─────────────────────────
+function AdminAnswers({ passage }) {
+  const { user } = useAuth();
+  const [rows, setRows] = useState(null);
+
+  useEffect(() => {
+    if (!user) { setRows(null); return undefined; }
+    let alive = true;
+    (async () => {
+      const { data, error } = await withTimeout(
+        supabase.from('daily_passage_answers').select('*')
+          .eq('passage_id', passage.id).order('submitted_at', { ascending: false }),
+        30000, '응답 기록'
+      );
+      if (!alive) return;
+      if (error) { console.error(error); setRows([]); return; }
+      // solver별 최신 1건만(내림차순이라 첫 등장이 최신). 재제출로 쌓인 이전 행은 제외.
+      const seen = new Set();
+      const latest = (data || []).filter((r) => (seen.has(r.solver_id) ? false : seen.add(r.solver_id)));
+      setRows(latest);
+    })();
+    return () => { alive = false; };
+  }, [user, passage.id]);
+
+  const questions = Array.isArray(passage.questions) ? passage.questions : [];
+  const label = (r) => {
+    if (!r.is_guest) return r.user_name || r.user_email || '회원';
+    return '게스트 #' + String(r.solver_id).replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase();
+  };
+  const choiceOf = (r, q) => r.answers?.[String(q.no)] ?? r.answers?.[q.no] ?? null;
+  const dist = (q) => {
+    const c = [0, 0, 0, 0, 0];
+    (rows || []).forEach((r) => { const v = choiceOf(r, q); if (v >= 1 && v <= 5) c[v - 1]++; });
+    return c;
+  };
+
+  return (
+    <section className="input-area tw:!rounded-xl tw:!border tw:!border-amber-300 tw:!bg-amber-50/40 tw:!p-5">
+      <div className="section-label">응답 기록 (관리자)</div>
+      <div className="section-desc">
+        지금 보고 있는 지문 “{passage.passage_title}” ({fmtDate(passage.publish_date)})에 제출된 답입니다. 관리자만 볼 수 있어요.
+      </div>
+      {!user && <p className="tw:!mt-3 tw:!text-sm tw:!font-semibold tw:!text-slate-500">소유자 계정으로 로그인하면 응답 기록을 볼 수 있어요.</p>}
+      {user && rows === null && <p className="tw:!mt-3 tw:!text-sm tw:!font-semibold tw:!text-slate-500">불러오는 중...</p>}
+      {user && rows && rows.length === 0 && <p className="tw:!mt-3 tw:!text-sm tw:!font-semibold tw:!text-slate-500">아직 제출된 답이 없습니다.</p>}
+      {user && rows && rows.length > 0 && (
+        <div className="ans-wrap">
+          <table className="ans-table">
+            <thead>
+              <tr>
+                <th className="ans-name">응답자</th>
+                {questions.map((q) => <th key={q.no}>{q.no}번</th>)}
+                <th>점수</th>
+                <th>제출</th>
+              </tr>
+              <tr className="ans-correct">
+                <td className="ans-name">정답</td>
+                {questions.map((q) => <td key={q.no}>{NUMS[q.answer - 1]}</td>)}
+                <td colSpan={2} />
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.id}>
+                  <td className="ans-name">{label(r)}</td>
+                  {questions.map((q) => {
+                    const v = choiceOf(r, q);
+                    const cls = v == null ? '' : v === q.answer ? 'ans-o' : 'ans-x';
+                    return <td key={q.no} className={cls}>{v ? NUMS[v - 1] : '–'}</td>;
+                  })}
+                  <td>{r.correct_count}/{r.total}</td>
+                  <td className="ans-time">{fmtTime(r.submitted_at)}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td className="ans-name">분포</td>
+                {questions.map((q) => {
+                  const c = dist(q);
+                  return (
+                    <td key={q.no} className="ans-dist">
+                      {NUMS.map((n, i) => (c[i] ? <span key={i} className={i + 1 === q.answer ? 'ans-dist-a' : ''}>{n}{c[i]} </span> : null))}
+                    </td>
+                  );
+                })}
+                <td colSpan={2}>{rows.length}명</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      )}
+    </section>
+  );
+}
+
 // ── 탭 본체 ──────────────────────────────────────────────────────────────────
 export default function DailyTab() {
   const { isAdmin } = useApp();
@@ -292,6 +426,7 @@ export default function DailyTab() {
       )}
 
       {isAdmin && <AdminReview onPublished={fetchPublished} />}
+      {isAdmin && current && <AdminAnswers passage={current} />}
     </>
   );
 }
