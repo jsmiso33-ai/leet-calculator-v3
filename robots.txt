@@ -1,3 +1,29 @@
 User-agent: *
 Allow: /
+
+# AI 검색·답변 크롤러 명시 허용 (사이트 내용이 AI 답변에 인용되도록)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://leet-calculator.site/sitemap.xml

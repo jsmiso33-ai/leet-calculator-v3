@@ -82,6 +82,66 @@
   "dateModified": "2026-05-28"
 }
 </script>
+
+<!-- 사이트 엔티티 (AI·검색엔진의 개체 인식 강화) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "LEET 표준점수 계산기",
+  "alternateName": "leet-calculator.site",
+  "url": "https://leet-calculator.site/",
+  "inLanguage": "ko",
+  "description": "법학적성시험(LEET) 표준점수·백분위·표점합 환산 계산기와 25개 로스쿨 환산식·기출문제 제공 사이트.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "LEET 표준점수 계산기",
+    "url": "https://leet-calculator.site/"
+  }
+}
+</script>
+
+<!-- 자주 묻는 질문 (AI 답변 인용 대상) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "LEET 표준점수는 어떻게 계산하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표준점수는 (원점수 − 응시자 평균) / 표준편차로 Z점수를 구한 뒤, 영역별 기준 표준편차를 곱하고 기준 평균을 더해 산출합니다. 신리트(2020학년도 이후)는 언어이해 평균 45·표준편차 9, 추리논증 평균 60·표준편차 12를 사용합니다. 원점수와 학년도를 leet-calculator.site 계산기에 입력하면 표준점수·백분위·표점합이 바로 환산됩니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "원점수가 같으면 표준점수도 항상 같나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아니요. 표준점수는 매년 응시자 집단의 평균과 표준편차에 따라 달라지므로, 같은 원점수라도 시험이 어려웠던 해에는 표준점수가 높게, 쉬웠던 해에는 낮게 나옵니다. 그래서 연도가 다른 시험을 비교할 때는 원점수가 아닌 표준점수를 봐야 합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "표점합이 무엇인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표점합은 언어이해 표준점수와 추리논증 표준점수를 단순히 더한 값입니다. 다수의 로스쿨이 환산점수표의 입력값으로 표점합을 사용합니다. 예를 들어 연세대는 표점합 168 이상에서 환산 만점, 85 이하에서 하한 점수를 부여합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "로스쿨마다 LEET 점수를 어떻게 반영하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "대부분의 로스쿨은 표준점수(또는 표점합)를 학교별 환산표에 대입해 사용하고, 서울대는 백분위를, 아주대·부산대는 표준점수와 백분위를 혼합해 사용합니다. 반영비율과 환산식은 학교마다 달라, 본인이 지원할 학교의 환산식을 확인해야 합니다."
+      }
+    }
+  ]
+}
+</script>
 <script>
 // 인앱 브라우저 감지 → 외부 브라우저로 이동
 // 카카오톡, 에브리타임, 인스타그램, 페이스북, 네이버, 밴드 등
@@ -125,6 +185,36 @@
 </head>
 <body>
 <div id="root"></div>
+
+<!-- JS 미실행 크롤러(일부 AI·검색 봇)용 콘텐츠 폴백. 화면에는 React 앱이 렌더되면 가려진다. -->
+<noscript>
+<main style="max-width:760px;margin:0 auto;padding:32px 20px;font-family:'Pretendard',-apple-system,sans-serif;line-height:1.7;color:#18181B;">
+  <h1>LEET 표준점수 계산기</h1>
+  <p>법학적성시험(LEET) 원점수를 <strong>표준점수·백분위·표점합</strong>으로 환산해 주는 무료 웹 계산기입니다. 2009~2026학년도 환산표를 모두 지원하며, 25개 법학전문대학원(로스쿨)의 학교별 LEET 환산식과 입시결과를 비교하고 기출문제 PDF를 제공합니다. 회원가입 없이 사용할 수 있습니다.</p>
+
+  <h2>이 사이트에서 할 수 있는 것</h2>
+  <ul>
+    <li>학년도와 원점수 입력 → 언어이해·추리논증 표준점수, 백분위, 표점합 즉시 환산 (2009~2026)</li>
+    <li>25개 로스쿨 학교별 환산점수 비교와 2026학년도 입시결과 커트라인 분석</li>
+    <li>2009~2026학년도 기출문제·정답 PDF 다운로드와 풀이 기록·약점 진단</li>
+  </ul>
+
+  <h2>LEET 표준점수란</h2>
+  <p>표준점수는 매년 다른 시험 난이도를 보정한 점수로, (원점수 − 응시자 평균) ÷ 표준편차로 구한 Z점수에 영역별 기준 표준편차를 곱하고 기준 평균을 더해 산출합니다. 원점수가 같아도 연도에 따라 표준점수는 달라집니다. <strong>구리트(2009~2019)</strong>는 언어이해·추리논증 모두 평균 50·표준편차 10을, <strong>신리트(2020~)</strong>는 언어이해 평균 45·표준편차 9, 추리논증 평균 60·표준편차 12를 사용합니다.</p>
+  <p><strong>표점합</strong>은 언어이해 표준점수와 추리논증 표준점수를 더한 값으로, 다수 로스쿨이 환산표 입력값으로 씁니다. 대부분의 학교는 표준점수를, 서울대는 백분위를, 아주대·부산대는 둘을 혼합해 사용합니다.</p>
+
+  <h2>가이드와 자료</h2>
+  <ul>
+    <li><a href="/guide/standard-score/">LEET 표준점수 계산법 완벽 정리</a></li>
+    <li><a href="/guide/conversion-formulas/">25개 로스쿨 LEET 환산식 총정리</a></li>
+    <li><a href="/faq/">자주 묻는 질문 (FAQ)</a></li>
+    <li><a href="/schools/">학교별 환산점수 비교</a></li>
+    <li><a href="/exams/2026/">기출문제 다운로드 (2009~2026)</a></li>
+  </ul>
+  <p>본 사이트의 환산 데이터는 법학전문대학원협의회 공식 환산표와 각 로스쿨 모집요강을 기반으로 합니다.</p>
+</main>
+</noscript>
+
 <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

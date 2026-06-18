@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LEET 자주 묻는 질문(FAQ) — 표준점수·백분위·로스쿨 반영 · LEET 표준점수 계산기</title>
+
+<meta name="description" content="LEET 시험과 표준점수·백분위·표점합, 로스쿨 반영 방식에 대해 가장 많이 묻는 질문을 한 페이지에 정리. 표준점수 계산법, 구리트와 신리트 차이, 기출 다운로드까지." />
+<meta name="keywords" content="LEET FAQ,리트 자주 묻는 질문,LEET 표준점수,리트 백분위,표점합,구리트 신리트,로스쿨 LEET 반영,법학적성시험,기출문제" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://leet-calculator.site/faq/" />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="LEET 자주 묻는 질문(FAQ) — 표준점수·백분위·로스쿨 반영" />
+<meta property="og:description" content="LEET 표준점수 계산법, 구리트와 신리트 차이, 로스쿨별 반영 방식, 기출 다운로드까지 핵심 질문을 한 페이지에." />
+<meta property="og:url" content="https://leet-calculator.site/faq/" />
+<meta property="og:site_name" content="LEET 표준점수 계산기" />
+<meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content="https://leet-calculator.site/og-image.png" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="LEET 자주 묻는 질문(FAQ)" />
+<meta name="twitter:description" content="LEET 표준점수·백분위·로스쿨 반영에 대한 핵심 질문과 답변." />
+<meta name="twitter:image" content="https://leet-calculator.site/og-image.png" />
+
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "inLanguage": "ko",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "LEET(법학적성시험)는 어떤 시험인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LEET(Legal Education Eligibility Test, 법학적성시험)는 법학전문대학원(로스쿨) 입학을 위해 치르는 적성시험으로 매년 1회 시행됩니다. 시험 영역은 언어이해(30문항), 추리논증(40문항), 그리고 논술로 구성됩니다. 합격 사정에는 주로 언어이해와 추리논증의 표준점수가 사용되고, 논술은 학교별로 활용 방식이 다릅니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "LEET 표준점수는 어떻게 계산하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표준점수는 (원점수 − 응시자 평균) ÷ 표준편차로 Z점수를 구한 뒤, 영역별 기준 표준편차를 곱하고 기준 평균을 더해 산출합니다. 신리트(2020학년도 이후) 기준 언어이해는 평균 45·표준편차 9, 추리논증은 평균 60·표준편차 12를 사용합니다. 직접 계산할 필요 없이 leet-calculator.site에 학년도와 원점수를 입력하면 표준점수·백분위·표점합이 자동 환산됩니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "원점수가 같으면 표준점수도 항상 같나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "아니요. 표준점수는 매년 응시자 집단의 평균·표준편차에 따라 달라집니다. 같은 원점수라도 시험이 어려웠던 해(평균이 낮은 해)에는 표준점수가 높게, 쉬웠던 해에는 낮게 나옵니다. 그래서 연도가 다른 시험은 원점수가 아니라 표준점수로 비교해야 합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "표준점수, 백분위, 표점합은 어떻게 다른가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표준점수는 시험 난이도가 보정된 절대적 위치로 다른 해와도 비교할 수 있습니다. 백분위는 그 해 응시자 중 나보다 점수가 낮은 사람의 비율로 그 해 안에서만 의미가 있습니다. 표점합은 언어이해 표준점수와 추리논증 표준점수를 더한 값으로, 많은 로스쿨이 환산표 입력값으로 사용합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "구리트와 신리트는 무엇이 다른가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "2020학년도부터 표준점수 산출 기준이 바뀌었습니다. 구리트(2009~2019)는 언어이해·추리논증 모두 평균 50·표준편차 10을 사용했고, 신리트(2020~)는 언어이해 평균 45·표준편차 9, 추리논증 평균 60·표준편차 12를 사용합니다. 이 때문에 신리트에서는 같은 실력이라도 추리논증 표준점수가 언어이해보다 높게 나오는 것이 정상이며, 두 영역 표점의 절대값을 직접 비교하면 안 됩니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "로스쿨마다 LEET 점수를 어떻게 반영하나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "대부분의 로스쿨은 표준점수 또는 표점합을 학교별 환산표에 대입해 사용합니다. 서울대는 백분위를 사용하고, 아주대·부산대는 표준점수와 백분위를 혼합합니다. 반영비율과 환산식은 학교마다 크게 달라, 지원할 학교의 환산식을 개별 확인해야 합니다. leet-calculator.site의 학교별 페이지에서 25개 로스쿨의 환산식과 반영비율을 비교할 수 있습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "LEET 몇 점이면 로스쿨에 합격할 수 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "합격선은 학교·연도·전형, 그리고 학부 성적·영어·면접 반영비율에 따라 달라지므로 단일한 커트라인은 없습니다. 같은 표점합이라도 학교별 환산식과 반영비율이 달라 유불리가 갈립니다. leet-calculator.site의 학교별 페이지에서 각 로스쿨의 환산식과 최근 입시결과를 확인해 본인 점수의 위치를 가늠하는 것이 정확합니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "표준점수 만점은 몇 점인가요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "표준점수에는 고정된 만점이 없고 응시자 분포에 따라 매년 달라집니다. 신리트 기준 대략 언어이해 만점은 70점대 초중반, 추리논증 만점은 90점대 후반에서 형성됩니다. 예를 들어 2026학년도 만점 표준점수는 언어이해 73.1점, 추리논증 97.6점이었습니다."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "LEET 기출문제는 어디서 받을 수 있나요?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "leet-calculator.site에서 2009~2026학년도 언어이해·추리논증 문제지와 정답 PDF를 학년도별로 무료 다운로드할 수 있습니다. 사이트의 풀이 기록 기능으로 정답률을 카테고리·난이도별로 분석해 약점을 진단할 수도 있습니다."
+      }
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+<style>
+:root {
+  --bg: #FAFAF9; --bg-card: #FFFFFF; --bg-tint: #F1F5F9; --bg-subtle: #F4F4F5;
+  --ink: #18181B; --ink-soft: #27272A; --ink-mute: #71717A; --ink-tertiary: #A1A1AA;
+  --line: rgba(24,24,27,0.06); --accent: #1A56DB; --accent-hover: #1747B8;
+  --shadow-sm: 0 1px 2px rgba(24,24,27,0.04), 0 0 0 1px rgba(24,24,27,0.05);
+  --radius-md: 8px; --radius-lg: 12px;
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased; letter-spacing: -0.01em; line-height: 1.6;
+  padding: 32px 24px 80px;
+}
+.container { max-width: 760px; margin: 0 auto; }
+.topnav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 20px; border-bottom: 1px solid var(--line); margin-bottom: 32px;
+}
+.topnav a { color: var(--ink-mute); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 150ms; }
+.topnav a:hover { color: var(--accent); }
+.topnav .brand { font-weight: 600; color: var(--ink); font-size: 14px; }
+header.page-header { margin-bottom: 40px; }
+.eyebrow { display: inline-block; font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 12px; letter-spacing: 0.02em; }
+h1 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; margin-bottom: 16px; }
+.lede { font-size: 17px; color: var(--ink-soft); line-height: 1.7; }
+.meta-row { display: flex; gap: 16px; margin-top: 16px; font-size: 13px; color: var(--ink-tertiary); }
+
+.faq-list { display: flex; flex-direction: column; gap: 14px; }
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 22px 24px; box-shadow: var(--shadow-sm);
+}
+.faq-q {
+  font-weight: 600; color: var(--ink); font-size: 17px; margin-bottom: 12px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.faq-q::before {
+  content: 'Q'; flex-shrink: 0; width: 24px; height: 24px; background: var(--accent);
+  color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; font-family: var(--font-mono); margin-top: 1px;
+}
+.faq-a { color: var(--ink-soft); font-size: 15.5px; line-height: 1.78; padding-left: 34px; }
+.faq-a a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.faq-a strong { color: var(--ink); font-weight: 600; }
+
+.cta-section {
+  margin-top: 56px; padding: 40px 32px; background: var(--ink); color: white;
+  border-radius: var(--radius-lg); text-align: center;
+}
+.cta-section h2 { font-size: 24px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.02em; }
+.cta-section p { color: rgba(255,255,255,0.7); margin-bottom: 24px; font-size: 15px; }
+.cta-btn {
+  display: inline-block; padding: 14px 32px; background: var(--accent); color: white;
+  text-decoration: none; border-radius: var(--radius-md); font-weight: 600; font-size: 15px; transition: background 150ms;
+}
+.cta-btn:hover { background: var(--accent-hover); }
+
+.related { margin-top: 48px; padding: 24px 28px; background: var(--bg-tint); border-radius: var(--radius-lg); }
+.related-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-mute); margin-bottom: 12px; }
+.related a { display: block; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+.related .desc { font-size: 14px; color: var(--ink-mute); margin-bottom: 14px; }
+
+footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-tertiary); text-align: center; }
+footer a { color: var(--ink-mute); text-decoration: none; }
+
+@media (max-width: 640px) {
+  body { padding: 20px 16px 60px; }
+  h1 { font-size: 26px; }
+  .cta-section { padding: 32px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="/">← 메인으로</a>
+    <span class="brand">LEET 표준점수 계산기</span>
+  </nav>
+
+  <header class="page-header">
+    <span class="eyebrow">자주 묻는 질문</span>
+    <h1>LEET 자주 묻는 질문 (FAQ)</h1>
+    <p class="lede">
+      LEET 시험과 표준점수·백분위·표점합, 그리고 로스쿨 반영 방식에 대해 수험생들이 가장 많이 묻는 질문을 한 페이지에 모았습니다. 더 자세한 설명은 각 답변의 링크된 가이드에서 이어집니다.
+    </p>
+    <div class="meta-row">
+      <span>최종 업데이트: 2026-06-18</span>
+    </div>
+  </header>
+
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <div class="faq-q">LEET(법학적성시험)는 어떤 시험인가요?</div>
+      <div class="faq-a">LEET(Legal Education Eligibility Test, 법학적성시험)는 <strong>법학전문대학원(로스쿨) 입학을 위한 적성시험</strong>으로 매년 1회 시행됩니다. 영역은 <strong>언어이해(30문항)</strong>, <strong>추리논증(40문항)</strong>, 그리고 <strong>논술</strong>로 구성됩니다. 합격 사정에는 주로 언어이해·추리논증의 표준점수가 사용되고, 논술은 학교마다 활용 방식이 다릅니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">LEET 표준점수는 어떻게 계산하나요?</div>
+      <div class="faq-a">표준점수는 <strong>(원점수 − 응시자 평균) ÷ 표준편차</strong>로 Z점수를 구한 뒤, 영역별 기준 표준편차를 곱하고 기준 평균을 더해 산출합니다. 신리트(2020학년도 이후) 기준 언어이해는 평균 45·표준편차 9, 추리논증은 평균 60·표준편차 12를 사용합니다. 직접 계산할 필요 없이 <a href="/">계산기</a>에 학년도와 원점수를 넣으면 자동 환산됩니다. 자세한 원리는 <a href="/guide/standard-score/">표준점수 계산법 가이드</a>를 참고하세요.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">원점수가 같으면 표준점수도 항상 같나요?</div>
+      <div class="faq-a">아니요. 표준점수는 매년 응시자 집단의 평균·표준편차에 따라 달라집니다. 같은 원점수라도 시험이 <strong>어려웠던 해에는 표준점수가 높게</strong>, 쉬웠던 해에는 낮게 나옵니다. 그래서 연도가 다른 시험은 원점수가 아니라 표준점수로 비교해야 합니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">표준점수, 백분위, 표점합은 어떻게 다른가요?</div>
+      <div class="faq-a"><strong>표준점수</strong>는 시험 난이도가 보정된 절대적 위치로 다른 해와도 비교할 수 있습니다. <strong>백분위</strong>는 그 해 응시자 중 나보다 점수가 낮은 사람의 비율로, 그 해 안에서만 의미가 있습니다. <strong>표점합</strong>은 언어이해 표준점수와 추리논증 표준점수를 더한 값으로, 많은 로스쿨이 환산표 입력값으로 사용합니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">구리트와 신리트는 무엇이 다른가요?</div>
+      <div class="faq-a">2020학년도부터 표준점수 산출 기준이 바뀌었습니다. <strong>구리트(2009~2019)</strong>는 언어이해·추리논증 모두 평균 50·표준편차 10을, <strong>신리트(2020~)</strong>는 언어이해 평균 45·표준편차 9, 추리논증 평균 60·표준편차 12를 사용합니다. 이 때문에 신리트에서는 같은 실력이라도 추리논증 표점이 언어이해보다 높게 나오는 것이 정상이며, 두 영역 표점의 절대값을 직접 비교하면 안 됩니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">로스쿨마다 LEET 점수를 어떻게 반영하나요?</div>
+      <div class="faq-a">대부분의 로스쿨은 <strong>표준점수 또는 표점합</strong>을 학교별 환산표에 대입해 사용합니다. <strong>서울대는 백분위</strong>를, <strong>아주대·부산대는 표준점수와 백분위를 혼합</strong>합니다. 반영비율과 환산식은 학교마다 크게 다르므로 지원할 학교를 개별 확인해야 합니다. <a href="/schools/">학교별 환산점수 비교</a>에서 25개 로스쿨을 한눈에 볼 수 있고, <a href="/guide/conversion-formulas/">환산식 총정리 가이드</a>에 상세 공식이 있습니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">LEET 몇 점이면 로스쿨에 합격할 수 있나요?</div>
+      <div class="faq-a">합격선은 학교·연도·전형, 그리고 학부 성적·영어·면접 반영비율에 따라 달라지므로 <strong>단일한 커트라인은 없습니다</strong>. 같은 표점합이라도 학교별 환산식과 반영비율이 달라 유불리가 갈립니다. <a href="/schools/">학교별 페이지</a>에서 각 로스쿨의 환산식과 최근 입시결과를 확인해 본인 점수의 위치를 가늠하는 것이 정확합니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">표준점수 만점은 몇 점인가요?</div>
+      <div class="faq-a">표준점수에는 고정된 만점이 없고 응시자 분포에 따라 매년 달라집니다. 신리트 기준 대략 언어이해 만점은 70점대 초중반, 추리논증 만점은 90점대 후반에서 형성됩니다. 예를 들어 <strong>2026학년도 만점 표준점수는 언어이해 73.1점, 추리논증 97.6점</strong>이었습니다.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">LEET 기출문제는 어디서 받을 수 있나요?</div>
+      <div class="faq-a"><a href="/exams/2026/">기출문제 페이지</a>에서 2009~2026학년도 언어이해·추리논증 문제지와 정답 PDF를 학년도별로 무료 다운로드할 수 있습니다. 풀이 기록 기능으로 정답률을 카테고리·난이도별로 분석해 약점을 진단할 수도 있습니다.</div>
+    </div>
+
+  </div>
+
+  <section class="cta-section">
+    <h2>내 원점수로 표준점수 환산해보기</h2>
+    <p>학년도와 원점수만 입력하면 표준점수·백분위·표점합까지 한 번에.</p>
+    <a class="cta-btn" href="/">계산기로 이동 →</a>
+  </section>
+
+  <div class="related">
+    <div class="related-label">관련 가이드</div>
+    <a href="/guide/standard-score/">LEET 표준점수 계산법 완벽 정리 →</a>
+    <div class="desc">표준점수·백분위·표점합의 정의와 계산 공식, 구리트와 신리트의 차이를 한 페이지에.</div>
+    <a href="/guide/conversion-formulas/">25개 로스쿨 LEET 환산식 총정리 →</a>
+    <div class="desc">학교별 환산공식, 반영비율, 영어 P/F 기준 정리.</div>
+  </div>
+
+  <footer>
+    <p>본 FAQ는 법학전문대학원협의회의 공식 환산표와 25개 로스쿨 모집요강을 기반으로 작성되었습니다.</p>
+    <p style="margin-top: 8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
