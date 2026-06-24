@@ -17,6 +17,7 @@ if (!existsSync(dist)) {
 
 const files = [
   'CNAME', 'robots.txt', 'sitemap.xml', 'llms.txt', 'og-image.png', 'site.webmanifest',
+  'favicon.ico',
   'favicon-32.png', 'favicon-96.png', 'favicon-192.png', 'favicon-512.png',
 ];
 const dirs = ['schools', 'guide', 'exams', 'faq'];

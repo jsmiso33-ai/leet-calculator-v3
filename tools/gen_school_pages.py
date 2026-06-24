@@ -412,6 +412,7 @@ def page_html(s, others_same_group):
 <meta name="twitter:title" content="{esc(name)} 로스쿨 LEET 환산점수·커트라인 (2026)" />
 <meta name="twitter:description" content="{esc(desc)}" />
 <meta name="twitter:image" content="{SITE}/og-image.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
 {ld_blocks}
@@ -540,6 +541,7 @@ def hub_html():
 <meta property="og:image" content="{SITE}/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:image" content="{SITE}/og-image.png" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96.png" />
 {ld}
