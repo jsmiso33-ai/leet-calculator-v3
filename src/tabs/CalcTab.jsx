@@ -225,12 +225,10 @@ export default function CalcTab() {
       <div className="results-area tw:!grid tw:!grid-cols-1 tw:!gap-4 tw:lg:!grid-cols-2">
         <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
           <div className="head"><span className="name">언어이해</span><span className="max-info">{eonRaw !== null ? `${eonRaw} / 30` : '— / 30'}</span></div>
-          <div className="raw-display">원점수 <span className="num">{eonRaw !== null ? eonRaw : '—'}</span></div>
           <SubjectTable results={results} subjectKey="eon" raw={eonRaw} />
         </div>
         <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
           <div className="head"><span className="name">추리논증</span><span className="max-info">{chuRaw !== null ? `${chuRaw} / 40` : '— / 40'}</span></div>
-          <div className="raw-display">원점수 <span className="num">{chuRaw !== null ? chuRaw : '—'}</span></div>
           <SubjectTable results={results} subjectKey="chu" raw={chuRaw} />
         </div>
       </div>
@@ -293,7 +291,7 @@ function CombinedSection({ results }) {
     <section className="combined tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" style={{ display: 'grid' }}>
       <div className="label-block"><div className="lbl">표준점수 합계</div><div className="lbl-main">언어 + 추리</div></div>
       <div className="table-block">
-        <table>
+        <table id="combinedTable">
           <thead><tr><th>학년도</th><th>언어이해</th><th>추리논증</th><th>합계</th><th>추정 백분위</th></tr></thead>
           <tbody>
             {sorted.map((r) => {
