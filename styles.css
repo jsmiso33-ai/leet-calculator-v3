@@ -4191,6 +4191,15 @@
     border-color: #ef6c00;
     color: #bf360c;
   }
+  .qg-wrong-list {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(46, 125, 50, 0.35);
+    font-weight: 500;
+    color: #b3261e;
+    line-height: 1.7;
+    word-break: keep-all;
+  }
 
   /* === Toast (3초 자동 사라짐, 화면 하단 중앙) === */
   .toast-container {

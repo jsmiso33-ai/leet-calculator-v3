@@ -61,6 +61,11 @@ export default function QGrade({ onSave }) {
   }
   const showResult = (bulkEon.trim() || bulkChu.trim()) && resultParts.length > 0;
 
+  // 오답 문항 번호 목록
+  const wrongNums = (g) => (g.ok ? Object.keys(g.marks).filter((n) => g.marks[n] === 'incorrect').map(Number).sort((a, b) => a - b) : []);
+  const eonWrong = bulkEon.trim() ? wrongNums(eonGrade) : [];
+  const chuWrong = bulkChu.trim() ? wrongNums(chuGrade) : [];
+
   const handleSave = async () => {
     if (saving) return;
     if (!date) { toast('풀이 날짜를 입력해주세요.', { type: 'warning' }); return; }
@@ -124,6 +129,12 @@ export default function QGrade({ onSave }) {
           {showResult && (
             <div className={'qg-bulk-result' + (hasError ? ' has-error' : '')} id="qgBulkResult" style={{ display: 'block' }}>
               <span>{resultParts.join(' · ')}</span>
+              {(eonWrong.length > 0 || chuWrong.length > 0) && (
+                <div className="qg-wrong-list">
+                  {eonWrong.length > 0 && <div>언어 오답 ({eonWrong.length}문항): {eonWrong.map((n) => `${n}번`).join(', ')}</div>}
+                  {chuWrong.length > 0 && <div>추리 오답 ({chuWrong.length}문항): {chuWrong.map((n) => `${n}번`).join(', ')}</div>}
+                </div>
+              )}
             </div>
           )}
         </div>
