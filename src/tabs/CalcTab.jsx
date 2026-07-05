@@ -256,6 +256,7 @@ export default function CalcTab() {
 
 function SubjectTable({ results, subjectKey, raw }) {
   const sorted = [...results].sort((a, b) => a.year - b.year);
+  const latestYear = sorted.length > 0 ? sorted[sorted.length - 1].year : null;
   return (
     <table className="score-table">
       <thead><tr><th>학년도</th><th>구분</th><th>표준점수</th><th>백분위</th></tr></thead>
@@ -266,7 +267,7 @@ function SubjectTable({ results, subjectKey, raw }) {
           const v = r[subjectKey];
           const eraLabel = r.era === 'new' ? '신리트' : '구리트';
           return (
-            <tr key={r.year}>
+            <tr key={r.year} className={r.year === latestYear ? 'row-latest' : undefined}>
               <td className="year">{r.year}</td>
               <td className="era">{eraLabel}</td>
               {v && v.std !== null
@@ -287,6 +288,7 @@ function CombinedSection({ results }) {
   const valid = results.filter((r) => r.eon && r.chu && r.eon.std !== null && r.chu.std !== null);
   if (valid.length === 0) return null;
   const sorted = [...valid].sort((a, b) => a.year - b.year);
+  const latestYear = sorted[sorted.length - 1].year;
   return (
     <section className="combined tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" style={{ display: 'grid' }}>
       <div className="label-block"><div className="lbl">표준점수 합계</div><div className="lbl-main">언어 + 추리</div></div>
@@ -300,7 +302,7 @@ function CombinedSection({ results }) {
               const hasPct = r.eon.pct != null && r.chu.pct != null;
               const combined = hasPct ? Math.sqrt(r.eon.pct * r.chu.pct) : null;
               return (
-                <tr key={r.year}>
+                <tr key={r.year} className={r.year === latestYear ? 'row-latest' : undefined}>
                   <td className="year">{r.year}</td>
                   <td>{r.eon.std.toFixed(1)}{r.eon.estimated ? '*' : ''}</td>
                   <td>{r.chu.std.toFixed(1)}{r.chu.estimated ? '*' : ''}</td>

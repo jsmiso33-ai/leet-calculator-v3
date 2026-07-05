@@ -786,7 +786,12 @@
     margin-top: 12px;
     font-family: var(--font-mono);
     font-size: 13px;
+    font-variant-numeric: tabular-nums;
   }
+  table.score-table th:nth-child(3),
+  table.score-table th:nth-child(4),
+  table.score-table td.std,
+  table.score-table td.pct { text-align: right; }
   table.score-table th {
     text-align: left;
     padding: 8px 10px;
@@ -809,6 +814,8 @@
   table.score-table td.pct { color: var(--blue); font-weight: 600; }
   table.score-table td.era { font-size: 10px; color: var(--ink-mute); letter-spacing: 0.04em; }
   table.score-table tr:hover { background: var(--bg-subtle); }
+  table.score-table tr.row-latest td { background: var(--bg-tint); }
+  table.score-table tr.row-latest td.year { color: var(--accent-hover); }
 
   .chart-card {
     background: var(--bg-card);
@@ -897,7 +904,10 @@
     font-family: var(--font-mono);
     font-size: 13px;
     color: var(--ink);
+    font-variant-numeric: tabular-nums;
   }
+  .combined table th:not(:first-child),
+  .combined table td:not(.year) { text-align: right; }
   .combined table th {
     text-align: left;
     padding: 6px 12px 10px;
@@ -915,6 +925,8 @@
   }
   .combined table tr:last-child td { border-bottom: none; }
   .combined table tr:hover td { background: var(--bg-subtle); }
+  .combined table tr.row-latest td { background: var(--bg-tint); }
+  .combined table tr.row-latest td.year { color: var(--accent-hover); }
   .combined table td.total {
     color: var(--accent);
     font-weight: 700;
@@ -997,6 +1009,7 @@
     border-collapse: collapse;
     font-family: var(--font-mono);
     font-size: 11px;
+    font-variant-numeric: tabular-nums;
   }
   table.conv th, table.conv td {
     padding: 4px 8px;
@@ -1009,6 +1022,8 @@
     font-size: 10px;
     color: var(--ink-mute);
   }
+  table.conv tbody tr:nth-child(even):not(.user-hit) { background: rgba(15, 23, 42, 0.025); }
+  table.conv tbody tr:hover:not(.user-hit) { background: var(--bg-subtle); }
   table.conv td.r { font-weight: 600; color: var(--ink); }
   table.conv td.s { color: var(--ink); font-weight: 700; }
   table.conv td.s.est { font-style: italic; color: var(--ink-mute); font-weight: 600; }
@@ -1074,9 +1089,9 @@
     display: inline-block;
     margin-left: 6px;
     padding: 1px 6px;
-    background: #faf2e0;
-    color: var(--gold);
-    border: 1px solid #e8dab2;
+    background: var(--warning-soft);
+    color: var(--warning);
+    border: 1px solid #FDE68A;
     border-radius: var(--radius-sm);
     font-size: 10px;
     font-style: normal;
@@ -3218,6 +3233,11 @@
     }
     #combinedTable tr:last-child { margin-bottom: 0; }
     #combinedTable tr:hover td { background: transparent; }
+    #combinedTable tr.row-latest {
+      background: var(--bg-tint);
+      border-color: rgba(37, 99, 235, 0.18);
+    }
+    #combinedTable tr.row-latest td { background: transparent; }
     #combinedTable td {
       display: block;
       padding: 0;
