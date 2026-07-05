@@ -706,7 +706,7 @@
   .field input[type="number"]:hover { border-color: rgba(24, 24, 27, 0.18); }
   .field input[type="number"]:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 
   .year-selector { margin-top: 8px; }
@@ -1163,7 +1163,7 @@
   }
   .auth-btn:hover {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.08);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
     transform: translateY(-1px);
   }
   .auth-btn.auth-kakao:hover {
@@ -1463,7 +1463,7 @@
   .log-select:hover, .log-date:hover, .log-memo:hover { border-color: rgba(24, 24, 27, 0.18); }
   .log-select:focus, .log-date:focus, .log-memo:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 
   .log-preview {
@@ -1536,6 +1536,7 @@
   }
   .btn-secondary:hover { background: var(--bg-subtle); border-color: rgba(24, 24, 27, 0.18); }
   .btn-secondary:active { background: var(--bg-tint); }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; background: var(--bg-card); }
 
   /* 액센트 버튼 (다운로드 등 강조용) */
   .btn-accent {
@@ -1551,7 +1552,9 @@
     transition: all var(--motion-fast) var(--ease-out);
     letter-spacing: -0.01em;
   }
-  .btn-accent:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(26, 86, 219, 0.18); }
+  .btn-accent:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18); }
+  .btn-accent:active { transform: translateY(0); }
+  .btn-accent:disabled { background: var(--ink-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
 
   /* 통계 카드 */
   .log-stats {
@@ -1795,7 +1798,7 @@
   .school-search-input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
   /* 브라우저 기본 검색 클리어 버튼 숨김 (커스텀 버튼 사용) */
   .school-search-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
@@ -2580,22 +2583,25 @@
     margin-bottom: 16px;
   }
   .import-log-btn {
-    background: none;
-    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
     padding: 8px 16px;
     font-family: var(--font-sans);
-    font-size: 12px;
-    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
     cursor: pointer;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     gap: 6px;
+    letter-spacing: -0.01em;
     transition: all var(--motion-fast) var(--ease-out);
   }
   .import-log-btn:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--bg-tint);
   }
   .import-icon {
     font-size: 14px;
@@ -2868,6 +2874,7 @@
   .btn-primary,
   .btn-secondary,
   .btn-accent,
+  .import-log-btn,
   .auth-btn,
   .login-nudge-btn {
     min-height: 38px;
@@ -3772,25 +3779,29 @@
   .btn-tiny {
     padding: 5px 10px;
     font-size: 12px;
-    background: #fff;
-    border: 1px solid rgba(24, 24, 27, 0.12);
+    font-weight: 500;
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
     border-radius: var(--radius-md);
     cursor: pointer;
-    font-family: inherit;
+    font-family: var(--font-sans);
     color: var(--ink);
     transition: all var(--motion-fast) var(--ease-out);
   }
   .btn-tiny:hover {
     background: var(--bg-tint);
-    border-color: var(--gold, #0ea5e9);
+    border-color: var(--accent);
+    color: var(--accent-hover);
   }
+  .btn-tiny:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-tiny.btn-danger {
-    color: #b91c1c;
-    border-color: #fecaca;
+    color: var(--danger);
+    border-color: #FECACA;
   }
   .btn-tiny.btn-danger:hover {
-    background: #fee2e2;
-    border-color: #b91c1c;
+    background: var(--danger-soft);
+    border-color: var(--danger);
+    color: var(--danger);
   }
 
   /* 관리자 그리드 */
@@ -3926,11 +3937,19 @@
   .admin-field select {
     width: 100%;
     padding: 8px 10px;
-    border: 1px solid rgba(24, 24, 27, 0.12);
-    border-radius: 6px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
     font-family: inherit;
     font-size: 14px;
-    background: #fff;
+    background: var(--bg-card);
+    transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
+  }
+  .admin-field input[type="text"]:focus,
+  .admin-field input[type="number"]:focus,
+  .admin-field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
   .admin-answer-row, .admin-diff-row {
     display: grid;
@@ -4177,19 +4196,22 @@
   .qg-bulk-input {
     width: 100%;
     padding: 10px 12px;
-    border: 1.5px solid rgba(24, 24, 27, 0.12);
-    border-radius: 6px;
-    background: #fff;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
     font-family: var(--font-mono, monospace);
     font-size: 14px;
     line-height: 1.6;
     color: var(--ink);
     resize: vertical;
     box-sizing: border-box;
+    transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
   }
+  .qg-bulk-input:hover { border-color: rgba(24, 24, 27, 0.18); }
   .qg-bulk-input:focus {
     outline: none;
-    border-color: var(--gold, #0ea5e9);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
   .qg-bulk-result {
     margin-top: 10px;
@@ -4446,7 +4468,7 @@
   .fb-textarea:hover { border-color: rgba(24, 24, 27, 0.18); }
   .fb-textarea:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
   .fb-count {
     text-align: right;
