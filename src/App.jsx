@@ -4,6 +4,7 @@ import { track } from './lib/analytics.js';
 import Masthead from './components/Masthead.jsx';
 import TabNav from './components/TabNav.jsx';
 import DailyPromo from './components/DailyPromo.jsx';
+import UpdateBanner from './components/UpdateBanner.jsx';
 import Feedback from './components/Feedback.jsx';
 import Footer from './components/Footer.jsx';
 import CalcTab from './tabs/CalcTab.jsx';
@@ -53,6 +54,7 @@ export default function App() {
       <div className={'container' + (activeTab === 'daily' ? ' container--daily' : '')} id="main">
         <Masthead />
         <TabNav tabs={tabs} activeTab={activeTab} onSelect={onSelect} />
+        {activeTab !== 'schools' && <UpdateBanner onGo={() => onSelect('schools')} />}
         {activeTab !== 'daily' && <DailyPromo onGo={() => onSelect('daily')} />}
         {tabs.map((t) => (
           <div
