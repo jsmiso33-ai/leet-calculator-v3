@@ -3,7 +3,7 @@
 // ===========================================================================
 
 // ===========================================================================
-// 25개 로스쿨 정량 환산 데이터 (2026학년도 기준)
+// 25개 로스쿨 정량 환산 데이터 (2027학년도 기준)
 // 각 학교의 모집요강 1단계 전형 환산식을 직접 구현
 // 입력: { eonStd, chuStd, eonPct, chuPct, gpaPct, gpaScale, engType, engScore }
 // 반환: { leet, gpa, eng, total, leetMax, gpaMax, engMax, totalMax, engPF }
@@ -72,7 +72,8 @@ const LAW_SCHOOLS = [
     name: '연세대', group: '서울', leetRatio: 35.7,
     leetMax: 150, gpaMax: 150, engMax: null, engType: 'pf',
     totalMax: 400,
-    engPF: { toeic: 800, teps: 309, toefl: 90 },  // 일반적 기준 (모집요강 기반)
+    engPF: { toeic: 850, teps: 338, toefl: 99 },  // 2027학년도 모집요강 기준
+    note: 'TOEFL iBT 신 1~6점 체계에서는 5점 이상도 인정 (2026.1.21 이후 시행분)',
     calc(input) {
       // LEET 환산표1: 168 이상 150, ..., 85 이하 50
       let leet = null;
@@ -111,16 +112,17 @@ const LAW_SCHOOLS = [
     leetMax: 40, gpaMax: 20, engMax: null, engType: 'pf',
     totalMax: 80,
     engPF: { toeic: 800, teps: 309, toefl: 91 },
+    note: 'LEET 환산 분모(당해연도 언어·추리 표준점수 최상위 급간 상한)는 법학전문대학원협의회가 시험 후 별도 발표합니다. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다.',
     calc(input) {
       // LEET: 모집요강 환산공식
       // A = 언어 표점 / 언어 최상위 급간 상한점수
       // B = 추리 표점 / 추리 최상위 급간 상한점수
-      // "최상위 급간 상한점수" = 해당 연도 만점 표준점수
-      // 2026학년도: 언어 만점 73.1, 추리 만점 97.6
+      // "최상위 급간 상한점수" = 해당 연도 만점 표준점수 (법학전문대학원협의회가 시험 후 발표)
+      // 2027학년도: 아직 미발표 (2026학년도 값: 언어 73.1, 추리 97.6)
       let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
-        const eonMax = 73.1;  // 2026학년도 언어 30/30 표준점수
-        const chuMax = 97.6;  // 2026학년도 추리 40/40 표준점수
+      const eonMax = null;  // 2027학년도 미발표
+      const chuMax = null;  // 2027학년도 미발표
+      if (input.eonStd !== null && input.chuStd !== null && eonMax !== null && chuMax !== null) {
         const A = Math.min(1, input.eonStd / eonMax);
         const B = Math.min(1, input.chuStd / chuMax);
         const C = (A + B) / 2;
@@ -144,11 +146,11 @@ const LAW_SCHOOLS = [
     totalMax: 200,
     engPF: null,
     calc(input) {
-      // LEET: (언어 표점 + 추리 표점) × 0.7 - 30 (130 이상 시 70)
+      // LEET: (언어 표점 + 추리 표점) × 0.7 - 30, 산출값 70 이상이면 70으로 캡
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
         const sum = input.eonStd + input.chuStd;
-        leet = sum >= 130 ? 70 : Math.max(0, sum * 0.7 - 30);
+        leet = Math.min(70, Math.max(0, sum * 0.7 - 30));
       }
       // 학부: 백분위 비례 (가중평균 방식이지만 단순 비례로 근사)
       const gpa = input.gpaPct !== null ? (input.gpaPct / 100) * 40 : null;
@@ -160,15 +162,15 @@ const LAW_SCHOOLS = [
 
   // ========== 경희대 ==========
   {
-    name: '경희대', group: '서울', leetRatio: 50.9,
+    name: '경희대', group: '서울', leetRatio: 55.0,
     leetMax: 100, gpaMax: 100, engMax: null, engType: 'pf',
     totalMax: 400,
     engPF: { toeic: 800, teps: 309, toefl: 90 },
     calc(input) {
-      // LEET: 0.28 × (언어 표점 + 추리 표점) + 58.5
+      // LEET: 0.375 × (언어 표점 + 추리 표점) + 45.1
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
-        leet = 0.28 * (input.eonStd + input.chuStd) + 58.5;
+        leet = 0.375 * (input.eonStd + input.chuStd) + 45.1;
         leet = Math.min(100, Math.max(0, leet));
       }
       // 학부: 11등급 환산표 (백분위)
@@ -306,7 +308,7 @@ const LAW_SCHOOLS = [
 
   // ========== 아주대 ==========
   {
-    name: '아주대', group: '경기/인천', leetRatio: 45.5,
+    name: '아주대', group: '경기/인천', leetRatio: 47.9,
     leetMax: 30, gpaMax: 20, engMax: 20, engType: 'score',
     totalMax: 80,
     engPF: null,
@@ -386,13 +388,13 @@ const LAW_SCHOOLS = [
     leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
     totalMax: 300,
     engPF: { toeic: 800, teps: 310, toefl: 91 },
-    note: '분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2026학년도 기준 73.1+97.6=170.7',
+    note: '분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다. (2026학년도 값: 73.1+97.6=170.7)',
     calc(input) {
       let leet = null;
-      if (input.eonStd !== null && input.chuStd !== null) {
+      const maxSum = null;  // 2027학년도 미발표 (2026학년도 값: 170.7)
+      if (input.eonStd !== null && input.chuStd !== null && maxSum !== null) {
         const sum = input.eonStd + input.chuStd;
-        // 2026학년도 표점 최상위 급간 상한 합 (한양대 코드와 동일 출처): 73.1 + 97.6 = 170.7
-        leet = 85 + 65 * (sum / 170.7);
+        leet = 85 + 65 * (sum / maxSum);
         leet = Math.min(150, Math.max(85, leet));
       }
       const gpa = input.gpaPct !== null ? 65 + 35 * input.gpaPct / 100 : null;
@@ -427,7 +429,7 @@ const LAW_SCHOOLS = [
     name: '전북대', group: '지방', leetRatio: 53.3,
     leetMax: 40, gpaMax: 15, engMax: null, engType: 'pf',
     totalMax: 75,
-    engPF: { toeic: 700, teps: 300, toefl: 80 },
+    engPF: { toeic: 700, teps: 265, toefl: 80 },
     note: 'LEET 환산이 시그모이드 함수',
     calc(input) {
       let leet = null;
@@ -449,9 +451,10 @@ const LAW_SCHOOLS = [
     totalMax: 350,
     engPF: null,
     calc(input) {
+      // LEET: (언어 표점 + 추리 표점) - 50
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
-        leet = (input.eonStd + input.chuStd) * 0.7 - 20;
+        leet = (input.eonStd + input.chuStd) - 50;
         leet = Math.min(120, Math.max(0, leet));
       }
       const gpa = input.gpaPct !== null ? Math.min(100, input.gpaPct) : null;
@@ -489,7 +492,7 @@ const LAW_SCHOOLS = [
     name: '강원대', group: '지방', leetRatio: 44.0,
     leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
     totalMax: 350,
-    engPF: { toeic: 720, teps: 308, toefl: 75 },
+    engPF: { toeic: 720, teps: 272, toefl: 81 },
     calc(input) {
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
@@ -516,7 +519,7 @@ const LAW_SCHOOLS = [
     name: '제주대', group: '지방', leetRatio: 66.7,
     leetMax: 40, gpaMax: 20, engMax: null, engType: 'pf',
     totalMax: 60,
-    engPF: { toeic: 710, teps: 334, toefl: 75 },
+    engPF: { toeic: 710, teps: 268, toefl: 80 },
     calc(input) {
       let leet = null;
       if (input.eonStd !== null && input.chuStd !== null) {
@@ -554,7 +557,7 @@ const LAW_SCHOOLS = [
       }
       let eng = null;
       if (input.engScore !== null) {
-        const std = { toefl: 68, toeic: 600, teps: 255 };
+        const std = { toefl: 68, toeic: 600, teps: 227 };
         if (input.engScore >= (std[input.engType] || Infinity)) eng = 200;
         else eng = 0;
       }
@@ -898,16 +901,29 @@ function chungangGpaTable(gpa45) {
 
 function chungangEngTable(engType, score) {
   if (score === null) return null;
-  // TOEIC 기준 환산
-  let toeic = score;
-  if (engType === 'teps') toeic = uosTepsToToeic(score);
-  else if (engType === 'toefl') toeic = uosToeflToToeic(score);
-  if (toeic >= 965) return 100;
-  if (toeic >= 900) return 99;
-  if (toeic >= 850) return 97;
-  if (toeic >= 800) return 96;
-  if (toeic >= 700) return 95;
-  return 95;
+  // 모집요강 직접 제공 환산표 (TOEIC/TOEFL/TEPS 각각)
+  if (engType === 'toeic') {
+    if (score >= 965) return 100;
+    if (score >= 900) return 99;
+    if (score >= 850) return 97;
+    if (score >= 800) return 96;
+    return 95;
+  }
+  if (engType === 'toefl') {
+    if (score >= 115) return 100;
+    if (score >= 100) return 99;
+    if (score >= 90) return 97;
+    if (score >= 80) return 96;
+    return 95;
+  }
+  if (engType === 'teps') {
+    if (score >= 458) return 100;
+    if (score >= 370) return 99;
+    if (score >= 336) return 97;
+    if (score >= 309) return 96;
+    return 95;
+  }
+  return null;
 }
 
 // ========== TEPS/TOEFL → TOEIC 환산 ==========
@@ -994,89 +1010,41 @@ function uosToeflToToeic(toefl) {
 // ========== 건국대 ==========
 function konkukGpaTable(pct) {
   if (pct >= 96) return 200;
-  if (pct >= 93) return 195;
-  if (pct >= 90) return 190;
-  if (pct >= 87) return 185;
-  if (pct >= 84) return 180;
-  if (pct >= 81) return 175;
-  if (pct >= 78) return 165;
-  if (pct >= 75) return 155;
-  if (pct >= 72) return 135;
-  if (pct >= 69) return 115;
+  if (pct >= 93) return 198;
+  if (pct >= 90) return 195;
+  if (pct >= 87) return 190;
+  if (pct >= 84) return 185;
+  if (pct >= 81) return 180;
+  if (pct >= 78) return 175;
+  if (pct >= 75) return 165;
+  if (pct >= 72) return 155;
+  if (pct >= 69) return 135;
   return 110;
 }
 
 // ========== 이화여대 영어 환산표 ==========
 function ewhaEngTable(engType, score) {
   if (score === null) return null;
-  // 21등급, 0~20점
+  // 5등급 (0/17/18/19/20점)
   if (engType === 'toeic') {
-    if (score >= 975) return 20;
-    if (score >= 950) return 19;
-    if (score >= 925) return 18;
-    if (score >= 900) return 17;
-    if (score >= 875) return 16;
-    if (score >= 850) return 15;
-    if (score >= 840) return 14;
-    if (score >= 830) return 13;
-    if (score >= 820) return 12;
-    if (score >= 810) return 11;
-    if (score >= 800) return 10;
-    if (score >= 790) return 9;
-    if (score >= 780) return 8;
-    if (score >= 770) return 7;
-    if (score >= 760) return 6;
-    if (score >= 750) return 5;
-    if (score >= 740) return 4;
-    if (score >= 730) return 3;
-    if (score >= 720) return 2;
-    if (score >= 710) return 1;
+    if (score >= 875) return 20;
+    if (score >= 810) return 19;
+    if (score >= 760) return 18;
+    if (score >= 710) return 17;
     return 0;
   }
   if (engType === 'teps') {
-    if (score >= 486) return 20;
-    if (score >= 428) return 19;
-    if (score >= 394) return 18;
-    if (score >= 370) return 17;
-    if (score >= 352) return 16;
-    if (score >= 336) return 15;
-    if (score >= 330) return 14;
-    if (score >= 324) return 13;
-    if (score >= 319) return 12;
-    if (score >= 314) return 11;
-    if (score >= 309) return 10;
-    if (score >= 304) return 9;
-    if (score >= 299) return 8;
-    if (score >= 294) return 7;
-    if (score >= 290) return 6;
-    if (score >= 285) return 5;
-    if (score >= 281) return 4;
-    if (score >= 277) return 3;
-    if (score >= 272) return 2;
-    if (score >= 268) return 1;
+    if (score >= 352) return 20;
+    if (score >= 314) return 19;
+    if (score >= 290) return 18;
+    if (score >= 268) return 17;
     return 0;
   }
   if (engType === 'toefl') {
-    if (score >= 111) return 20;
-    if (score >= 108) return 19;
-    if (score >= 105) return 18;
-    if (score >= 103) return 17;
-    if (score >= 101) return 16;
-    if (score >= 99) return 15;
-    if (score >= 97) return 14;
-    if (score >= 95) return 13;
-    if (score >= 93) return 12;
-    if (score >= 91) return 11;
-    if (score >= 89) return 10;
-    if (score >= 87) return 9;
-    if (score >= 85) return 8;
-    if (score >= 83) return 7;
-    if (score >= 81) return 6;
-    if (score >= 79) return 5;
-    if (score >= 78) return 4;
-    if (score >= 77) return 3;
-    if (score >= 76) return 2;
-    if (score >= 75) return 1;
+    if (score >= 101) return 20;
+    if (score >= 91) return 19;
+    if (score >= 81) return 18;
+    if (score >= 75) return 17;
     return 0;
   }
   return null;
@@ -1152,11 +1120,9 @@ function inhaEngTable(engType, score) {
   let toeic = score;
   if (engType === 'teps') toeic = uosTepsToToeic(score);
   else if (engType === 'toefl') toeic = uosToeflToToeic(score);
-  // TOEIC 기준 환산표 (50 기본 + 50 실질)
-  // 990→100, 765이하→50
-  if (toeic >= 990) return 100;
-  if (toeic <= 765) return 50;
-  return 50 + ((toeic - 765) / 225) * 50;
+  // 기본점수 50 + TOEIC 원점수 × (50/990). 어학성적 하한 제한 없음 (모집요강 명시)
+  toeic = Math.min(990, Math.max(0, toeic));
+  return 50 + toeic * (50 / 990);
 }
 
 // ========== 충남대 영어 ==========
@@ -1268,9 +1234,9 @@ function jbnuGpaTable(pct) {
 function wonkwangEngTable(engType, score) {
   if (score === null || score === undefined) return null;
   const ranges = {
-    toeic: { low: 750, high: 950 },
-    teps:  { low: 285, high: 436 },
-    toefl: { low:  85, high: 112 },
+    toeic: { low: 700, high: 990 },
+    teps:  { low: 265, high: 600 },
+    toefl: { low:  80, high: 120 },
   };
   const r = ranges[engType];
   if (!r) return null;

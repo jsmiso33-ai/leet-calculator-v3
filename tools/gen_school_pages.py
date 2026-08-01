@@ -15,7 +15,8 @@ import html
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://leet-calculator.site"
-TODAY = "2026-05-30"
+TODAY = "2026-08-02"
+FORMULA_YEAR = "2027"  # 반영비율·환산식 기준 학년도 (adm 필드는 별개로 실제 2026학년도 합격자 결과)
 
 # ---------------------------------------------------------------------------
 # 입력 데이터 (data/schools.js 미러)
@@ -37,7 +38,7 @@ SCHOOLS = [
             "ref":"언어 백분위 50%=96.2, 추리 백분위 50%=97.3"}},
     {"name":"연세대","slug":"yonsei","full":"연세대학교","group":"서울","ratio":35.7,
      "leetMax":150,"gpaMax":150,"engMax":None,"engType":"pf","totalMax":400,
-     "note":None,"engPF":{"toeic":800,"teps":309,"toefl":90},
+     "note":None,"engPF":{"toeic":850,"teps":338,"toefl":99},
      "adm":{"enrolled":132,"leet":{"v":140.70,"max":150,"label":"LEET 환산","unit":"/ 150"},
             "leet75":139.70,"gpa":{"v":148.40,"max":150,"label":"학부 환산","unit":"/ 150"}}},
     {"name":"성균관대","slug":"skku","full":"성균관대학교","group":"서울","ratio":35.3,
@@ -47,7 +48,8 @@ SCHOOLS = [
             "leet75":134.0,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"96.4%"}}},
     {"name":"한양대","slug":"hanyang","full":"한양대학교","group":"서울","ratio":50.0,
      "leetMax":40,"gpaMax":20,"engMax":None,"engType":"pf","totalMax":80,
-     "note":None,"engPF":{"toeic":800,"teps":309,"toefl":91},
+     "note":"LEET 환산 분모(당해연도 언어·추리 표준점수 최상위 급간 상한)는 법학전문대학원협의회가 시험 후 별도 발표합니다. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다.",
+     "engPF":{"toeic":800,"teps":309,"toefl":91},
      "adm":{"enrolled":105,"leet":{"v":31.710,"max":40,"label":"LEET 환산","unit":"/ 40"},
             "leet75":31.070,"gpa":{"v":18.751,"max":20,"label":"학부 환산","unit":"/ 20"}}},
     {"name":"이화여대","slug":"ewha","full":"이화여자대학교","group":"서울","ratio":35.0,
@@ -56,7 +58,7 @@ SCHOOLS = [
      "adm":{"enrolled":106,"leet":{"v":62.33,"max":70,"label":"LEET 환산","unit":"/ 70"},
             "leet75":60.70,"gpa":{"v":38.14,"max":40,"label":"학부 환산","unit":"/ 40"},
             "eng":{"v":20,"max":20,"label":"영어 환산","unit":"/ 20"}}},
-    {"name":"경희대","slug":"kyunghee","full":"경희대학교","group":"서울","ratio":50.9,
+    {"name":"경희대","slug":"kyunghee","full":"경희대학교","group":"서울","ratio":55.0,
      "leetMax":100,"gpaMax":100,"engMax":None,"engType":"pf","totalMax":400,
      "note":None,"engPF":{"toeic":800,"teps":309,"toefl":90},
      "adm":{"enrolled":65,"leet":{"v":135.3,"max":None,"label":"LEET (표점합)","unit":""},
@@ -91,7 +93,7 @@ SCHOOLS = [
      "adm":{"enrolled":44,"leet":{"v":129.7,"max":None,"label":"LEET (표점합)","unit":""},
             "leet75":131.9,"leet25":131.8,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"97.7%"},
             "ref":"언어 55.5 + 추리 74.2"}},
-    {"name":"아주대","slug":"ajou","full":"아주대학교","group":"경기/인천","ratio":45.5,
+    {"name":"아주대","slug":"ajou","full":"아주대학교","group":"경기/인천","ratio":47.9,
      "leetMax":30,"gpaMax":20,"engMax":20,"engType":"score","totalMax":80,
      "note":None,"engPF":None,
      "adm":{"enrolled":55,"leet":{"v":134.0,"max":None,"label":"LEET 가군 (표점합)","unit":""},
@@ -113,7 +115,7 @@ SCHOOLS = [
             "ref":"나군 LEET 50%=19.67, 학점 50%=29.50"}},
     {"name":"경북대","slug":"knu","full":"경북대학교","group":"지방","ratio":46.4,
      "leetMax":150,"gpaMax":100,"engMax":None,"engType":"pf","totalMax":300,
-     "note":"분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2026학년도 기준 73.1+97.6=170.7",
+     "note":"분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다. (2026학년도 값: 73.1+97.6=170.7)",
      "engPF":{"toeic":800,"teps":310,"toefl":91},
      "adm":{"enrolled":132,"leet":{"v":127.5,"max":None,"label":"LEET (표점합)","unit":""},
             "leet75":125.2,"leet25":129.7,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"96.7%"}}},
@@ -125,7 +127,7 @@ SCHOOLS = [
             "ref":"가군일반 LEET 50%=125.5 · 학점 가군 97.0%"}},
     {"name":"전북대","slug":"jbnu","full":"전북대학교","group":"지방","ratio":53.3,
      "leetMax":40,"gpaMax":15,"engMax":None,"engType":"pf","totalMax":75,
-     "note":"LEET 환산이 시그모이드 함수","engPF":{"toeic":700,"teps":300,"toefl":80},
+     "note":"LEET 환산이 시그모이드 함수","engPF":{"toeic":700,"teps":265,"toefl":80},
      "adm":{"enrolled":88,"leet":{"v":123.1,"max":None,"label":"LEET (표점합)","unit":""},
             "leet75":122.6,"leet25":125.1,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"96.6%"}}},
     {"name":"충남대","slug":"cnu","full":"충남대학교","group":"지방","ratio":69.77,
@@ -141,12 +143,12 @@ SCHOOLS = [
             "leet75":167.75,"leet25":171.47,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"98.0%"}}},
     {"name":"강원대","slug":"kangwon","full":"강원대학교","group":"지방","ratio":44.0,
      "leetMax":150,"gpaMax":100,"engMax":None,"engType":"pf","totalMax":350,
-     "note":None,"engPF":{"toeic":720,"teps":308,"toefl":75},
+     "note":None,"engPF":{"toeic":720,"teps":272,"toefl":81},
      "adm":{"enrolled":41,"leet":{"v":125.4,"max":None,"label":"LEET (표점합)","unit":""},
             "leet75":125.0,"leet25":127.4,"gpa":{"v":None,"max":None,"label":"학점","unit":"","note":"95.9%"}}},
     {"name":"제주대","slug":"jeju","full":"제주대학교","group":"지방","ratio":66.7,
      "leetMax":40,"gpaMax":20,"engMax":None,"engType":"pf","totalMax":60,
-     "note":None,"engPF":{"toeic":710,"teps":334,"toefl":75},
+     "note":None,"engPF":{"toeic":710,"teps":268,"toefl":80},
      "adm":{"enrolled":44,"leet":{"v":25.096,"max":40,"label":"LEET 가군 환산","unit":"/ 40"},
             "leet75":24.744,"leet25":25.496,"gpa":{"v":19.220,"max":20,"label":"학부 가군 환산","unit":"/ 20"},
             "ref":"나군 LEET 50%=25.096, 학점 50%=19.219"}},
@@ -299,7 +301,7 @@ def page_html(s, others_same_group):
     adm = s["adm"]
     leet = adm["leet"]
     ratio = fmt(s["ratio"])
-    title = f"{name} 로스쿨 LEET 환산점수·커트라인 (2026학년도) · LEET 표준점수 계산기"
+    title = f"{name} 로스쿨 LEET 환산점수·커트라인 ({FORMULA_YEAR}학년도) · LEET 표준점수 계산기"
     desc = (f"{full} 법학전문대학원의 LEET 반영 비율 {ratio}%, 환산 방식, "
             f"2026학년도 합격자 LEET 커트라인(상위 50% {disp(leet['v'], leet['unit'])}), "
             f"학점·영어 반영까지 한 페이지에 정리.")
@@ -374,7 +376,7 @@ def page_html(s, others_same_group):
     }
     article_ld = {
         "@context": "https://schema.org", "@type": "Article",
-        "headline": f"{name} 로스쿨 LEET 환산점수·커트라인 (2026학년도)",
+        "headline": f"{name} 로스쿨 LEET 환산점수·커트라인 ({FORMULA_YEAR}학년도)",
         "description": desc, "datePublished": "2026-05-30", "dateModified": TODAY,
         "author": {"@type": "Organization", "name": "LEET 표준점수 계산기"},
         "publisher": {"@type": "Organization", "name": "LEET 표준점수 계산기", "url": SITE + "/"},
@@ -402,14 +404,14 @@ def page_html(s, others_same_group):
 <meta name="robots" content="index, follow" />
 <link rel="canonical" href="{url}" />
 <meta property="og:type" content="article" />
-<meta property="og:title" content="{esc(name)} 로스쿨 LEET 환산점수·커트라인 (2026)" />
+<meta property="og:title" content="{esc(name)} 로스쿨 LEET 환산점수·커트라인 ({FORMULA_YEAR})" />
 <meta property="og:description" content="{esc(desc)}" />
 <meta property="og:url" content="{url}" />
 <meta property="og:site_name" content="LEET 표준점수 계산기" />
 <meta property="og:locale" content="ko_KR" />
 <meta property="og:image" content="{SITE}/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="{esc(name)} 로스쿨 LEET 환산점수·커트라인 (2026)" />
+<meta name="twitter:title" content="{esc(name)} 로스쿨 LEET 환산점수·커트라인 ({FORMULA_YEAR})" />
 <meta name="twitter:description" content="{esc(desc)}" />
 <meta name="twitter:image" content="{SITE}/og-image.png" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -430,7 +432,7 @@ def page_html(s, others_same_group):
   <div class="crumb"><a href="/">계산기</a> › <a href="/schools/">학교별 환산점수</a> › {esc(name)} 로스쿨</div>
 
   <header class="page-header">
-    <span class="eyebrow">로스쿨 환산점수 · 2026학년도</span>
+    <span class="eyebrow">로스쿨 환산점수 · {FORMULA_YEAR}학년도</span>
     <h1>{esc(name)} 로스쿨 LEET 환산점수 · 커트라인</h1>
     <p class="lede">
       {esc(full)} 법학전문대학원의 1단계(정량) 전형에서 LEET·학점·영어가 어떻게 환산되는지, 그리고 2026학년도 합격자 점수가 어디서 형성됐는지 정리했습니다.
@@ -474,7 +476,7 @@ def page_html(s, others_same_group):
   </div>
 
   <footer>
-    <p>본 페이지는 {esc(full)} 2026학년도 모집요강과 공개 입시결과를 기반으로 작성되었습니다. 정확한 기준은 해당 학교 입학처 공식 자료를 확인하세요.</p>
+    <p>본 페이지는 {esc(full)} {FORMULA_YEAR}학년도 모집요강과 2026학년도 공개 입시결과를 기반으로 작성되었습니다. 정확한 기준은 해당 학교 입학처 공식 자료를 확인하세요.</p>
     <p style="margin-top:8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
   </footer>
 </div>
@@ -484,7 +486,7 @@ def page_html(s, others_same_group):
 
 
 def hub_html():
-    title = "로스쿨 환산점수·커트라인 25개교 정리 (2026) · LEET 표준점수 계산기"
+    title = f"로스쿨 환산점수·커트라인 25개교 정리 ({FORMULA_YEAR}) · LEET 표준점수 계산기"
     desc = ("전국 25개 로스쿨(법학전문대학원)의 LEET 반영 비율, 환산 방식, 2026학년도 합격자 "
             "커트라인을 학교별로 정리했습니다. 서울대·고려대·연세대부터 지방 로스쿨까지.")
     url = f"{SITE}/schools/"
@@ -533,7 +535,7 @@ def hub_html():
 <meta name="robots" content="index, follow" />
 <link rel="canonical" href="{url}" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="로스쿨 환산점수·커트라인 25개교 정리 (2026)" />
+<meta property="og:title" content="로스쿨 환산점수·커트라인 25개교 정리 ({FORMULA_YEAR})" />
 <meta property="og:description" content="{esc(desc)}" />
 <meta property="og:url" content="{url}" />
 <meta property="og:site_name" content="LEET 표준점수 계산기" />
@@ -556,7 +558,7 @@ def hub_html():
     <span class="brand">LEET 표준점수 계산기</span>
   </nav>
   <header class="page-header">
-    <span class="eyebrow">로스쿨 환산점수 · 2026학년도</span>
+    <span class="eyebrow">로스쿨 환산점수 · {FORMULA_YEAR}학년도</span>
     <h1>전국 25개 로스쿨 환산점수 · 커트라인</h1>
     <p class="lede">학교마다 LEET를 반영하는 방식과 비중이 다릅니다. 지원할 로스쿨을 골라 환산 방식과 2026학년도 합격자 커트라인을 확인하세요.</p>
   </header>
@@ -567,7 +569,7 @@ def hub_html():
     <a class="cta-btn" href="/">계산기로 이동 →</a>
   </section>
   <footer>
-    <p>2026학년도 모집요강과 공개 입시결과 기반. 정확한 기준은 각 학교 입학처 공식 자료를 확인하세요.</p>
+    <p>{FORMULA_YEAR}학년도 모집요강과 2026학년도 공개 입시결과 기반. 정확한 기준은 각 학교 입학처 공식 자료를 확인하세요.</p>
     <p style="margin-top:8px;"><a href="/">← LEET 표준점수 계산기로 돌아가기</a></p>
   </footer>
 </div>

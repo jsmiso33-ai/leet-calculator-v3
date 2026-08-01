@@ -14,7 +14,7 @@ export default function Footer() {
       <details className="foot-section" open>
         <summary>데이터 출처</summary>
         <p><strong>표준점수:</strong> 2009–2025학년도는 suomessa 블로그에 정리된 법학전문대학원협의회 공식 환산표, 2026학년도는 로연(lawyeon.kr) 환산표를 사용했습니다.</p>
-        <p><strong>학교별 환산식:</strong> 25개 로스쿨 2026학년도 모집요강을 각 대학교 입학처 공식 자료 기준으로 반영했습니다.</p>
+        <p><strong>학교별 환산식:</strong> 25개 로스쿨 2027학년도 모집요강을 각 대학교 입학처 공식 자료 기준으로 반영했습니다.</p>
         <p><strong>커트라인:</strong> 2026학년도 합격자 상위 50% 기준이며, 25개교 전체를 반영했습니다.</p>
       </details>
 
