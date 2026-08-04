@@ -40,3 +40,112 @@
 .sx-focus:focus,
 .sx-focus[data-state="open"] { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 .sx-elevated { box-shadow: 0 10px 32px -12px rgba(15, 23, 42, 0.28), 0 4px 10px -6px rgba(15, 23, 42, 0.14); }
+
+/* Mobile-safe dialog shell: large close target and a keyboard-aware scroll area. */
+.app-dialog-close {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  top: 8px;
+  right: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #64748b;
+  opacity: 1;
+}
+
+.feedback-dialog-content {
+  max-height: min(720px, calc(100dvh - 32px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 640px) {
+  .feedback-dialog-content > .app-dialog-close,
+  .travel-dialog-content > .app-dialog-close {
+    position: fixed;
+    z-index: 60;
+    top: max(20px, calc(env(safe-area-inset-top) + 8px));
+    right: max(20px, calc(env(safe-area-inset-right) + 8px));
+  }
+
+  .feedback-dialog-content {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    left: max(12px, env(safe-area-inset-left));
+    width: auto;
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+    padding: 56px 16px 16px;
+    gap: 12px;
+    translate: none;
+    transform: none;
+  }
+
+  .travel-dialog-content {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: auto;
+    left: max(12px, env(safe-area-inset-left));
+    width: auto !important;
+    translate: none;
+    transform: none;
+    animation: none;
+  }
+
+  .feedback-dialog-content :where(input, textarea, select) {
+    font-size: 16px;
+  }
+}
+
+/* Keep auth/feedback usable in phone landscape and other short visual viewports. */
+@media (max-width: 680px), (max-height: 600px) {
+  .travel-dialog-content {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    bottom: auto;
+    left: max(12px, env(safe-area-inset-left));
+    grid-template-columns: 1fr;
+    width: auto !important;
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    translate: none;
+    transform: none;
+    animation: none;
+  }
+  .travel-dialog-content > .app-dialog-close {
+    position: fixed;
+    z-index: 60;
+    top: max(20px, calc(env(safe-area-inset-top) + 8px));
+    right: max(20px, calc(env(safe-area-inset-right) + 8px));
+  }
+  .travel-signin-visual { display: none; }
+  .travel-signin-form-panel {
+    padding: 56px 18px 22px;
+    overflow: visible;
+  }
+  .travel-signin-form input { font-size: 16px; }
+}
+
+@media (max-height: 600px) {
+  .feedback-dialog-content {
+    top: max(12px, env(safe-area-inset-top));
+    right: max(12px, env(safe-area-inset-right));
+    left: max(12px, env(safe-area-inset-left));
+    width: auto;
+    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+    translate: none;
+    transform: none;
+  }
+  .feedback-dialog-content > .app-dialog-close {
+    position: fixed;
+    z-index: 60;
+    top: max(20px, calc(env(safe-area-inset-top) + 8px));
+    right: max(20px, calc(env(safe-area-inset-right) + 8px));
+  }
+  .feedback-dialog-content :where(input, textarea, select) { font-size: 16px; }
+}

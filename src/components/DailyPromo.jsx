@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BookOpenText, X } from 'lucide-react';
 import { supabase, withTimeout } from '../lib/supabase.js';
 import { track } from '../lib/analytics.js';
 
@@ -45,28 +46,28 @@ export default function DailyPromo({ onGo }) {
   };
 
   return (
-    <div className="tw:!mb-4 tw:!flex tw:!items-center tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-blue-200 tw:!bg-gradient-to-r tw:!from-blue-50 tw:!to-indigo-50 tw:!px-4 tw:!py-3 tw:!shadow-sm">
-      <span className="tw:!text-xl" aria-hidden="true">📖</span>
-      <div className="tw:!min-w-0 tw:!flex-1">
-        <div className="tw:!text-[11px] tw:!font-extrabold tw:!tracking-wide tw:!text-blue-700">NEW · 오늘의 지문</div>
-        <div className="tw:!truncate tw:!text-sm tw:!font-bold tw:!text-slate-900">
+    <div className="notice-banner notice-banner--daily tw:!mb-4 tw:!flex tw:!items-center tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-blue-200 tw:!bg-gradient-to-r tw:!from-blue-50 tw:!to-indigo-50 tw:!px-4 tw:!py-3 tw:!shadow-sm">
+      <BookOpenText className="notice-banner__icon" size={20} strokeWidth={2} aria-hidden="true" />
+      <div className="notice-banner__content tw:!min-w-0 tw:!flex-1">
+        <div className="notice-banner__eyebrow tw:!text-[11px] tw:!font-extrabold tw:!tracking-wide tw:!text-blue-700">NEW · 오늘의 지문</div>
+        <div className="notice-banner__message tw:!truncate tw:!text-sm tw:!font-bold tw:!text-slate-900">
           {fmtShort(row.publish_date)} — {row.passage_title}
         </div>
       </div>
       <button
         type="button"
-        className="tw:!shrink-0 tw:!rounded-lg tw:!bg-blue-600 tw:!px-3.5 tw:!py-2 tw:!text-sm tw:!font-bold tw:!text-white tw:transition-colors tw:hover:!bg-blue-700"
+        className="notice-banner__action tw:!shrink-0 tw:!rounded-lg tw:!bg-blue-600 tw:!px-3.5 tw:!py-2 tw:!text-sm tw:!font-bold tw:!text-white tw:transition-colors tw:hover:!bg-blue-700"
         onClick={() => { track('daily_promo_click', {}); onGo(); }}
       >
         풀어보기
       </button>
       <button
         type="button"
-        className="tw:!shrink-0 tw:!p-1 tw:!text-base tw:!leading-none tw:!text-slate-400 tw:hover:!text-slate-600"
+        className="notice-banner__close tw:!shrink-0 tw:!p-1 tw:!text-base tw:!leading-none tw:!text-slate-400 tw:hover:!text-slate-600"
         aria-label="오늘의 지문 배너 닫기"
         onClick={dismiss}
       >
-        ✕
+        <X size={18} strokeWidth={2} aria-hidden="true" />
       </button>
     </div>
   );

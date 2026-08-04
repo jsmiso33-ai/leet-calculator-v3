@@ -63,14 +63,12 @@ export function confirmAsync(msg, opts) {
   return new Promise((resolve) => {
     const overlay = document.createElement('div');
     overlay.className = 'confirm-overlay';
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
     const titleId = 'confirmTitle_' + Date.now();
-    overlay.setAttribute('aria-labelledby', titleId);
+    const messageId = 'confirmMessage_' + Date.now();
     overlay.innerHTML =
-      '<div class="confirm-modal">' +
+      '<div class="confirm-modal" role="dialog" aria-modal="true" aria-labelledby="' + titleId + '" aria-describedby="' + messageId + '">' +
         '<div class="confirm-title" id="' + titleId + '">' + escapeHtml(title) + '</div>' +
-        '<div class="confirm-message">' + escapeHtml(msg) + '</div>' +
+        '<div class="confirm-message" id="' + messageId + '">' + escapeHtml(msg) + '</div>' +
         '<div class="confirm-actions">' +
           '<button class="confirm-btn cancel" type="button">' + escapeHtml(cancelLabel) + '</button>' +
           '<button class="confirm-btn ' + (danger ? 'danger' : 'confirm') + '" type="button">' + escapeHtml(okLabel) + '</button>' +
@@ -81,16 +79,34 @@ export function confirmAsync(msg, opts) {
     const cancelBtn = overlay.querySelector('.cancel');
     const okBtn = overlay.querySelector('.confirm-btn:not(.cancel)');
     const prevFocus = document.activeElement;
+    const previousBodyOverflow = document.body.style.overflow;
+    const background = [...document.body.children]
+      .filter((element) => element !== overlay)
+      .map((element) => ({ element, inert: element.inert }));
+    background.forEach(({ element }) => { element.inert = true; });
+    document.body.style.overflow = 'hidden';
 
     function close(result) {
       document.removeEventListener('keydown', keyHandler);
       if (overlay.parentNode) overlay.remove();
+      background.forEach(({ element, inert }) => { element.inert = inert; });
+      document.body.style.overflow = previousBodyOverflow;
       if (prevFocus && prevFocus.focus) prevFocus.focus();
       resolve(result);
     }
     function keyHandler(e) {
       if (e.key === 'Escape') { e.preventDefault(); close(false); }
-      else if (e.key === 'Enter') { e.preventDefault(); close(true); }
+      else if (e.key === 'Tab') {
+        const first = cancelBtn;
+        const last = okBtn;
+        if (e.shiftKey && (document.activeElement === first || !overlay.contains(document.activeElement))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
 
     cancelBtn.addEventListener('click', () => close(false));

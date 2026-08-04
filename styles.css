@@ -348,8 +348,8 @@
     display: flex;
     align-items: center;
     gap: 20px;
-    width: 100%;
-    max-width: 820px;
+    width: fit-content;
+    max-width: 100%;
     margin-inline: auto;
     padding: 14px 18px;
     border: 1px solid rgba(37, 99, 235, .2);
@@ -368,8 +368,8 @@
     border-right: 1px solid var(--line);
   }
   .timer-setup-card .header-timer-controls {
-    flex: 1 1 auto;
-    justify-content: flex-end;
+    flex: 0 1 auto;
+    justify-content: flex-start;
     gap: 10px;
   }
   .timer-setup-card .header-timer-controls button {
@@ -1660,7 +1660,8 @@
   .travel-auth-switch button:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; border-radius: 2px; }
   .travel-auth-switch button:disabled { opacity: .6; cursor: wait; }
   @keyframes travelOverlayIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes travelDialogIn { from { opacity: 0; transform: translate(-50%, calc(-50% + 14px)) scale(.98); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+  /* DialogContent의 translate(-50%, -50%) 중심 배치와 충돌하지 않도록 크기만 애니메이션한다. */
+  @keyframes travelDialogIn { from { opacity: 0; transform: scale(.98); } to { opacity: 1; transform: scale(1); } }
   @media (max-width: 680px) {
     .travel-dialog-content { grid-template-columns: 1fr; width: min(430px, calc(100vw - 24px)) !important; max-height: calc(100vh - 24px); overflow-y: auto; }
     .travel-signin-visual { display: none; }
@@ -1712,6 +1713,9 @@
     max-width: 100%;
     position: relative;
     overflow: visible;
+  }
+  .mobile-tab-picker {
+    display: none;
   }
   .tab-lamp {
     position: absolute;
@@ -3160,6 +3164,7 @@
     .header-timer-controls { gap: 5px; }
     .header-timer-controls select { width: 76px; }
     .timer-setup-card {
+      width: 100%;
       flex-direction: column;
       align-items: stretch;
       gap: 12px;
@@ -3174,7 +3179,7 @@
     }
     .timer-setup-card .header-timer-controls {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
     }
     .timer-setup-card .header-timer-controls select,
@@ -3203,12 +3208,17 @@
     .meta.is-guest .auth-actions { justify-content: center; }
     .meta.is-guest .auth-sync-card {
       flex: 0 1 auto;
-      grid-template-columns: 38px minmax(0, 1fr);
+      grid-template-columns: 1fr;
       gap: 10px;
       padding: 12px;
-      text-align: left;
+      justify-items: center;
+      text-align: center;
     }
     .meta.is-guest .auth-sync-icon { width: 38px; height: 38px; }
+    .meta.is-guest .auth-sync-copy {
+      align-items: center;
+      text-align: center;
+    }
     .meta.is-guest .auth-sync-copy strong,
     .meta.is-guest .auth-sync-copy > span { white-space: normal; }
     .meta.is-guest .auth-sync-card .auth-actions {
@@ -3226,69 +3236,50 @@
     .title-block::before { width: 34px; height: 34px; font-size: 15px; }
   }
 
-  /* 탭 메뉴 — 좁은 화면(태블릿/모바일)에서 가로 스크롤 + 우측 페이드.
-     데스크톱(>820px)에서만 균등폭(flex:1)이 적용되어 줄바꿈을 방지 */
+  /* 탭 메뉴 — 작은 화면은 선택 메뉴로 전환해 가로 스크롤을 없앤다. */
   @media (max-width: 820px) {
     nav.tab-nav {
-      display: flex;
+      display: none;
+    }
+    .mobile-tab-picker {
+      display: grid;
+      gap: 5px;
+      position: sticky;
+      top: max(8px, env(safe-area-inset-top));
+      z-index: 20;
+      margin: 0 -8px 16px;
+      padding: 8px;
+      border: 1px solid rgba(24, 24, 27, 0.08);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 14px 34px rgba(24, 24, 27, 0.12), 0 1px 0 rgba(255, 255, 255, 0.88) inset;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .mobile-tab-picker__label {
+      padding-left: 4px;
+      color: var(--ink-mute);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .mobile-tab-picker__select {
       width: 100%;
-      padding: 5px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      flex-wrap: nowrap;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, black 0, black calc(100% - 28px), transparent 100%);
+      min-height: 48px;
+      padding: 10px 12px;
+      border: 1px solid rgba(24, 24, 27, 0.16);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.25;
+      cursor: pointer;
     }
-    nav.tab-nav::after {
-      content: '›';
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      width: 26px;
-      height: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      background: rgba(24, 24, 27, 0.88);
-      color: #fff;
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1;
-      pointer-events: none;
-      box-shadow: 0 6px 16px rgba(24, 24, 27, 0.18);
-      opacity: 0;
-      transition: opacity var(--motion-fast) var(--ease-out), transform var(--motion-fast) var(--ease-out);
-    }
-    nav.tab-nav.is-scrollable::after {
-      opacity: 0.92;
-      transform: translateY(-50%);
-    }
-    nav.tab-nav.is-scrolled-end::after {
-      opacity: 0;
-      transform: translateY(-50%) translateX(4px);
-    }
-    nav.tab-nav::-webkit-scrollbar { display: none; }
-    .tab-lamp::before {
-      top: 0;
-    }
-    .tab-lamp::after {
-      top: -2px;
-      height: 16px;
-    }
-    .tab-btn {
-      padding: 11px 14px;
-      font-size: 14px;
-      flex: 0 0 auto;
-      text-align: center;
-      white-space: nowrap;
-      letter-spacing: 0;
-      font-weight: 600;
-      min-width: max-content;
+    .mobile-tab-picker__select:focus-visible {
+      outline: 3px solid rgba(26, 86, 219, 0.35);
+      outline-offset: 2px;
     }
   }
 
@@ -5138,11 +5129,14 @@
 
     .title-block {
       width: 100%;
-      align-items: flex-start;
+      align-items: center;
+      justify-content: center;
     }
 
     .title-block-text {
       min-width: 0;
+      align-items: center;
+      text-align: center;
     }
 
     .title-block h1 {
@@ -7287,4 +7281,340 @@
     text-decoration-color: var(--danger);
     text-decoration-thickness: 2px;
     text-underline-offset: 3px;
+  }
+
+  /* ===== MOBILE COHERENCE PASS (safe areas, touch, compact layouts) ===== */
+  .notice-banner__icon {
+    flex: 0 0 auto;
+  }
+  .notice-banner--update .notice-banner__icon { color: #047857; }
+  .notice-banner--daily .notice-banner__icon { color: #1d4ed8; }
+  .notice-banner__close {
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+  }
+  .timer-dock-announcement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .travel-dialog-content {
+    max-height: calc(100dvh - 36px);
+  }
+
+  @media (max-width: 820px) {
+    .tab-panel { scroll-margin-top: calc(98px + env(safe-area-inset-top)); }
+  }
+
+  @media (max-width: 640px) {
+    html {
+      min-height: 100%;
+      scroll-padding-top: calc(98px + env(safe-area-inset-top));
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      min-height: 100dvh;
+      padding-top: max(10px, env(safe-area-inset-top));
+      padding-right: max(12px, env(safe-area-inset-right));
+      padding-bottom: max(96px, calc(72px + env(safe-area-inset-bottom)));
+      padding-left: max(12px, env(safe-area-inset-left));
+      overflow-x: clip;
+    }
+    body:has(.timer-dock) {
+      padding-bottom: max(190px, calc(166px + env(safe-area-inset-bottom)));
+    }
+    #root,
+    .container,
+    .tab-panel,
+    .tab-panel > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+    .container { width: auto; }
+    .timer-setup-card .header-timer-controls label,
+    .timer-setup-card .header-timer-controls select,
+    .timer-setup-card .header-timer-controls input {
+      min-width: 0;
+    }
+
+    /* Notices become a two-row grid instead of clipping copy and actions. */
+    .container .notice-banner {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px 10px !important;
+      align-items: center !important;
+      padding: 12px !important;
+    }
+    .notice-banner__icon {
+      order: 1;
+      flex: 0 0 44px;
+    }
+    .notice-banner__content {
+      order: 2;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .notice-banner .notice-banner__message {
+      overflow: visible !important;
+      text-overflow: clip !important;
+      white-space: normal !important;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .notice-banner__action {
+      order: 4;
+      flex: 1 0 100% !important;
+      width: auto;
+      min-height: 44px !important;
+    }
+    .notice-banner__close {
+      order: 3;
+      flex: 0 0 44px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px !important;
+    }
+
+    /* One minimum target size for the dense utility controls. */
+    button,
+    summary,
+    [role="button"] {
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    :where(.tab-btn, .y-chip, .hp-quick-actions button, .quick-actions button,
+      .sort-btn, .sf-quick-actions button, .sch-chip, .qg-cell, .exam-link,
+      .e-delete, .adm-compare-toggle, .adm-compare-clear, .an-btn, .an-color,
+      .an-clear, .timer-dock button) {
+      min-height: 44px !important;
+    }
+    :where(.e-delete, .favorite-btn, .adm-favorite-btn, .an-color,
+      .school-search-clear, .travel-password-field button) {
+      min-width: 44px !important;
+    }
+    .an-color {
+      width: 44px;
+      height: 44px;
+      border-width: 10px;
+    }
+    .an-bar {
+      top: calc(max(8px, env(safe-area-inset-top)) + 62px);
+      scroll-margin-top: calc(72px + env(safe-area-inset-top));
+    }
+
+    /* Avoid iOS focus zoom for control types that the legacy rule missed. */
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    .travel-signin-form input {
+      font-size: 16px !important;
+    }
+
+    /* Fixed timer becomes a compact bottom sheet with equal-width actions. */
+    .timer-dock {
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(12px, env(safe-area-inset-bottom));
+      left: max(12px, env(safe-area-inset-left));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      padding: 12px;
+    }
+    .timer-dock-copy {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .timer-dock-time { font-size: 22px; }
+    .timer-dock-actions {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      gap: 8px;
+    }
+    .timer-dock button {
+      width: 100%;
+      padding: 9px 10px;
+      font-size: 12px;
+    }
+
+    /* Dialogs remain reachable above virtual keyboards and device insets. */
+    .travel-dialog-content {
+      width: calc(100vw - max(24px, calc(env(safe-area-inset-left) + env(safe-area-inset-right) + 16px))) !important;
+      max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .travel-dialog-content > button {
+      top: 8px;
+      right: 8px;
+      width: 44px;
+      height: 44px;
+    }
+    .travel-signin-form-panel {
+      padding: 56px 18px 22px;
+      overflow: visible;
+    }
+    .travel-password-field input { padding-right: 52px; }
+    .travel-password-field button {
+      right: 0;
+      width: 44px;
+      height: 44px;
+    }
+    .travel-signin-reset,
+    .travel-auth-switch button {
+      min-height: 44px;
+      padding: 8px;
+    }
+    .confirm-overlay {
+      padding-top: max(12px, env(safe-area-inset-top));
+      padding-right: max(12px, env(safe-area-inset-right));
+      padding-bottom: max(12px, env(safe-area-inset-bottom));
+      padding-left: max(12px, env(safe-area-inset-left));
+    }
+    .confirm-modal {
+      max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .toast-container {
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(16px, calc(12px + env(safe-area-inset-bottom)));
+      left: max(12px, env(safe-area-inset-left));
+      width: auto;
+      transform: none;
+    }
+    .toast { max-width: min(100%, 420px); }
+  }
+
+  @media (max-width: 380px) {
+    .hp-input-grid { grid-template-columns: 1fr; }
+    table.score-table th { font-size: 11px; }
+  }
+
+  /* ===== FOCUSED EXAM TIMER MODAL ===== */
+  .timer-dock.is-timer-modal {
+    position: fixed;
+    z-index: 100;
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: stretch;
+    justify-items: center;
+    gap: 28px;
+    width: min(680px, calc(100vw - 40px));
+    min-height: min(560px, calc(100dvh - 48px));
+    max-height: calc(100dvh - 48px);
+    padding: 34px;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    border-radius: 28px;
+    background:
+      radial-gradient(circle at 50% 34%, rgba(59, 130, 246, 0.23), transparent 39%),
+      radial-gradient(circle at 7% 93%, rgba(79, 70, 229, 0.22), transparent 31%),
+      linear-gradient(145deg, #172554 0%, #0f172a 54%, #111827 100%);
+    box-shadow: 0 32px 92px rgba(15, 23, 42, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translate(-50%, -50%);
+  }
+  .timer-dock.is-timer-modal::before,
+  .timer-dock.is-timer-modal::after {
+    position: absolute;
+    z-index: -1;
+    border-radius: 999px;
+    content: '';
+    pointer-events: none;
+  }
+  .timer-dock.is-timer-modal::before {
+    top: -120px;
+    right: -106px;
+    width: 270px;
+    height: 270px;
+    border: 1px solid rgba(147, 197, 253, 0.16);
+    box-shadow: 0 0 0 34px rgba(96, 165, 250, 0.035), 0 0 0 68px rgba(96, 165, 250, 0.025);
+  }
+  .timer-dock.is-timer-modal::after {
+    bottom: -140px;
+    left: -114px;
+    width: 250px;
+    height: 250px;
+    background: rgba(129, 140, 248, 0.1);
+    filter: blur(8px);
+  }
+  .timer-dock.is-timer-modal.is-finished {
+    background:
+      radial-gradient(circle at 50% 34%, rgba(74, 222, 128, 0.2), transparent 39%),
+      radial-gradient(circle at 7% 93%, rgba(16, 185, 129, 0.16), transparent 31%),
+      linear-gradient(145deg, #14532d 0%, #052e16 62%, #064e3b 100%);
+  }
+  .timer-dock.is-timer-modal .timer-dock-copy {
+    align-self: center;
+    justify-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .timer-dock.is-timer-modal .timer-dock-label {
+    color: rgba(255, 255, 255, 0.74);
+    font-size: clamp(13px, 2.2vw, 18px);
+    letter-spacing: 0.04em;
+  }
+  .timer-dock.is-timer-modal .timer-dock-time {
+    display: grid;
+    width: min(330px, 66vw);
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid rgba(191, 219, 254, 0.34);
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.28);
+    box-shadow: 0 0 0 13px rgba(147, 197, 253, 0.055), inset 0 0 42px rgba(96, 165, 250, 0.12);
+    font-size: clamp(58px, 11vw, 132px);
+    letter-spacing: -0.07em;
+    line-height: 0.95;
+  }
+  .timer-dock.is-timer-modal .timer-dock-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: min(100%, 560px);
+    position: relative;
+    z-index: 1;
+  }
+  .timer-dock.is-timer-modal button {
+    min-height: 54px;
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+  .timer-dock.is-timer-modal .timer-dock-close {
+    min-width: 56px;
+    padding: 8px !important;
+    font-size: 24px !important;
+  }
+  @media (max-width: 640px) {
+    .timer-dock.is-timer-modal {
+      width: calc(100vw - 24px);
+      min-height: min(510px, calc(100dvh - 24px));
+      max-height: calc(100dvh - 24px);
+      padding: 26px 20px 20px;
+      border-radius: 24px;
+    }
+    .timer-dock.is-timer-modal .timer-dock-time { width: min(280px, 70vw); }
   }

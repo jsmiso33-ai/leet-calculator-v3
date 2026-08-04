@@ -1,5 +1,8 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 
+const prefersReducedMotion = () =>
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
 // 기존 .tab-nav + .tab-lamp 동작을 React로 이식 (a11y, 화살표키, 스크롤 힌트, lamp 위치)
 export default function TabNav({ tabs, activeTab, onSelect }) {
   const navRef = useRef(null);
@@ -62,40 +65,64 @@ export default function TabNav({ tabs, activeTab, onSelect }) {
     const nav = navRef.current;
     const btn = btnRefs.current[id];
     if (nav && btn && window.innerWidth <= 820) {
-      requestAnimationFrame(() => btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' }));
+      requestAnimationFrame(() => {
+        const centeredLeft = btn.offsetLeft - (nav.clientWidth - btn.offsetWidth) / 2;
+        nav.scrollTo({
+          left: Math.max(0, centeredLeft),
+          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+        });
+      });
     }
   };
 
   return (
-    <nav
-      className="tab-nav"
-      role="tablist"
-      ref={navRef}
-      onScroll={() => { positionLamp(); updateScrollHint(); }}
-    >
-      <span className="tab-lamp" aria-hidden="true" ref={lampRef} />
-      {tabs.map((t, idx) => {
-        const active = t.id === activeTab;
-        return (
-          <button
-            key={t.id}
-            ref={(el) => { btnRefs.current[t.id] = el; }}
-            className={'tab-btn' + (active ? ' active' : '') + (t.adminOnly ? ' admin-only' : '')}
-            data-tab={t.id}
-            data-short-label={t.short}
-            role="tab"
-            id={'tab-btn-' + t.id}
-            aria-controls={'tab-' + t.id}
-            aria-selected={active}
-            tabIndex={active ? 0 : -1}
-            onClick={() => handleClick(t.id)}
-            onKeyDown={(e) => onKeyDown(e, idx)}
-          >
-            {t.label}
-            {t.badge && <span className="tab-badge" aria-hidden="true">{t.badge}</span>}
-          </button>
-        );
-      })}
-    </nav>
+    <>
+      <nav
+        className="tab-nav tab-nav--desktop"
+        role="tablist"
+        ref={navRef}
+        onScroll={() => { positionLamp(); updateScrollHint(); }}
+      >
+        <span className="tab-lamp" aria-hidden="true" ref={lampRef} />
+        {tabs.map((t, idx) => {
+          const active = t.id === activeTab;
+          return (
+            <button
+              key={t.id}
+              ref={(el) => { btnRefs.current[t.id] = el; }}
+              className={'tab-btn' + (active ? ' active' : '') + (t.adminOnly ? ' admin-only' : '')}
+              data-tab={t.id}
+              data-short-label={t.short}
+              role="tab"
+              id={'tab-btn-' + t.id}
+              aria-controls={'tab-' + t.id}
+              aria-selected={active}
+              tabIndex={active ? 0 : -1}
+              onClick={() => handleClick(t.id)}
+              onKeyDown={(e) => onKeyDown(e, idx)}
+            >
+              {t.label}
+              {t.badge && <span className="tab-badge" aria-hidden="true">{t.badge}</span>}
+            </button>
+          );
+        })}
+      </nav>
+
+      <nav className="mobile-tab-picker" aria-label="메뉴 선택">
+        <label className="mobile-tab-picker__label" htmlFor="mobile-tab-select">메뉴 선택</label>
+        <select
+          id="mobile-tab-select"
+          className="mobile-tab-picker__select"
+          value={activeTab}
+          onChange={(event) => onSelect(event.target.value)}
+        >
+          {tabs.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.label}{t.badge ? ` (${t.badge})` : ''}
+            </option>
+          ))}
+        </select>
+      </nav>
+    </>
   );
 }

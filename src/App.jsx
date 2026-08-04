@@ -28,6 +28,21 @@ const ALL_TABS = [
 // 새 기능 홍보: daily 탭에 한 번 들어가기 전까지 탭 버튼에 NEW 배지 표시
 const DAILY_SEEN_KEY = 'leet_daily_seen_v1';
 
+function scrollToTabPanel(id) {
+  if (!window.matchMedia?.('(max-width: 820px)').matches) return;
+  requestAnimationFrame(() => {
+    const panel = document.getElementById(`tab-${id}`);
+    if (!panel) return;
+    const mobilePicker = document.querySelector('.mobile-tab-picker');
+    const nav = mobilePicker?.offsetParent ? mobilePicker : document.querySelector('nav.tab-nav');
+    const stickyTop = nav ? Number.parseFloat(getComputedStyle(nav).top) || 0 : 0;
+    const offset = (nav?.offsetHeight || 0) + stickyTop + 12;
+    const top = panel.getBoundingClientRect().top + window.scrollY - offset;
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: Math.max(0, top), behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+}
+
 export default function App() {
   const { activeTab, setActiveTab, isAdmin } = useApp();
   const [dailySeen, setDailySeen] = useState(() => {
@@ -42,6 +57,7 @@ export default function App() {
   const onSelect = (id) => {
     setActiveTab(id);
     track('tab_view', { tab: id });
+    scrollToTabPanel(id);
     if (id === 'daily' && !dailySeen) {
       setDailySeen(true);
       try { localStorage.setItem(DAILY_SEEN_KEY, '1'); } catch { /* ignore */ }

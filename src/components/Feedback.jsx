@@ -59,7 +59,7 @@ export default function Feedback() {
       </button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent>
+        <DialogContent className="feedback-dialog-content">
           <DialogHeader>
             <DialogTitle>의견 보내기</DialogTitle>
             <DialogDescription>불편한 점, 잘못된 데이터, 추가했으면 하는 기능 무엇이든 편하게 남겨주세요. 직접 읽고 반영합니다.</DialogDescription>

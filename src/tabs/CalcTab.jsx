@@ -72,6 +72,7 @@ export default function CalcTab() {
   const [detailYear, setDetailYear] = useState(2025);
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerRef = useRef(null);
+  const pickerTriggerRef = useRef(null);
 
   // 자동 저장 (기존 키/형식 유지)
   useEffect(() => {
@@ -86,7 +87,12 @@ export default function CalcTab() {
   useEffect(() => {
     if (!pickerOpen) return;
     const onDoc = (e) => { if (pickerRef.current && !pickerRef.current.contains(e.target)) setPickerOpen(false); };
-    const onKey = (e) => { if (e.key === 'Escape') setPickerOpen(false); };
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setPickerOpen(false);
+        requestAnimationFrame(() => pickerTriggerRef.current?.focus());
+      }
+    };
     document.addEventListener('click', onDoc);
     document.addEventListener('keydown', onKey);
     return () => { document.removeEventListener('click', onDoc); document.removeEventListener('keydown', onKey); };
@@ -221,13 +227,13 @@ export default function CalcTab() {
           </div>
 
           <div className="hp-years" id="hpYearsPicker" ref={pickerRef}>
-            <button type="button" className={'hp-years-trigger' + (pickerOpen ? ' open' : '')} aria-expanded={pickerOpen} aria-controls="hpYearsPopover"
+            <button ref={pickerTriggerRef} type="button" className={'hp-years-trigger' + (pickerOpen ? ' open' : '')} aria-expanded={pickerOpen} aria-controls="hpYearsPopover"
               onClick={(e) => { e.stopPropagation(); setPickerOpen((o) => !o); }}>
               <span className="hp-years-label">비교할 학년도</span>
               <span className="hp-years-current">{yearsSummary(selectedYears)}</span>
               <svg className="hp-years-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
             </button>
-            <div className={'hp-years-popover' + (pickerOpen ? ' open' : '')} id="hpYearsPopover" onClick={(e) => e.stopPropagation()}>
+            {pickerOpen && <div className="hp-years-popover open" id="hpYearsPopover" onClick={(e) => e.stopPropagation()}>
               <div className="hp-years-inner">
                 <div className="hp-years-body">
                   <div className="year-chips">
@@ -237,14 +243,14 @@ export default function CalcTab() {
                     )}
                   </div>
                   <div className="hp-quick-actions">
-                    <button onClick={() => quick('all')}>전체 선택</button>
-                    <button onClick={() => quick('new')}>신리트만 (2020~)</button>
-                    <button onClick={() => quick('recent')}>최근 5개년</button>
-                    <button onClick={() => quick('clear')}>선택 해제</button>
+                    <button type="button" onClick={() => quick('all')}>전체 선택</button>
+                    <button type="button" onClick={() => quick('new')}>신리트만 (2020~)</button>
+                    <button type="button" onClick={() => quick('recent')}>최근 5개년</button>
+                    <button type="button" onClick={() => quick('clear')}>선택 해제</button>
                   </div>
                 </div>
               </div>
-            </div>
+            </div>}
           </div>
         </div>
       </section>

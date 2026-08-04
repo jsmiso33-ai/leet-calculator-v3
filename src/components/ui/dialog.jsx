@@ -24,8 +24,8 @@ function DialogContent({ className, overlayClassName, children, ...props }) {
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm text-muted-foreground opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          <X className="h-4 w-4" />
+        <DialogPrimitive.Close className="app-dialog-close absolute right-4 top-4 rounded-sm text-muted-foreground opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <X className="h-5 w-5" />
           <span className="sr-only">닫기</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>

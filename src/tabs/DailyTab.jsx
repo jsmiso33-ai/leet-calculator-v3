@@ -412,7 +412,11 @@ export default function DailyTab() {
               return (
                 <button key={r.id} type="button"
                   className={'tw:!flex tw:!items-center tw:!justify-between tw:!rounded-lg tw:!border tw:!px-3.5 tw:!py-2.5 tw:!text-left tw:!text-sm tw:transition-colors ' + (active ? 'tw:!border-blue-500 tw:!bg-blue-50' : 'tw:!border-slate-200 tw:!bg-white tw:hover:!border-blue-300')}
-                  onClick={() => { setCurrentId(r.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  onClick={() => {
+                    setCurrentId(r.id);
+                    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+                    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+                  }}>
                   <span>
                     <span className="tw:!mr-2 tw:!text-xs tw:!font-bold tw:!text-slate-400">{r.publish_date.slice(5).replace('-', '/')}</span>
                     <span className="tw:!font-bold tw:!text-slate-800">{r.passage_title}</span>
