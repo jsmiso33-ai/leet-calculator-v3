@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { LEET } from '../../data/leet.js';
 import { calcForYear, ALL_YEARS } from '../lib/score.js';
+import { useApp } from '../context/AppContext.jsx';
+import { useSchoolInput } from '../context/SchoolInputContext.jsx';
+import { track } from '../lib/analytics.js';
+import HeaderTimer from '../components/HeaderTimer.jsx';
 import TrendChart from '../components/TrendChart.jsx';
 
 const STORAGE_KEY = 'leet_calculator_state_v1';
@@ -57,6 +61,8 @@ function useCountUp(target, duration = 480) {
 }
 
 export default function CalcTab() {
+  const { setActiveTab } = useApp();
+  const { patch: patchSchoolInput } = useSchoolInput();
   const saved = useMemo(loadState, []);
   const [eonRaw, setEonRaw] = useState(saved?.eonRaw ?? null);
   const [chuRaw, setChuRaw] = useState(saved?.chuRaw ?? null);
@@ -106,6 +112,19 @@ export default function CalcTab() {
   const chuPct = heroResult?.chu?.pct;
   const combinedPct = (hasHero && eonPct != null && chuPct != null) ? Math.sqrt(eonPct * chuPct) : null;
 
+  const continueToSchools = () => {
+    if (!hasHero || eonPct == null || chuPct == null) return;
+    patchSchoolInput({
+      eonStd: Number(eonStd.toFixed(1)),
+      chuStd: Number(chuStd.toFixed(1)),
+      eonPct: Number(eonPct.toFixed(1)),
+      chuPct: Number(chuPct.toFixed(1)),
+    });
+    track('calc_continue_to_schools', { year: heroYear });
+    setActiveTab('schools');
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  };
+
   // 히어로 숫자 카운트업
   const animTotal = useCountUp(hasHero ? heroTotal : null);
   const animPct = useCountUp(combinedPct);
@@ -136,6 +155,7 @@ export default function CalcTab() {
 
   return (
     <>
+      <HeaderTimer />
       <section className="hero-pulse tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="heroPulse">
         <div className="hero-pulse-bg"></div>
         <div className="hp-result">
@@ -168,6 +188,15 @@ export default function CalcTab() {
               </div>
             </div>
           )}
+          {hasHero && eonPct != null && chuPct != null && (
+            <div className="hp-next-step">
+              <span>현재 점수로 지원 학교를 비교해보세요</span>
+              <button type="button" onClick={continueToSchools}>
+                학교별 환산점수 보기
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="hp-input">
@@ -177,7 +206,7 @@ export default function CalcTab() {
               <div className="hp-field-label">언어이해</div>
               <div className="hp-field-row">
                 <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="40" step="1" placeholder="0"
-                  defaultValue={saved?.eonRaw ?? ''} onChange={(e) => setEonRaw(parseRaw(e.target.value))} />
+                  value={eonRaw ?? ''} onChange={(e) => setEonRaw(parseRaw(e.target.value))} />
                 <span className="hp-field-max">/ {heroData ? heroData.items_eon : 30}</span>
               </div>
             </label>
@@ -185,7 +214,7 @@ export default function CalcTab() {
               <div className="hp-field-label">추리논증</div>
               <div className="hp-field-row">
                 <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="40" step="1" placeholder="0"
-                  defaultValue={saved?.chuRaw ?? ''} onChange={(e) => setChuRaw(parseRaw(e.target.value))} />
+                  value={chuRaw ?? ''} onChange={(e) => setChuRaw(parseRaw(e.target.value))} />
                 <span className="hp-field-max">/ {heroData ? heroData.items_chu : 40}</span>
               </div>
             </label>
@@ -204,7 +233,7 @@ export default function CalcTab() {
                   <div className="year-chips">
                     {chips.map((c) => c.type === 'label'
                       ? <div key={c.key} className="year-era-label">{c.text}</div>
-                      : <div key={c.key} className={'y-chip' + (c.isOld ? ' era-old' : '') + (selectedYears.has(c.y) ? ' active' : '')} onClick={() => toggleYear(c.y)}>{c.y}</div>
+                      : <button key={c.key} type="button" className={'y-chip' + (c.isOld ? ' era-old' : '') + (selectedYears.has(c.y) ? ' active' : '')} aria-pressed={selectedYears.has(c.y)} onClick={() => toggleYear(c.y)}>{c.y}</button>
                     )}
                   </div>
                   <div className="hp-quick-actions">

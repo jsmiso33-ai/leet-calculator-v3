@@ -6,6 +6,7 @@ import TabNav from './components/TabNav.jsx';
 import UpdateBanner from './components/UpdateBanner.jsx';
 import Feedback from './components/Feedback.jsx';
 import Footer from './components/Footer.jsx';
+import TimerDock from './components/TimerDock.jsx';
 import CalcTab from './tabs/CalcTab.jsx';
 import ExamsTab from './tabs/ExamsTab.jsx';
 import LogTab from './tabs/LogTab.jsx';
@@ -69,6 +70,7 @@ export default function App() {
         <Footer />
       </div>
       <Feedback />
+      <TimerDock onOpenLog={() => onSelect('log')} />
     </>
   );
 }

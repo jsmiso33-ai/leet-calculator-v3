@@ -112,26 +112,17 @@ function ImportLogRow({ onApply }) {
 export default function SchoolsTab() {
   const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
-  // 비제어 입력 초기값 (마운트 시 1회 캡처)
-  const initial = useMemo(() => schState, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 기록 불러오기로 값을 주입할 때 비제어 입력의 표시값도 함께 갱신하기 위한 ref
-  const eonStdRef = useRef(null);
-  const chuStdRef = useRef(null);
-  const eonPctRef = useRef(null);
-  const chuPctRef = useRef(null);
 
   const applyLogResult = (result) => {
     const p = {};
-    const set = (key, val, ref) => {
+    const set = (key, val) => {
       if (val === null || val === undefined) return;
       p[key] = parseFloat(val.toFixed(1));
-      if (ref.current) ref.current.value = p[key];
     };
-    set('eonStd', result.eon.std, eonStdRef);
-    set('chuStd', result.chu.std, chuStdRef);
-    set('eonPct', result.eon.pct, eonPctRef);
-    set('chuPct', result.chu.pct, chuPctRef);
+    set('eonStd', result.eon.std);
+    set('chuStd', result.chu.std);
+    set('eonPct', result.eon.pct);
+    set('chuPct', result.chu.pct);
     patch(p);
   };
 
@@ -201,34 +192,34 @@ export default function SchoolsTab() {
         <div className="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
           <div className="field">
             <label>LEET 언어이해 표준점수</label>
-            <Input ref={eonStdRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" defaultValue={initial.eonStd ?? ''} onChange={numChange('eonStd')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" value={schState.eonStd ?? ''} onChange={numChange('eonStd')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 표준점수</label>
-            <Input ref={chuStdRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" defaultValue={initial.chuStd ?? ''} onChange={numChange('chuStd')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" value={schState.chuStd ?? ''} onChange={numChange('chuStd')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input ref={eonPctRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" defaultValue={initial.eonPct ?? ''} onChange={numChange('eonPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" value={schState.eonPct ?? ''} onChange={numChange('eonPct')} />
           </div>
           <div className="field">
             <label>LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input ref={chuPctRef} type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" defaultValue={initial.chuPct ?? ''} onChange={numChange('chuPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" value={schState.chuPct ?? ''} onChange={numChange('chuPct')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>GPA 백분위 <span className="max">(0–100)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" defaultValue={initial.gpaPct ?? ''} onChange={numChange('gpaPct')} />
+            <Input type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" value={schState.gpaPct ?? ''} onChange={numChange('gpaPct')} />
           </div>
           <div className="field">
             <label>GPA <span className="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
             <div style={{ display: 'flex', gap: '6px' }}>
-              <Input type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} defaultValue={initial.gpaScore ?? ''} onChange={numChange('gpaScore')} />
+              <Input type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} value={schState.gpaScore ?? ''} onChange={numChange('gpaScore')} />
               <Select value={schState.gpaScale} onValueChange={(v) => patch({ gpaScale: v })}>
                 <SelectTrigger className="w-[104px] shrink-0" aria-label="GPA 만점 기준">
                   <SelectValue />
@@ -259,7 +250,7 @@ export default function SchoolsTab() {
           </div>
           <div className="field">
             <label>영어 점수</label>
-            <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" defaultValue={initial.engScore ?? ''} onChange={numChange('engScore')} />
+            <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" value={schState.engScore ?? ''} onChange={numChange('engScore')} />
           </div>
         </div>
 

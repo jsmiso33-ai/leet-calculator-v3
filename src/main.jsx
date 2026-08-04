@@ -3,6 +3,7 @@ import App from './App.jsx';
 import { AppProvider } from './context/AppContext.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { SchoolInputProvider } from './context/SchoolInputContext.jsx';
+import { TimerProvider } from './context/TimerContext.jsx';
 
 // window.track / trackDebounced 전역 노출 (가드된 호출 호환)
 import './lib/analytics.js';
@@ -15,9 +16,11 @@ import './shadcn.css';
 createRoot(document.getElementById('root')).render(
   <AuthProvider>
     <AppProvider>
-      <SchoolInputProvider>
-        <App />
-      </SchoolInputProvider>
+      <TimerProvider>
+        <SchoolInputProvider>
+          <App />
+        </SchoolInputProvider>
+      </TimerProvider>
     </AppProvider>
   </AuthProvider>
 );

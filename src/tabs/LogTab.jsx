@@ -8,6 +8,8 @@ import LogChart from '../components/LogChart.jsx';
 import QGrade from '../components/QGrade.jsx';
 import { Input } from '../components/ui/input.jsx';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
+import { formatTimer, useTimer } from '../context/TimerContext.jsx';
+import { TravelConnectSignIn } from '../components/ui/travel-connect-signin-1.jsx';
 
 const YEARS_DESC = Object.keys(LEET).map(Number).sort((a, b) => b - a);
 
@@ -19,8 +21,9 @@ function todayStr() {
 const parseRaw = (v) => (v === '' || isNaN(parseInt(v, 10))) ? null : parseInt(v, 10);
 
 export default function LogTab() {
-  const { user, signIn } = useAuth();
+  const { user } = useAuth();
   const { entries, syncStatus, addEntry, deleteEntry } = useLogs();
+  const { timer, dismiss } = useTimer();
 
   const [mode, setMode] = useState('total'); // 'total' | 'per-question'
   const [logYear, setLogYear] = useState(YEARS_DESC[0]);
@@ -68,6 +71,14 @@ export default function LogTab() {
   const sortedDesc = useMemo(() => [...enriched].sort((a, b) => b.date.localeCompare(a.date)), [enriched]);
   const recent = sortedByDate.length ? sortedByDate[sortedByDate.length - 1] : null;
   const avg = validTotals.length ? (validTotals.reduce((a, b) => a + b, 0) / validTotals.length) : null;
+  const finishedTimer = timer.status === 'finished';
+
+  const applyTimerToLog = () => {
+    if (!finishedTimer) return;
+    setLogYear(timer.year);
+    setLogMemo((prev) => [prev, `${timer.subject} 실전 타이머 ${formatTimer(timer.elapsedSeconds)} 사용`].filter(Boolean).join(' · '));
+    dismiss();
+  };
 
   return (
     <>
@@ -87,7 +98,17 @@ export default function LogTab() {
             </div>
             <div className="login-nudge-desc">로그인하면 게스트 기록을 계정에 보관하고 이어볼 수 있어요.</div>
           </div>
-          <button className="login-nudge-btn" type="button" onClick={() => signIn('google')}>로그인해서 기록 보관</button>
+          <TravelConnectSignIn trigger={<button className="login-nudge-btn" type="button">로그인해서 기록 보관</button>} />
+        </section>
+      )}
+
+      {finishedTimer && (
+        <section className="timer-log-nudge" aria-live="polite">
+          <div>
+            <strong>{timer.year}학년도 {timer.subject} 타이머를 종료했습니다.</strong>
+            <span>사용 시간 {formatTimer(timer.elapsedSeconds)}</span>
+          </div>
+          <button type="button" onClick={applyTimerToLog}>기록 입력에 반영</button>
         </section>
       )}
 
