@@ -12,7 +12,7 @@ export default function Masthead() {
       <div className="title-block">
         <div className="title-block-text">
           <h1>LEET 표준점수 계산기</h1>
-          <div className="subtitle">법학적성시험 · 2009 — 2026 학년도</div>
+          <div className="subtitle">법학적성시험 · 2009 — 2027 학년도</div>
         </div>
       </div>
       <div className={'meta' + (!user ? ' is-guest' : '')}>

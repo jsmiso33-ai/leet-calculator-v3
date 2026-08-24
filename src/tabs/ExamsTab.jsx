@@ -1,6 +1,6 @@
 // 기출문제 다운로드 (app.js renderExams/examRow 이식)
 const YEARS = [];
-for (let y = 2026; y >= 2009; y--) YEARS.push(y);
+for (let y = 2027; y >= 2009; y--) YEARS.push(y);
 
 function ExamRow({ year, subj }) {
   const qName = `${year}학년도 ${subj}.pdf`;
@@ -21,7 +21,7 @@ export default function ExamsTab() {
     <>
       <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
         <div className="section-label tw:!text-2xl tw:!font-extrabold tw:!text-slate-950">LEET 기출문제 다운로드</div>
-        <div className="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">2009~2026학년도 법학적성시험 기출문제와 정답입니다. 과목을 클릭하면 새 탭에서 PDF가 열립니다. (출처: 법학전문대학원협의회 공개 자료)</div>
+        <div className="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">2009~2027학년도 법학적성시험 기출문제와 정답입니다. 과목을 클릭하면 새 탭에서 PDF가 열립니다. (출처: 법학전문대학원협의회 공개 자료)</div>
         <p className="exams-copyright tw:!mt-3 tw:!text-xs tw:!font-semibold tw:!text-slate-500">※ 법학적성시험 문제·정답의 저작권 및 출판권은 법학전문대학원협의회에 있습니다.</p>
       </section>
       <section className="exams-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-3" id="examsGrid">

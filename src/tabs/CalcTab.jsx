@@ -67,7 +67,7 @@ export default function CalcTab() {
   const [eonRaw, setEonRaw] = useState(saved?.eonRaw ?? null);
   const [chuRaw, setChuRaw] = useState(saved?.chuRaw ?? null);
   const [selectedYears, setSelectedYears] = useState(
-    () => new Set(saved?.selectedYears ?? [2023, 2024, 2025, 2026])
+    () => new Set(saved?.selectedYears ?? [2024, 2025, 2026, 2027])
   );
   const [detailYear, setDetailYear] = useState(2025);
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -143,7 +143,7 @@ export default function CalcTab() {
   const quick = (which) => {
     if (which === 'all') setSelectedYears(new Set(ALL_YEARS));
     else if (which === 'new') setSelectedYears(new Set(ALL_YEARS.filter((y) => LEET[y].era === 'new')));
-    else if (which === 'recent') setSelectedYears(new Set([2022, 2023, 2024, 2025, 2026].filter((y) => LEET[y])));
+    else if (which === 'recent') setSelectedYears(new Set([2023, 2024, 2025, 2026, 2027].filter((y) => LEET[y])));
     else if (which === 'clear') setSelectedYears(new Set());
   };
 
