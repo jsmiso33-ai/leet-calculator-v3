@@ -48,7 +48,7 @@ SCHOOLS = [
             "leet75":134.0,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"96.4%"}}},
     {"name":"한양대","slug":"hanyang","full":"한양대학교","group":"서울","ratio":50.0,
      "leetMax":40,"gpaMax":20,"engMax":None,"engType":"pf","totalMax":80,
-     "note":"LEET 환산 분모(당해연도 언어·추리 표준점수 최상위 급간 상한)는 법학전문대학원협의회가 시험 후 별도 발표합니다. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다.",
+     "note":"LEET 환산 분모(당해연도 언어·추리 표준점수 최상위 급간 상한)는 법학전문대학원협의회가 매년 시험 후 발표합니다. 2027학년도 값은 언어 71.5점, 추리 93.7점입니다.",
      "engPF":{"toeic":800,"teps":309,"toefl":91},
      "adm":{"enrolled":105,"leet":{"v":31.710,"max":40,"label":"LEET 환산","unit":"/ 40"},
             "leet75":31.070,"gpa":{"v":18.751,"max":20,"label":"학부 환산","unit":"/ 20"}}},
@@ -115,7 +115,7 @@ SCHOOLS = [
             "ref":"나군 LEET 50%=19.67, 학점 50%=29.50"}},
     {"name":"경북대","slug":"knu","full":"경북대학교","group":"지방","ratio":46.4,
      "leetMax":150,"gpaMax":100,"engMax":None,"engType":"pf","totalMax":300,
-     "note":"분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다. (2026학년도 값: 73.1+97.6=170.7)",
+     "note":"분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2027학년도 값은 71.5+93.7=165.2입니다.",
      "engPF":{"toeic":800,"teps":310,"toefl":91},
      "adm":{"enrolled":132,"leet":{"v":127.5,"max":None,"label":"LEET (표점합)","unit":""},
             "leet75":125.2,"leet25":129.7,"gpa":{"v":None,"max":None,"label":"학부","unit":"","note":"96.7%"}}},
@@ -588,7 +588,7 @@ def build_sitemap():
         add(f"{SITE}/schools/{s['slug']}/", "monthly", "0.8")
     add(f"{SITE}/guide/standard-score/", "monthly", "0.8")
     add(f"{SITE}/guide/conversion-formulas/", "monthly", "0.8")
-    for y in range(2009, 2027):
+    for y in range(2009, 2028):
         add(f"{SITE}/exams/{y}/", "yearly", "0.6")
     return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "\n".join(urls) + "\n</urlset>\n"
 

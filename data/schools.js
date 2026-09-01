@@ -112,17 +112,16 @@ const LAW_SCHOOLS = [
     leetMax: 40, gpaMax: 20, engMax: null, engType: 'pf',
     totalMax: 80,
     engPF: { toeic: 800, teps: 309, toefl: 91 },
-    note: 'LEET 환산 분모(당해연도 언어·추리 표준점수 최상위 급간 상한)는 법학전문대학원협의회가 시험 후 별도 발표합니다. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다.',
     calc(input) {
       // LEET: 모집요강 환산공식
       // A = 언어 표점 / 언어 최상위 급간 상한점수
       // B = 추리 표점 / 추리 최상위 급간 상한점수
-      // "최상위 급간 상한점수" = 해당 연도 만점 표준점수 (법학전문대학원협의회가 시험 후 발표)
-      // 2027학년도: 아직 미발표 (2026학년도 값: 언어 73.1, 추리 97.6)
+      // "최상위 급간 상한점수" = 해당 연도 만점 표준점수
+      // 2027학년도: 언어 만점 71.5, 추리 만점 93.7
       let leet = null;
-      const eonMax = null;  // 2027학년도 미발표
-      const chuMax = null;  // 2027학년도 미발표
-      if (input.eonStd !== null && input.chuStd !== null && eonMax !== null && chuMax !== null) {
+      if (input.eonStd !== null && input.chuStd !== null) {
+        const eonMax = 71.5;  // 2027학년도 언어 30/30 표준점수
+        const chuMax = 93.7;  // 2027학년도 추리 40/40 표준점수
         const A = Math.min(1, input.eonStd / eonMax);
         const B = Math.min(1, input.chuStd / chuMax);
         const C = (A + B) / 2;
@@ -388,13 +387,12 @@ const LAW_SCHOOLS = [
     leetMax: 150, gpaMax: 100, engMax: null, engType: 'pf',
     totalMax: 300,
     engPF: { toeic: 800, teps: 310, toefl: 91 },
-    note: '분모는 매년 협의회가 발표하는 언어/추리 표점 최상위 급간 상한의 합. 2027학년도 값이 아직 발표되지 않아 LEET 환산점수는 추후 업데이트됩니다. (2026학년도 값: 73.1+97.6=170.7)',
     calc(input) {
       let leet = null;
-      const maxSum = null;  // 2027학년도 미발표 (2026학년도 값: 170.7)
-      if (input.eonStd !== null && input.chuStd !== null && maxSum !== null) {
+      if (input.eonStd !== null && input.chuStd !== null) {
         const sum = input.eonStd + input.chuStd;
-        leet = 85 + 65 * (sum / maxSum);
+        // 2027학년도 표점 최상위 급간 상한 합 (한양대 코드와 동일 출처): 71.5 + 93.7 = 165.2
+        leet = 85 + 65 * (sum / 165.2);
         leet = Math.min(150, Math.max(85, leet));
       }
       const gpa = input.gpaPct !== null ? 65 + 35 * input.gpaPct / 100 : null;
