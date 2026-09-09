@@ -379,7 +379,6 @@ export default function DailyTab() {
   }, []);
 
   useEffect(() => { fetchPublished(); }, [fetchPublished]);
-  useEffect(() => { track('daily_view', {}); }, []);
 
   const current = rows?.find((r) => r.id === currentId) || rows?.[0] || null;
   const doneMap = loadDone();

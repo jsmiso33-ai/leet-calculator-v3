@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Component, lazy, Suspense, useEffect, useState } from 'react';
 import { useApp } from './context/AppContext.jsx';
 import { track } from './lib/analytics.js';
 import Masthead from './components/Masthead.jsx';
@@ -8,12 +8,26 @@ import Feedback from './components/Feedback.jsx';
 import Footer from './components/Footer.jsx';
 import TimerDock from './components/TimerDock.jsx';
 import CalcTab from './tabs/CalcTab.jsx';
-import ExamsTab from './tabs/ExamsTab.jsx';
-import LogTab from './tabs/LogTab.jsx';
-import SchoolsTab from './tabs/SchoolsTab.jsx';
-import AdmissionTab from './tabs/AdmissionTab.jsx';
-import AdminTab from './tabs/AdminTab.jsx';
-import DailyTab from './tabs/DailyTab.jsx';
+const ExamsTab = lazy(() => import('./tabs/ExamsTab.jsx'));
+const LogTab = lazy(() => import('./tabs/LogTab.jsx'));
+const SchoolsTab = lazy(() => import('./tabs/SchoolsTab.jsx'));
+const AdmissionTab = lazy(() => import('./tabs/AdmissionTab.jsx'));
+const AdminTab = lazy(() => import('./tabs/AdminTab.jsx'));
+const DailyTab = lazy(() => import('./tabs/DailyTab.jsx'));
+
+class TabErrorBoundary extends Component {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() {
+    if (this.state.failed) return (
+      <div className="tab-load-state" role="alert">
+        <p>화면을 불러오지 못했습니다. 연결 상태를 확인하고 다시 시도해주세요.</p>
+        <button type="button" onClick={() => window.location.reload()}>새로고침</button>
+      </div>
+    );
+    return this.props.children;
+  }
+}
 
 const ALL_TABS = [
   { id: 'calc', label: '표준점수 계산기', short: '계산기', Comp: CalcTab, panelClass: 'tab-panel tw:space-y-4' },
@@ -45,6 +59,7 @@ function scrollToTabPanel(id) {
 
 export default function App() {
   const { activeTab, setActiveTab, isAdmin } = useApp();
+  const [visitedTabs, setVisitedTabs] = useState(() => new Set([activeTab]));
   const [dailySeen, setDailySeen] = useState(() => {
     try { return !!localStorage.getItem(DAILY_SEEN_KEY); } catch { return true; }
   });
@@ -54,14 +69,19 @@ export default function App() {
 
   useEffect(() => { track('page_view', { title: document.title }); }, []);
 
-  const onSelect = (id) => {
-    setActiveTab(id);
-    track('tab_view', { tab: id });
-    scrollToTabPanel(id);
-    if (id === 'daily' && !dailySeen) {
+  useEffect(() => {
+    setVisitedTabs((previous) => previous.has(activeTab) ? previous : new Set([...previous, activeTab]));
+    track('tab_view', { tab: activeTab });
+    if (activeTab === 'daily') {
+      track('daily_view', {});
       setDailySeen(true);
       try { localStorage.setItem(DAILY_SEEN_KEY, '1'); } catch { /* ignore */ }
     }
+  }, [activeTab]);
+
+  const onSelect = (id) => {
+    setActiveTab(id);
+    scrollToTabPanel(id);
   };
 
   return (
@@ -70,7 +90,6 @@ export default function App() {
       <div className={'container' + (activeTab === 'daily' ? ' container--daily' : '')} id="main">
         <Masthead />
         <TabNav tabs={tabs} activeTab={activeTab} onSelect={onSelect} />
-        {activeTab !== 'schools' && <UpdateBanner onGo={() => onSelect('schools')} />}
         {tabs.map((t) => (
           <div
             key={t.id}
@@ -79,10 +98,18 @@ export default function App() {
             role="tabpanel"
             aria-labelledby={'tab-btn-' + t.id}
             tabIndex={0}
+            hidden={t.id !== activeTab}
           >
-            <t.Comp />
+            {(visitedTabs.has(t.id) || t.id === activeTab) && (
+              <TabErrorBoundary>
+                <Suspense fallback={<p className="tab-load-state" role="status">{t.label} 불러오는 중…</p>}>
+                  <t.Comp />
+                </Suspense>
+              </TabErrorBoundary>
+            )}
           </div>
         ))}
+        {activeTab !== 'schools' && <UpdateBanner onGo={() => onSelect('schools')} />}
         <Footer />
       </div>
       <Feedback />

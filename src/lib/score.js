@@ -19,7 +19,7 @@ export function deriveRawSD(maxItems, rawMean, topStd, stdMean, stdSD) {
 export function getStdScore(year, subject, raw) {
   const d = LEET[year];
   if (!d) return null;
-  if (raw === null || raw < 0) return null;
+  if (!Number.isInteger(raw) || raw < 0) return null;
   const items = subject === 'eon' ? d.items_eon : d.items_chu;
   if (raw > items) return null;
 

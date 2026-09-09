@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext.jsx';
 import { ArrowRight, Cloud } from 'lucide-react';
 import { TravelConnectSignIn } from './ui/travel-connect-signin-1.jsx';
+import { FIRST_YEAR, LATEST_YEAR } from '../../data/site.js';
 
 // 헤더 (제목 + 인증). auth.js의 updateAuthUI 동작을 React로 이식.
 export default function Masthead() {
@@ -12,7 +13,7 @@ export default function Masthead() {
       <div className="title-block">
         <div className="title-block-text">
           <h1>LEET 표준점수 계산기</h1>
-          <div className="subtitle">법학적성시험 · 2009 — 2027 학년도</div>
+          <div className="subtitle">법학적성시험 · {FIRST_YEAR} — {LATEST_YEAR} 학년도</div>
         </div>
       </div>
       <div className={'meta' + (!user ? ' is-guest' : '')}>

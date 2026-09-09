@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { formatTimer, useTimer } from '../context/TimerContext.jsx';
+import { LATEST_YEAR, SUPPORTED_YEARS } from '../../data/site.js';
 
-const YEARS = Array.from({ length: 18 }, (_, index) => 2026 - index);
+const YEARS = [...SUPPORTED_YEARS].reverse();
 const SUBJECTS = ['언어이해', '추리논증'];
 
 export default function HeaderTimer() {
   const { timer, start } = useTimer();
-  const [year, setYear] = useState(2026);
+  const [year, setYear] = useState(LATEST_YEAR);
   const [subject, setSubject] = useState('추리논증');
   if (timer.status !== 'idle') return null;
 

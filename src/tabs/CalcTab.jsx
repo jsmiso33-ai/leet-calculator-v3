@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { LEET } from '../../data/leet.js';
 import { calcForYear, ALL_YEARS } from '../lib/score.js';
 import { useApp } from '../context/AppContext.jsx';
 import { useSchoolInput } from '../context/SchoolInputContext.jsx';
 import { track } from '../lib/analytics.js';
 import HeaderTimer from '../components/HeaderTimer.jsx';
-import TrendChart from '../components/TrendChart.jsx';
+import { validateRawInput } from '../lib/rawInput.js';
+import { LATEST_YEAR } from '../../data/site.js';
+
+const TrendChart = lazy(() => import('../components/TrendChart.jsx'));
 
 const STORAGE_KEY = 'leet_calculator_state_v1';
 
@@ -23,9 +26,6 @@ function yearsSummary(set) {
   if (years.length <= 3) return years.map(String).join(', ');
   return `${years.length}개 선택 · 최신 ${years[0]}`;
 }
-
-const parseRaw = (v) =>
-  (v === '' || isNaN(parseInt(v, 10))) ? null : Math.max(0, Math.min(40, parseInt(v, 10)));
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia
@@ -64,24 +64,34 @@ export default function CalcTab() {
   const { setActiveTab } = useApp();
   const { patch: patchSchoolInput } = useSchoolInput();
   const saved = useMemo(loadState, []);
-  const [eonRaw, setEonRaw] = useState(saved?.eonRaw ?? null);
-  const [chuRaw, setChuRaw] = useState(saved?.chuRaw ?? null);
+  const [eonInput, setEonInput] = useState(String(saved?.eonRaw ?? ''));
+  const [chuInput, setChuInput] = useState(String(saved?.chuRaw ?? ''));
   const [selectedYears, setSelectedYears] = useState(
-    () => new Set(saved?.selectedYears ?? [2024, 2025, 2026, 2027])
+    () => new Set((Array.isArray(saved?.selectedYears) ? saved.selectedYears : ALL_YEARS.slice(-4)).filter((y) => LEET[y]))
   );
-  const [detailYear, setDetailYear] = useState(2025);
+  const [detailYear, setDetailYear] = useState(LATEST_YEAR);
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerRef = useRef(null);
   const pickerTriggerRef = useRef(null);
 
-  // 자동 저장 (기존 키/형식 유지)
+  const heroYear = selectedYears.size ? Math.max(...selectedYears) : LATEST_YEAR;
+  const heroData = LEET[heroYear];
+  const eonValidation = validateRawInput(eonInput, heroData.items_eon, '언어이해');
+  const chuValidation = validateRawInput(chuInput, heroData.items_chu, '추리논증');
+  const eonRaw = eonValidation.raw;
+  const chuRaw = chuValidation.raw;
+  const inputError = eonValidation.error || chuValidation.error;
+
+  // 자동 저장: 기존 키를 유지하고 입력 중인 텍스트도 보존
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        eonRaw, chuRaw, selectedYears: [...selectedYears],
+        eonRaw: eonInput === '' ? null : eonInput,
+        chuRaw: chuInput === '' ? null : chuInput,
+        selectedYears: [...selectedYears],
       }));
     } catch { /* localStorage 비활성 환경 무시 */ }
-  }, [eonRaw, chuRaw, selectedYears]);
+  }, [eonInput, chuInput, selectedYears]);
 
   // 연도 팝오버: 바깥 클릭/Esc로 닫기
   useEffect(() => {
@@ -104,15 +114,10 @@ export default function CalcTab() {
   );
 
   // Hero Pulse
-  const heroYear = useMemo(() => {
-    const sel = [...selectedYears].filter((y) => LEET[y]).sort((a, b) => b - a);
-    return sel[0] ?? Math.max(...ALL_YEARS);
-  }, [selectedYears]);
-  const heroData = LEET[heroYear];
   const heroResult = useMemo(() => calcForYear(heroYear, eonRaw, chuRaw), [heroYear, eonRaw, chuRaw]);
   const eonStd = heroResult?.eon?.std ?? null;
   const chuStd = heroResult?.chu?.std ?? null;
-  const hasHero = eonRaw !== null && chuRaw !== null && eonStd !== null && chuStd !== null;
+  const hasHero = selectedYears.size > 0 && eonRaw !== null && chuRaw !== null && eonStd !== null && chuStd !== null;
   const heroTotal = hasHero ? eonStd + chuStd : null;
   const eonPct = heroResult?.eon?.pct;
   const chuPct = heroResult?.chu?.pct;
@@ -143,7 +148,7 @@ export default function CalcTab() {
   const quick = (which) => {
     if (which === 'all') setSelectedYears(new Set(ALL_YEARS));
     else if (which === 'new') setSelectedYears(new Set(ALL_YEARS.filter((y) => LEET[y].era === 'new')));
-    else if (which === 'recent') setSelectedYears(new Set([2023, 2024, 2025, 2026, 2027].filter((y) => LEET[y])));
+    else if (which === 'recent') setSelectedYears(new Set(ALL_YEARS.slice(-5)));
     else if (which === 'clear') setSelectedYears(new Set());
   };
 
@@ -161,71 +166,10 @@ export default function CalcTab() {
 
   return (
     <>
-      <HeaderTimer />
       <section className="hero-pulse tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="heroPulse">
         <div className="hero-pulse-bg"></div>
-        <div className="hp-result">
-          <div className="hp-era-badge">
-            <span className="hp-era-dot"></span>
-            <span className="hp-era-text"><span>{heroYear}</span>학년도 환산</span>
-          </div>
-          <div className="hp-score-block">
-            <div className={'hp-score' + (hasHero ? ' has-value' : '')}>{hasHero && animTotal != null ? animTotal.toFixed(1) : '—'}</div>
-            <div className="hp-score-meta">합계 표준점수 <span className="dim">· 언어 + 추리</span></div>
-          </div>
-          <div className={'hp-percentile-text' + (hasHero ? ' has-stats' : '')}>
-            {!hasHero ? '원점수를 입력하세요' : (
-              <>
-                {combinedPct != null && (
-                  <div className="hp-stat"><span className="hp-stat-label">백분위</span><span className="hp-stat-val">{(animPct ?? combinedPct).toFixed(1)}</span></div>
-                )}
-                <div className="hp-stat"><span className="hp-stat-label">원점수</span><span className="hp-stat-val">{eonRaw}+{chuRaw}</span></div>
-              </>
-            )}
-          </div>
-          {hasHero && combinedPct != null && (
-            <div className="hp-meter" role="img" aria-label={`상위 ${(100 - combinedPct).toFixed(1)}% · 백분위 ${combinedPct.toFixed(1)}`}>
-              <div className="hp-meter-track">
-                <div className="hp-meter-fill" style={{ width: `${Math.max(2, Math.min(100, combinedPct))}%` }} />
-              </div>
-              <div className="hp-meter-caption">
-                상위 <b>{(100 - combinedPct).toFixed(1)}%</b>
-                <span className="hp-meter-sub">· 100명 중 약 {Math.max(1, Math.round(100 - combinedPct))}등</span>
-              </div>
-            </div>
-          )}
-          {hasHero && eonPct != null && chuPct != null && (
-            <div className="hp-next-step">
-              <span>현재 점수로 지원 학교를 비교해보세요</span>
-              <button type="button" onClick={continueToSchools}>
-                학교별 환산점수 보기
-                <span aria-hidden="true">→</span>
-              </button>
-            </div>
-          )}
-        </div>
-
         <div className="hp-input">
           <div className="hp-input-header"><strong>원점수 입력</strong><span className="save-tag">· 자동 저장</span></div>
-          <div className="hp-input-grid">
-            <label className="hp-field">
-              <div className="hp-field-label">언어이해</div>
-              <div className="hp-field-row">
-                <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="40" step="1" placeholder="0"
-                  value={eonRaw ?? ''} onChange={(e) => setEonRaw(parseRaw(e.target.value))} />
-                <span className="hp-field-max">/ {heroData ? heroData.items_eon : 30}</span>
-              </div>
-            </label>
-            <label className="hp-field">
-              <div className="hp-field-label">추리논증</div>
-              <div className="hp-field-row">
-                <input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="40" step="1" placeholder="0"
-                  value={chuRaw ?? ''} onChange={(e) => setChuRaw(parseRaw(e.target.value))} />
-                <span className="hp-field-max">/ {heroData ? heroData.items_chu : 40}</span>
-              </div>
-            </label>
-          </div>
-
           <div className="hp-years" id="hpYearsPicker" ref={pickerRef}>
             <button ref={pickerTriggerRef} type="button" className={'hp-years-trigger' + (pickerOpen ? ' open' : '')} aria-expanded={pickerOpen} aria-controls="hpYearsPopover"
               onClick={(e) => { e.stopPropagation(); setPickerOpen((o) => !o); }}>
@@ -252,18 +196,87 @@ export default function CalcTab() {
               </div>
             </div>}
           </div>
+
+          <div className="hp-input-grid">
+            <label className="hp-field">
+              <div className="hp-field-label">언어이해</div>
+              <div className="hp-field-row">
+                <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="0" aria-label="언어이해 원점수"
+                  aria-invalid={!!eonValidation.error} aria-describedby={eonValidation.error ? 'eon-input-error' : undefined}
+                  value={eonInput} onChange={(e) => setEonInput(e.target.value)} />
+                <span className="hp-field-max">/ {heroData ? heroData.items_eon : 30}</span>
+              </div>
+              {eonValidation.error && <span className="hp-field-error" id="eon-input-error" role="status">{eonValidation.error}</span>}
+            </label>
+            <label className="hp-field">
+              <div className="hp-field-label">추리논증</div>
+              <div className="hp-field-row">
+                <input type="text" inputMode="numeric" pattern="[0-9]*" placeholder="0" aria-label="추리논증 원점수"
+                  aria-invalid={!!chuValidation.error} aria-describedby={chuValidation.error ? 'chu-input-error' : undefined}
+                  value={chuInput} onChange={(e) => setChuInput(e.target.value)} />
+                <span className="hp-field-max">/ {heroData ? heroData.items_chu : 40}</span>
+              </div>
+              {chuValidation.error && <span className="hp-field-error" id="chu-input-error" role="status">{chuValidation.error}</span>}
+            </label>
+          </div>
+
         </div>
+
+        <div className="hp-result">
+          <div className="hp-era-badge">
+            <span className="hp-era-dot"></span>
+            <span className="hp-era-text"><span>{heroYear}</span>학년도 환산</span>
+          </div>
+          <div className="hp-score-block">
+            <div className={'hp-score' + (hasHero ? ' has-value' : '')}>{hasHero && animTotal != null ? animTotal.toFixed(1) : '—'}</div>
+            <div className="hp-score-meta">합계 표준점수 <span className="dim">· 언어 + 추리</span></div>
+          </div>
+          {hasHero && (heroResult.eon.estimated || heroResult.chu.estimated) && (
+            <p className="hp-estimate-note">표에 없는 구간을 보정한 추정 표준점수가 포함되어 있습니다.</p>
+          )}
+          <div className={'hp-percentile-text' + (hasHero ? ' has-stats' : '')}>
+            {!hasHero ? (inputError ? '입력한 원점수를 확인하세요' : !selectedYears.size ? '비교할 학년도를 선택하세요' : '원점수를 입력하세요') : (
+              <>
+                {combinedPct != null && (
+                  <div className="hp-stat"><span className="hp-stat-label">추정 백분위</span><span className="hp-stat-val">{(animPct ?? combinedPct).toFixed(1)}</span></div>
+                )}
+                <div className="hp-stat"><span className="hp-stat-label">원점수</span><span className="hp-stat-val">{eonRaw}+{chuRaw}</span></div>
+              </>
+            )}
+          </div>
+          {hasHero && combinedPct != null && (
+            <p className="hp-estimate-note">
+              두 영역 백분위의 기하평균(√(언어백분위 × 추리백분위))으로 계산한 참고값입니다.
+              실제 합계 백분위나 등수를 뜻하지 않습니다.
+            </p>
+          )}
+          {hasHero && eonPct != null && chuPct != null && (
+            <div className="hp-next-step">
+              <span>현재 점수로 지원 학교를 비교해보세요</span>
+              <button type="button" onClick={continueToSchools}>
+                학교별 환산점수 보기
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          )}
+        </div>
+
       </section>
+
+      <details className="calc-timer-toggle">
+        <summary>기출 풀이 타이머</summary>
+        <HeaderTimer />
+      </details>
 
       <CombinedSection results={results} />
 
       <div className="results-area tw:!grid tw:!grid-cols-1 tw:!gap-4 tw:lg:!grid-cols-2">
         <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
-          <div className="head"><span className="name">언어이해</span><span className="max-info">{eonRaw !== null ? `${eonRaw} / 30` : '— / 30'}</span></div>
+          <div className="head"><span className="name">언어이해</span><span className="max-info">{eonRaw ?? '—'} / {heroData.items_eon}</span></div>
           <SubjectTable results={results} subjectKey="eon" raw={eonRaw} />
         </div>
         <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
-          <div className="head"><span className="name">추리논증</span><span className="max-info">{chuRaw !== null ? `${chuRaw} / 40` : '— / 40'}</span></div>
+          <div className="head"><span className="name">추리논증</span><span className="max-info">{chuRaw ?? '—'} / {heroData.items_chu}</span></div>
           <SubjectTable results={results} subjectKey="chu" raw={chuRaw} />
         </div>
       </div>
@@ -271,7 +284,9 @@ export default function CalcTab() {
       <section className="chart-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm">
         <div className="section-label tw:!text-lg tw:!font-extrabold tw:!text-slate-950">연도별 표준점수 합계 추이</div>
         <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
-        <TrendChart results={results} />
+        {results.some((r) => r.eon?.std != null && r.chu?.std != null) ? (
+          <Suspense fallback={<p role="status">차트 불러오는 중…</p>}><TrendChart results={results} /></Suspense>
+        ) : <p className="empty-state">두 영역의 원점수를 입력하면 연도별 추이를 보여드립니다.</p>}
       </section>
 
       <details className="detail-viewer tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
@@ -307,7 +322,7 @@ function SubjectTable({ results, subjectKey, raw }) {
               <td className="era">{eraLabel}</td>
               {v && v.std !== null
                 ? <td className={'std' + (v.estimated ? ' estimated' : '')}>{v.std.toFixed(1)}{v.estimated && <span className="badge-est">추정</span>}</td>
-                : <td className="std">—</td>}
+                : <td className="std"><span className="score-unavailable">{raw > LEET[r.year][subjectKey === 'eon' ? 'items_eon' : 'items_chu'] ? `${LEET[r.year][subjectKey === 'eon' ? 'items_eon' : 'items_chu']}문항 초과` : '환산값 없음'}</span></td>}
               {v && v.pct != null
                 ? <td className="pct">{v.pct.toFixed(1)}</td>
                 : <td className="pct">—</td>}
@@ -328,7 +343,7 @@ function CombinedSection({ results }) {
     <section className="combined tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" style={{ display: 'grid' }}>
       <div className="label-block"><div className="lbl">표준점수 합계</div><div className="lbl-main">언어 + 추리</div></div>
       <div className="table-block">
-        <table id="combinedTable">
+        <table id="combinedTable" aria-describedby="combined-estimate-note">
           <thead><tr><th>학년도</th><th>언어이해</th><th>추리논증</th><th>합계</th><th>추정 백분위</th></tr></thead>
           <tbody>
             {sorted.map((r) => {
@@ -348,6 +363,7 @@ function CombinedSection({ results }) {
             })}
           </tbody>
         </table>
+        <p className="hp-estimate-note combined-estimate-note" id="combined-estimate-note">추정 백분위는 두 영역 백분위의 기하평균으로 계산한 참고값이며, 실제 합계 백분위나 등수가 아닙니다.</p>
       </div>
     </section>
   );

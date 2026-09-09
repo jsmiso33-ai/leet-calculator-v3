@@ -8,7 +8,7 @@
     "build": "vite build && node tools/copy-static.mjs",
     "preview": "vite preview",
     "build:site-css": "tailwindcss -i ./src/site-tailwind.css -o ./site-tailwind.css --minify",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test tests/*.test.mjs"
   },
   "repository": {
     "type": "git",
