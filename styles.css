@@ -85,7 +85,6 @@
     --ease-out: cubic-bezier(0.32, 0.72, 0.27, 1);     /* 부드러운 도달 (Apple 스타일) */
     --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);    /* 더 부드러운 등장용 */
     --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);     /* 양방향 (탭 전환 등) */
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* 살짝 튕김 (강조용, 신중히 사용) */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -1937,7 +1936,7 @@
     margin-top: 20px;
     padding: 16px 20px;
     background: var(--bg-subtle);
-    border-left: 3px solid var(--gold);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
   }
   .preview-row {
@@ -2158,7 +2157,7 @@
     margin-top: 20px;
     padding: 14px 18px;
     background: var(--bg-subtle);
-    border-left: 3px solid var(--gold);
+    border: 1px solid var(--line);
     border-radius: var(--radius-sm);
     font-size: 12px;
     line-height: 1.7;
@@ -2810,22 +2809,10 @@
       margin-bottom: 8px;
       box-shadow: var(--shadow-sm);
     }
-    /* 모바일은 좌측 border-left로 등급 표시 (데스크톱의 inset shadow 대신) */
+    /* 모바일 카드형 행: 등급은 행 안의 배지(.adm-grade-badge)가 이미 글자로 알려준다 */
     table.adm-table tr[data-grade] td { background: transparent; }
     table.adm-table tr[data-grade] td:first-child { box-shadow: none; }
     table.adm-table tr:hover td { background: transparent; }
-    table.adm-table tr[data-grade=""] { padding-left: 16px; }
-    table.adm-table tr[data-grade="safe"],
-    table.adm-table tr[data-grade="match"],
-    table.adm-table tr[data-grade="reach"],
-    table.adm-table tr[data-grade="hard"] {
-      border-left-width: 4px;
-      padding-left: 12px;
-    }
-    table.adm-table tr[data-grade="safe"]  { border-left-color: #16a34a; }
-    table.adm-table tr[data-grade="match"] { border-left-color: #0ea5e9; }
-    table.adm-table tr[data-grade="reach"] { border-left-color: #f59e0b; }
-    table.adm-table tr[data-grade="hard"]  { border-left-color: rgba(113,113,122,0.4); }
 
     table.adm-table td {
       display: block;
@@ -3034,14 +3021,20 @@
     background: var(--success); /* 그린 */
   }
   /* 비활성 상태도 지역별 힌트 (왼쪽 색띠) */
-  .sch-chip-group[data-region="서울"] .sch-chip:not(.active) {
-    border-left: 3px solid #1A56DB;
-  }
-  .sch-chip-group[data-region="경기/인천"] .sch-chip:not(.active) {
-    border-left: 3px solid #C2410C;
-  }
-  .sch-chip-group[data-region="지방"] .sch-chip:not(.active) {
-    border-left: 3px solid #15803D;
+  /* 지역 구분은 칩 앞의 작은 점으로 (굵은 좌측 스트라이프 대신) */
+  .sch-chip-group[data-region="서울"] { --region-color: var(--accent); }
+  .sch-chip-group[data-region="경기/인천"] { --region-color: #C2410C; }
+  .sch-chip-group[data-region="지방"] { --region-color: var(--success); }
+  .sch-chip-group[data-region] .sch-chip:not(.active)::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: var(--region-color);
+    vertical-align: middle;
+    flex-shrink: 0;
   }
 
   /* ===== 기출 기록에서 불러오기 ===== */
@@ -5986,7 +5979,6 @@
     position: relative;
     min-width: 0;
     border: 1px solid var(--line);
-    border-left-width: 4px;
     border-radius: var(--radius-md);
     background: var(--bg-card);
     box-shadow: var(--shadow-sm);
@@ -5998,11 +5990,6 @@
       background-color var(--motion-fast) var(--ease-out);
   }
 
-  .adm-school-card.grade-safe { border-left-color: #16a34a; }
-  .adm-school-card.grade-match { border-left-color: #0ea5e9; }
-  .adm-school-card.grade-reach { border-left-color: #f59e0b; }
-  .adm-school-card.grade-hard { border-left-color: #71717a; }
-  .adm-school-card.grade-pending { border-left-color: rgba(113, 113, 122, 0.45); }
 
   .adm-school-card:hover {
     transform: translateY(-2px);
@@ -6729,7 +6716,6 @@
     min-width: 0;
     min-height: 62px;
     border: 1px solid var(--line);
-    border-left-width: 4px;
     border-radius: var(--radius-sm);
     background: #fff;
     padding: 10px 12px;
@@ -6739,12 +6725,9 @@
     align-items: center;
   }
 
-  .adm-compare-slot.grade-safe { border-left-color: #16a34a; }
-  .adm-compare-slot.grade-match { border-left-color: #0ea5e9; }
-  .adm-compare-slot.grade-reach { border-left-color: #f59e0b; }
-  .adm-compare-slot.grade-hard { border-left-color: #71717a; }
 
-  .adm-compare-slot span {
+
+  .adm-compare-slot > span {
     grid-row: 1 / span 2;
     width: 26px;
     height: 26px;
