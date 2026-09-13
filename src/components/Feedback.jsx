@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
-import { supabase } from '../lib/supabase.js';
+import { getSupabase } from '../lib/supabase.js';
 import { toast } from '../lib/ui.js';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from './ui/dialog.jsx';
 import { Button } from './ui/button.jsx';
@@ -37,6 +37,7 @@ export default function Feedback() {
     if (em && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { toast('이메일 형식이 올바르지 않아요.', { type: 'error' }); return; }
     setSubmitting(true);
     try {
+      const supabase = await getSupabase();
       const { error } = await supabase.from('feedback').insert({
         category, message: msg, email: em || null,
         user_id: user?.id ?? null, page: location.pathname,

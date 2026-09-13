@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
-import { supabase, withTimeout } from '../lib/supabase.js';
+import { getSupabase, withTimeout } from '../lib/supabase.js';
 import { toast, confirmAsync } from '../lib/ui.js';
 import { track } from '../lib/analytics.js';
 import PassageAnnotator from '../components/PassageAnnotator.jsx';
@@ -75,7 +75,7 @@ function PassageCard({ row, preview }) {
   // 재제출 시 새 행이 쌓이고, 관리자 표에서 solver별 최신 1건만 보여준다.
   const recordAnswer = () => {
     const md = user?.user_metadata || {};
-    supabase.from('daily_passage_answers').insert({
+    getSupabase().then((supabase) => supabase.from('daily_passage_answers').insert({
       passage_id: row.id,
       solver_id: user?.id || getGuestId(),
       user_email: user?.email || null,
@@ -85,9 +85,9 @@ function PassageCard({ row, preview }) {
       correct_count: correctCount,
       total: questions.length,
       submitted_at: new Date().toISOString(),
-    }).then(({ error }) => {
+    })).then(({ error }) => {
       if (error) console.warn('답 기록 실패(무시):', error.message);
-    });
+    }).catch(() => { /* SDK 로드 실패도 조용히 무시 */ });
   };
   const retry = () => {
     setAnswers({}); setSubmitted(false);
@@ -180,6 +180,7 @@ function AdminReview({ onPublished }) {
   const [busy, setBusy] = useState(false);
 
   const refresh = useCallback(async () => {
+    const supabase = await getSupabase();
     const { data, error } = await withTimeout(
       supabase.from('daily_passages').select('*')
         .in('status', ['pending', 'rejected']).order('publish_date', { ascending: false }),
@@ -206,6 +207,7 @@ function AdminReview({ onPublished }) {
     if (!ok) return;
     setBusy(true);
     try {
+      const supabase = await getSupabase();
       const { error, count } = await supabase.from('daily_passages')
         .update({ status, published_at: status === 'published' ? new Date().toISOString() : null, reviewed_by: user.email }, { count: 'exact' })
         .eq('id', row.id);
@@ -271,6 +273,8 @@ function AdminAnswers({ passage }) {
     if (!user) { setRows(null); return undefined; }
     let alive = true;
     (async () => {
+      let supabase;
+      try { supabase = await getSupabase(); } catch { if (alive) setRows([]); return; }
       const { data, error } = await withTimeout(
         supabase.from('daily_passage_answers').select('*')
           .eq('passage_id', passage.id).order('submitted_at', { ascending: false }),
@@ -366,6 +370,7 @@ export default function DailyTab() {
 
   const fetchPublished = useCallback(async () => {
     try {
+      const supabase = await getSupabase();
       const { data, error } = await withTimeout(
         supabase.from('daily_passages')
           .select('id, publish_date, topic, passage_title, passage, questions, difficulty')

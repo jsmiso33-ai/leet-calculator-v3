@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase.js';
+import { getSupabase, hasStoredSession, afterIdle } from '../lib/supabase.js';
 import { setAnalyticsUser } from '../lib/analytics.js';
 import { toast, confirmAsync } from '../lib/ui.js';
 
@@ -8,28 +8,40 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [ready, setReady] = useState(false);
+  // SDK는 동적으로 로드되므로 준비 전까지 null. user가 채워졌다면 항상 준비된 상태다.
+  const [supabase, setSupabase] = useState(null);
 
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!mounted) return;
-      const u = session?.user ?? null;
-      setUser(u);
-      setAnalyticsUser(u?.id ?? null);
-      setReady(true);
-    }).catch(() => { if (mounted) setReady(true); });
-
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      const u = session?.user ?? null;
-      setUser(u);
-      setAnalyticsUser(u?.id ?? null);
-    });
-    return () => { mounted = false; sub.subscription.unsubscribe(); };
+    let subscription = null;
+    (async () => {
+      // 복원할 세션이 없는 게스트는 첫 화면이 자리 잡은 뒤에 인증 SDK를 불러온다.
+      if (!hasStoredSession()) await afterIdle();
+      try {
+        const client = await getSupabase();
+        if (!mounted) return;
+        setSupabase(client);
+        const { data } = client.auth.onAuthStateChange((_event, session) => {
+          const u = session?.user ?? null;
+          setUser(u);
+          setAnalyticsUser(u?.id ?? null);
+        });
+        subscription = data.subscription;
+        const { data: { session } } = await client.auth.getSession();
+        if (!mounted) return;
+        const u = session?.user ?? null;
+        setUser(u);
+        setAnalyticsUser(u?.id ?? null);
+      } catch { /* SDK 로드·세션 확인 실패 시 게스트로 동작 */ }
+      if (mounted) setReady(true);
+    })();
+    return () => { mounted = false; subscription?.unsubscribe(); };
   }, []);
 
   const signIn = async (provider = 'google') => {
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const client = await getSupabase();
+      const { data, error } = await client.auth.signInWithOAuth({
         provider,
         options: { redirectTo: window.location.origin + window.location.pathname, skipBrowserRedirect: true },
       });
@@ -43,7 +55,8 @@ export function AuthProvider({ children }) {
 
   const signInWithPassword = async (email, password) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const client = await getSupabase();
+      const { error } = await client.auth.signInWithPassword({ email, password });
       if (error) throw error;
       toast('로그인되었습니다.', { type: 'success' });
       return true;
@@ -55,7 +68,8 @@ export function AuthProvider({ children }) {
 
   const signUpWithPassword = async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const client = await getSupabase();
+      const { data, error } = await client.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: window.location.origin + window.location.pathname },
@@ -75,7 +89,8 @@ export function AuthProvider({ children }) {
 
   const resetPassword = async (email) => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      const client = await getSupabase();
+      const { error } = await client.auth.resetPasswordForEmail(email, {
         redirectTo: window.location.origin + window.location.pathname,
       });
       if (error) throw error;
@@ -94,7 +109,8 @@ export function AuthProvider({ children }) {
     );
     if (!ok) return;
     try {
-      await supabase.auth.signOut();
+      const client = await getSupabase();
+      await client.auth.signOut();
       setUser(null);
       setAnalyticsUser(null);
     } catch (e) {

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
+import Chart from '../lib/chart.js';
 
 // 연도별 표준점수 합계 추이 차트 (app.js renderChart 이식)
 export default function TrendChart({ results }) {
