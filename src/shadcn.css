@@ -6,31 +6,32 @@
    먹지 않던 문제 해결. unprefixed 유틸은 shadcn 컴포넌트에만 쓰이므로 사이트 영향 없음. */
 @import "tailwindcss/utilities.css";
 
-/* 사이트 팔레트(파랑 #2563EB 액센트, slate 계열)에 맞춘 shadcn 토큰 */
-@theme {
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-card: #ffffff;
-  --color-card-foreground: #0f172a;
-  --color-popover: #ffffff;
-  --color-popover-foreground: #0f172a;
-  --color-primary: #2563eb;
+/* shadcn 토큰은 값을 따로 갖지 않고 styles.css :root의 사이트 토큰을 가리킨다(단일 출처).
+   inline: 유틸이 var(--accent) 등을 직접 참조하게 해 런타임 토큰 변경이 그대로 반영된다. */
+@theme inline {
+  --color-background: var(--bg-card);
+  --color-foreground: var(--ink);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--ink);
+  --color-popover: var(--bg-card);
+  --color-popover-foreground: var(--ink);
+  --color-primary: var(--accent);
   --color-primary-foreground: #ffffff;
-  --color-secondary: #f1f5f9;
-  --color-secondary-foreground: #0f172a;
-  --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
-  --color-accent: #eff6ff;
-  --color-accent-foreground: #1e3a8a;
-  --color-destructive: #ef4444;
+  --color-secondary: var(--bg-subtle);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--bg-subtle);
+  --color-muted-foreground: var(--ink-mute);
+  --color-accent: var(--bg-tint);
+  --color-accent-foreground: var(--accent-hover);
+  --color-destructive: var(--danger);
   --color-destructive-foreground: #ffffff;
-  --color-border: #e2e8f0;
-  --color-input: #e2e8f0;
-  --color-ring: #2563eb;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.625rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  --color-border: var(--line-strong);
+  --color-input: var(--line-strong);
+  --color-ring: var(--accent);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 }
 
 /* box-shadow 유틸리티 직접 정의.
@@ -38,8 +39,8 @@
    shadow-* / focus:shadow-[..] / ring-* 유틸이 빈 box-shadow로 렌더되는 문제 우회.
    unlayered 규칙이라 사이트 리셋을 특이도로 이기고, shadcn 컴포넌트에만 적용됨. */
 .sx-focus:focus,
-.sx-focus[data-state="open"] { box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-.sx-elevated { box-shadow: 0 10px 32px -12px rgba(15, 23, 42, 0.28), 0 4px 10px -6px rgba(15, 23, 42, 0.14); }
+.sx-focus[data-state="open"] { box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.1); }
+.sx-elevated { box-shadow: 0 10px 32px -12px rgb(var(--line-rgb) / 0.28), 0 4px 10px -6px rgb(var(--line-rgb) / 0.14); }
 
 /* Mobile-safe dialog shell: large close target and a keyboard-aware scroll area. */
 .app-dialog-close {
@@ -50,10 +51,10 @@
   justify-content: center;
   top: 8px;
   right: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--line-strong);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.94);
-  color: #64748b;
+  color: var(--ink-mute);
   opacity: 1;
 }
 
