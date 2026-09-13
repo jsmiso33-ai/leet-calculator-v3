@@ -7695,3 +7695,26 @@
     .tab-lamp { transition: opacity var(--motion-fast) var(--ease-out); }
     .hp-years-popover, .hp-years-chevron { transition: none; }
   }
+
+  /* ===== TOUCH TARGETS =====
+     터치 기기(pointer: coarse)에서는 시험 중 시간 압박 속에 누르는 타이머·보조 컨트롤을 44px 이상으로.
+     마우스 환경의 촘촘한 밀도는 그대로 둔다. */
+  @media (pointer: coarse) {
+    .timer-dock button, .timer-log-nudge button,
+    .header-timer-controls select, .header-timer-controls input, .header-timer-controls button, .timer-setup-card .header-timer-controls button,
+    .exam-timer-controls select, .exam-timer-controls input, .exam-timer-start,
+    .btn-tiny, .auth-btn.auth-login-open, .login-nudge-btn,
+    .adm-grade-tabs button, .adm-compare-clear,
+    details.info-callout summary, .foot-links a, .sch-chip, .y-chip {
+      min-height: 44px;
+    }
+
+    /* 아이콘 버튼은 모양은 그대로 두고 눌리는 영역만 44px 이상으로 넓힌다 */
+    .favorite-btn, .adm-favorite-btn, .log-entry .e-delete { position: relative; }
+    .favorite-btn::after, .adm-favorite-btn::after, .log-entry .e-delete::after,
+    .school-search-clear::after, .travel-password-field button::after {
+      content: '';
+      position: absolute;
+      inset: -8px;
+    }
+  }
