@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-13T15:10:00Z",
+  "title": "Design System: LEET 표준점수 계산기",
+  "extensions": {
+    "colorMeta": {
+      "precision-blue": { "role": "primary", "displayName": "Precision Blue", "canonical": "#2563EB", "tonalRamp": ["#061A46", "#0C3183", "#1146BB", "#1F5FEA", "#5787F0", "#8AABF4", "#B9CDF9", "#E8EEFD"] },
+      "ledger-teal": { "role": "secondary", "displayName": "Ledger Teal", "canonical": "#0F766E", "tonalRamp": ["#09443F", "#107F76", "#17B5A9", "#26E3D5", "#5CEADF", "#8EF1E9", "#BBF6F2", "#E8FCFB"] },
+      "deep-charcoal": { "role": "neutral", "displayName": "Deep Charcoal", "canonical": "#18181B", "tonalRamp": ["#242429", "#43434C", "#60606C", "#7D7D8C", "#9E9EA9", "#BBBBC3", "#D7D7DB", "#F2F2F3"] },
+      "quiet-paper": { "role": "neutral", "displayName": "Quiet Paper", "canonical": "#F6F7F9" },
+      "correct-green": { "role": "semantic-success", "displayName": "Correct Green", "canonical": "#15803D" },
+      "caution-amber": { "role": "semantic-warning", "displayName": "Caution Amber", "canonical": "#B45309" },
+      "incorrect-red": { "role": "semantic-danger", "displayName": "Incorrect Red", "canonical": "#B91C1C" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Serif)", "purpose": "마스트헤드 h1, 섹션 라벨 등 페이지 최상단 타이틀 전용." },
+      "body": { "displayName": "Body (Sans)", "purpose": "기본 본문 텍스트. Pretendard dynamic subset을 jsDelivr에서 비동기로 불러와 화면에 쓰인 글자 조각만 받는다." },
+      "label": { "displayName": "Label", "purpose": "탭 배지, 통계 라벨 등 메타 정보." },
+      "mono": { "displayName": "Score/Data Mono", "purpose": "표준점수, 타이머, 통계 등 신뢰가 필요한 숫자 전용. tabular-nums 필수. 400–700 웨이트 로드." }
+    },
+    "shadows": [
+      { "name": "shadow-xs", "value": "0 0 0 1px rgba(15,23,42,0.05)", "purpose": "그림자라기보다 미세한 경계선 대체." },
+      { "name": "shadow-sm", "value": "0 1px 2px rgba(15,23,42,0.04), 0 0 0 1px rgba(15,23,42,0.05)", "purpose": "기본 카드." },
+      { "name": "shadow-md", "value": "0 3px 10px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.05)", "purpose": "마스트헤드, 카드 hover." },
+      { "name": "shadow-lg", "value": "0 8px 22px rgba(15,23,42,0.07), 0 0 0 1px rgba(15,23,42,0.05)", "purpose": "히어로 점수 카드." },
+      { "name": "shadow-xl", "value": "0 14px 36px rgba(15,23,42,0.10), 0 0 0 1px rgba(15,23,42,0.05)", "purpose": "화면에 고정된 타이머 독 — 유일하게 뚜렷이 떠 있는 요소." }
+    ],
+    "motion": [
+      { "name": "motion-instant", "value": "80ms", "purpose": "즉각 반응(호버 색상 등)." },
+      { "name": "motion-fast", "value": "150ms", "purpose": "버튼/칩 호버 같은 작은 변화." },
+      { "name": "motion-base", "value": "220ms", "purpose": "대부분의 상태 변화 기본값." },
+      { "name": "motion-medium", "value": "320ms", "purpose": "탭 전환, 카드 등장 등 큰 변화." },
+      { "name": "motion-slow", "value": "480ms", "purpose": "그래프·카운트 등 데이터 변화." },
+      { "name": "ease-out", "value": "cubic-bezier(0.32, 0.72, 0.27, 1)", "purpose": "기본 이징 — 부드러운 도달." },
+      { "name": "ease-out-soft", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "등장 애니메이션용 더 부드러운 이징." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "양방향 전환(탭 전환 등)." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "480px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "720px" },
+      { "name": "lg", "value": "900px" },
+      { "name": "container", "value": "1200px" },
+      { "name": "container-daily", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "기본 액션 버튼. Deep Charcoal 배경, 흰 텍스트.",
+      "html": "<button class=\"ds-btn-primary\">저장</button>",
+      "css": ".ds-btn-primary { background: #18181B; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-primary:hover { background: #27272A; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(24,24,27,0.12); } .ds-btn-primary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "보조/취소 액션. 흰 배경에 중성 보더.",
+      "html": "<button class=\"ds-btn-secondary\">취소</button>",
+      "css": ".ds-btn-secondary { background: #FFFFFF; color: #18181B; border: 1px solid rgba(15,23,42,0.14); padding: 9px 16px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-secondary:hover { background: #F4F6F8; border-color: rgba(24,24,27,0.18); } .ds-btn-secondary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "강조 액션(다운로드 등). Precision Blue 배경 — 예외적으로만 사용.",
+      "html": "<button class=\"ds-btn-accent\">다운로드</button>",
+      "css": ".ds-btn-accent { background: #2563EB; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-accent:hover { background: #1D4ED8; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(37,99,235,0.18); } .ds-btn-accent:focus-visible { outline: 2px solid #1D4ED8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Stat Card",
+      "kind": "card",
+      "refersTo": "card-stat",
+      "description": "통계/기록 카드. 거의 안 보이는 그림자, hover 시 살짝 상승.",
+      "html": "<div class=\"ds-stat-card\"><div class=\"ds-stat-label\">평균 표준점수</div><div class=\"ds-stat-value\">128.4</div></div>",
+      "css": ".ds-stat-card { background: #FFFFFF; border-radius: 12px; padding: 18px 20px; box-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 0 0 1px rgba(15,23,42,0.05); transition: all 220ms cubic-bezier(0.32,0.72,0.27,1); } .ds-stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(15,23,42,0.07), 0 0 0 1px rgba(15,23,42,0.05); } .ds-stat-label { font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 500; color: #52525B; margin-bottom: 8px; } .ds-stat-value { font-family: 'Pretendard', sans-serif; font-size: 28px; font-weight: 600; color: #18181B; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Score Input Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "라벨 + 큰 모노스페이스 숫자 입력. 결과가 나올 자리처럼 보이도록 설계된 카드형 필드.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">언어이해 원점수</span><input class=\"ds-field-input\" type=\"number\" placeholder=\"0\" /></label>",
+      "css": ".ds-field { display: block; background: #FFFFFF; border: 1px solid rgba(15,23,42,0.14); border-radius: 10px; padding: 14px 16px; cursor: text; transition: border-color 150ms, box-shadow 150ms; } .ds-field:focus-within { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); } .ds-field-label { display: block; font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 700; color: #52525B; margin-bottom: 4px; } .ds-field-input { border: none; outline: none; background: none; font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: #18181B; width: 72px; }"
+    },
+    {
+      "name": "Grade Pill",
+      "kind": "chip",
+      "refersTo": "grade-pill",
+      "description": "지원권 등급(안정·적정·도전·위험)을 글자와 옅은 색으로 표시. 좌측 컬러 스트라이프 대신 쓴다.",
+      "html": "<span class=\"ds-grade-pill ds-grade-safe\">안정</span> <span class=\"ds-grade-pill ds-grade-reach\">도전</span>",
+      "css": ".ds-grade-pill { display: inline-flex; align-items: center; font-family: 'Pretendard', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: -0.01em; line-height: 1.2; } .ds-grade-safe { background: #ECFDF5; color: #047857; } .ds-grade-reach { background: #FFFBEB; color: #B45309; }"
+    },
+    {
+      "name": "Tab Navigation (Lamp)",
+      "kind": "nav",
+      "refersTo": "tab-nav",
+      "description": "반투명 캡슐형 탭 바. 활성 탭 아래로 빛나는 파란 램프가 이동하는 시그니처 인터랙션(모션 감소 시 제자리 점등).",
+      "html": "<nav class=\"ds-tab-nav\"><button class=\"ds-tab-btn ds-tab-btn--active\">계산기</button><button class=\"ds-tab-btn\">학교별 비교</button><button class=\"ds-tab-btn\">기출문제</button></nav>",
+      "css": ".ds-tab-nav { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.72); border: 1px solid rgba(24,24,27,0.08); backdrop-filter: blur(18px); padding: 6px; border-radius: 999px; box-shadow: 0 18px 45px rgba(24,24,27,0.08); } .ds-tab-btn { background: none; border: none; padding: 11px 22px; font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 500; color: #52525B; cursor: pointer; border-radius: 8px; transition: color 150ms, background-color 150ms; } .ds-tab-btn:hover { color: #18181B; background: rgba(24,24,27,0.04); } .ds-tab-btn--active { color: #2563EB; font-weight: 700; box-shadow: 0 0 0 1px rgba(37,99,235,0.08) inset, 0 10px 24px rgba(37,99,235,0.12); background: rgba(37,99,235,0.08); }"
+    },
+    {
+      "name": "Verdict Score Display",
+      "kind": "custom",
+      "refersTo": "hero-pulse",
+      "description": "히어로 점수 카드 — calc 탭의 시그니처 컴포넌트. 값이 채워지면 회색에서 진한 차콜로 전환되는 거대한 모노스페이스 숫자와 블루→틸 그라데이션 진행 미터.",
+      "html": "<div class=\"ds-hero-score\"><span class=\"ds-hero-badge\">2027학년도</span><div class=\"ds-hero-number has-value\">128.4</div><div class=\"ds-hero-meter\"><div class=\"ds-hero-meter-fill\" style=\"width:72%\"></div></div></div>",
+      "css": ".ds-hero-score { background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%); border-radius: 12px; padding: 44px 34px; text-align: center; } .ds-hero-badge { display: inline-flex; padding: 7px 16px; background: rgba(255,255,255,0.78); color: #1D4ED8; border: 1px solid rgba(37,99,235,0.16); border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 16px; } .ds-hero-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(64px, 7vw, 92px); font-weight: 700; color: rgba(15,23,42,0.32); line-height: 1; font-variant-numeric: tabular-nums; transition: color 220ms; } .ds-hero-number.has-value { color: #0F172A; } .ds-hero-meter { max-width: 300px; margin: 16px auto 0; height: 8px; border-radius: 999px; background: rgba(15,23,42,0.08); overflow: hidden; } .ds-hero-meter-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563EB 0%, #0F766E 100%); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "합격 판정 데스크 (The Verdict Desk)",
+    "overview": "이 시스템은 시험 결과를 받아 든 사람이 진지하게 마주 앉는 책상이라는 은유에서 출발한다. 중성적인 차콜과 종이 같은 회색 위에, 판단이 필요한 지점에서만 정밀한 파란색이 켜진다. 장식이 아니라 \"지금 봐야 할 숫자\"를 가리키는 신호로 색을 쓴다는 점에서, 화려함보다 신뢰를 우선하는 시험 도구의 태도를 그대로 반영한다. 무드는 차분하고 정밀함(Calm & Precise). 그림자는 존재를 숨기듯 옅고, 모서리는 넉넉하게 둥글며, 핵심 수치(표준점수·타이머·통계)는 항상 모노스페이스 숫자로 고정폭 정렬되어 계기판처럼 읽힌다. 세리프 헤딩(Noto Serif KR)이 권위와 진지함을, 산세리프 본문이 실무적 가독성을, 모노스페이스가 데이터의 정밀함을 각각 맡는 3분할 타이포 체계다. 컴포넌트의 성격은 정밀하고 절제됨(Precise & Restrained): 버튼과 카드는 미세한 트랜지션과 절제된 그림자로 상태 변화를 알리고, 장식적 요소 없이 기능에 집중한다. 유일하게 시스템이 스스로 허용한 \"표현\"은 히어로 점수 카드의 은은한 그라데이션 배경과 성적 미터의 블루→틸 그라데이션 정도다.",
+    "keyCharacteristics": [
+      "중성 차콜·회색 배경 위에 파란 포인트만 신호로 사용",
+      "핵심 수치는 항상 모노스페이스 + tabular-nums",
+      "그림자는 거의 보이지 않을 정도로 절제, 구조는 1px 보더가 담당",
+      "넉넉한 라운딩(8~16px)과 캡슐형(999px) 탭/배지",
+      "세리프(헤딩) · 산세리프(본문) · 모노스페이스(데이터) 3역할 타이포"
+    ],
+    "rules": [
+      { "name": "The One Blue Rule", "body": "Precision Blue는 화면당 \"지금 상호작용하거나 주목해야 할 지점\" 한두 곳에만 켠다 — 활성 탭 하나, 강조 버튼 하나, 포커스 링 하나. 장식으로 번지는 순간 신호로서의 힘을 잃는다.", "section": "colors" },
+      { "name": "The Legacy Name Trap", "body": "`--blue`와 `--gold`는 이름과 실제 색이 어긋난 레거시 별칭으로, 이제 각각 `--ink`(차콜)와 `--teal`을 가리키기만 한다. 새 코드는 `--ink`/`--teal`/`--accent`처럼 역할 이름을 쓴다.", "section": "colors" },
+      { "name": "The Single Source Rule", "body": "색 값은 `styles.css`의 `:root`에만 존재한다. 반투명이 필요하면 채널 토큰을 쓴다 — `rgb(var(--accent-rgb) / 0.12)`, `rgb(var(--line-rgb) / 0.08)`. shadcn/ui 토큰(`src/shadcn.css`)도 값을 따로 갖지 않고 사이트 토큰을 가리킨다(`--color-primary: var(--accent)`).", "section": "colors" },
+      { "name": "The Score Display Rule", "body": "표준점수, 타이머, 통계처럼 사용자가 신뢰해야 할 핵심 수치는 항상 JetBrains Mono + `font-variant-numeric: tabular-nums`로 렌더링한다. 자릿수가 바뀌어도 폭이 흔들리지 않아야 계기판처럼 신뢰가 간다.", "section": "typography" },
+      { "name": "The Almost-Flat Rule", "body": "그림자를 진하게 키우고 싶은 충동이 들면 대신 보더 대비나 배경색 대비를 먼저 조정한다. 이 시스템에서 뚜렷한 그림자는 `.timer-dock`처럼 \"화면 위에 진짜로 떠 있는\" 요소에만 예외적으로 허용된다.", "section": "elevation" },
+      { "name": "The No-Stripe Rule", "body": "카드·목록·안내 박스의 좌우에 3px 이상 컬러 스트라이프를 두지 않는다. 분류 정보는 글자가 담긴 `grade-pill`(안정·적정·도전·위험)이나 6px 점(지역 칩)으로 전달하고, 안내 박스는 1px 중성 보더 + `--bg-subtle` 배경으로 구분한다. 예외: 학교 카드 상단 3px 띠는 반영비 구간(50%↑/40~50%/40% 미만)을 나타내는 기존 장치로 유지한다.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do Precision Blue를 화면당 한두 지점(활성 탭, 강조 버튼, 포커스 링, 진행 미터)에만 신호로 사용한다.",
+      "Do 표준점수·타이머·통계처럼 신뢰해야 할 숫자는 항상 JetBrains Mono + tabular-nums로 표시한다.",
+      "Do 그림자를 `--shadow-xs`~`--shadow-md` 범위로 억제하고, 표면 분리는 1px 중성 보더로 우선 해결한다. `.timer-dock`처럼 실제로 화면 위에 떠 있는 요소에만 `--shadow-xl` 예외를 허용한다.",
+      "Do 라운딩은 8~16px 범위를 유지하고, 탭·배지 등 캡슐형 요소는 완전한 pill(999px)로 만든다.",
+      "Do 긴 텍스트를 읽는 화면(오늘의 지문 등)은 컨테이너를 960px로 좁혀 가독성을 확보한다.",
+      "Do 반투명 액센트·라인은 채널 토큰으로 쓴다: `rgb(var(--accent-rgb) / 0.12)`, `rgb(var(--line-rgb) / 0.08)`.",
+      "Do 분류(등급·지역)는 `grade-pill` 텍스트나 작은 점으로 표시한다.",
+      "Do 새 애니메이션을 추가하면 REDUCED MOTION 블록에 이동 없는 대체안을 함께 추가한다."
+    ],
+    "donts": [
+      "Don't 새 강조색을 추가하지 않는다 — Ledger Teal은 이미 \"기록·추적\" 역할로 예약되어 있고, 새로운 액센트 색이 필요하면 먼저 Precision Blue/Ledger Teal로 표현할 수 있는지 확인한다.",
+      "Don't 히어로 카드의 그라데이션과 백분위 미터 그라데이션 외의 곳에 새 그라데이션을 넣지 않는다 — 이 시스템은 플랫이 기본값이고 그라데이션은 확정된 예외 두 곳뿐이다.",
+      "Don't 새 코드에서 `--blue`·`--gold` 레거시 별칭을 쓰지 않는다(각각 `--ink`·`--teal`의 별칭일 뿐이다).",
+      "Don't 카드·목록·안내 박스에 3px 이상 좌우 컬러 스트라이프를 두지 않는다(The No-Stripe Rule).",
+      "Don't 토큰과 같은 색을 hex·rgba 리터럴로 다시 적지 않는다(The Single Source Rule).",
+      "Don't 새 폰트 패밀리를 추가하지 않는다 — 이미 산세리프(Pretendard) · 세리프(Noto Serif KR) · 모노(JetBrains Mono) 3역할이 모두 채워져 있고, 한국어 웹폰트는 한 벌 추가할 때마다 로딩 비용이 크다."
+    ]
+  }
+}
