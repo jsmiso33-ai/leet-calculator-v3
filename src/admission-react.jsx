@@ -29,14 +29,6 @@ const gradeToneClass = {
   pending: 'tw:!border-t-zinc-300',
 };
 
-const slotToneClass = {
-  safe: 'tw:!border-l-emerald-500',
-  match: 'tw:!border-l-sky-500',
-  reach: 'tw:!border-l-amber-500',
-  hard: 'tw:!border-l-zinc-500',
-  pending: 'tw:!border-l-zinc-300',
-};
-
 const diffToneClass = {
   plus: 'tw:!text-emerald-700',
   minus: 'tw:!text-red-600',
@@ -278,10 +270,13 @@ function ComparePanel({ model, actions }) {
           if (!row) return <EmptyCompareSlot key={index} index={index} />;
           const grade = row.grade || 'pending';
           return (
-            <div key={row.name} className={cx('adm-compare-slot', `grade-${grade}`, slotToneClass[grade], 'tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!border-l-4 tw:!bg-white tw:!p-3 tw:!shadow-sm')}>
+            <div key={row.name} className={cx('adm-compare-slot', `grade-${grade}`, 'tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm')}>
               <span className="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-slate-100 tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{index + 1}</span>
               <strong className="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-900">{row.name}</strong>
-              <small className="tw:!text-xs tw:!font-bold tw:!text-slate-500">{row.gradeLabel} · {row.diffDisplay || '-'}</small>
+              <small className="tw:!flex tw:!min-w-0 tw:!items-center tw:!gap-1.5 tw:!text-xs tw:!font-bold tw:!text-slate-500">
+                <span className={cx('grade-pill', gradePillClass[grade] || 'tw:!bg-zinc-100 tw:!text-zinc-600')}>{row.gradeLabel}</span>
+                {row.diffDisplay || '-'}
+              </small>
             </div>
           );
         })}
@@ -301,7 +296,7 @@ function ComparePanel({ model, actions }) {
 
 function EmptyCompareSlot({ index }) {
   return (
-    <div className="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!border-l-4 tw:!bg-slate-50 tw:!p-3">
+    <div className="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-3">
       <span className="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-white tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{index + 1}</span>
       <strong className="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-600">학교 선택</strong>
       <small className="tw:!text-xs tw:!font-bold tw:!text-slate-400">학교 카드에서 추가</small>
