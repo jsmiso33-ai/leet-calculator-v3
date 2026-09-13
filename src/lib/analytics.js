@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { getSupabase, afterIdle } from './supabase.js';
 
 // analytics.js 이식 — track('이벤트', {속성}). Supabase leet_activity 테이블 + GA4.
 // 테이블/엔드포인트 이름이 'events'면 광고·추적 차단 필터(EasyPrivacy 등)가 /events
@@ -25,15 +25,19 @@ function getSessionId() {
 export async function track(name, props = {}) {
   try { if (window.gtag) window.gtag('event', name, props); } catch { /* noop */ }
   if (!isProd) return;
+  // 기록 시점의 값은 즉시 확정하고, 전송은 브라우저가 한가할 때 한다.
+  const row = {
+    name,
+    props,
+    session_id: getSessionId(),
+    user_id: _uid,
+    path: location.pathname,
+    referrer: document.referrer || null,
+  };
   try {
-    await supabase.from(ACTIVITY_TABLE).insert({
-      name,
-      props,
-      session_id: getSessionId(),
-      user_id: _uid,
-      path: location.pathname,
-      referrer: document.referrer || null,
-    });
+    await afterIdle();
+    const supabase = await getSupabase();
+    await supabase.from(ACTIVITY_TABLE).insert(row);
   } catch { /* 추적 실패는 조용히 무시 */ }
 }
 

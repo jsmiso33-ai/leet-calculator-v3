@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BookOpenText, X } from 'lucide-react';
-import { supabase, withTimeout } from '../lib/supabase.js';
+import { getSupabase, withTimeout } from '../lib/supabase.js';
 import { track } from '../lib/analytics.js';
 
 // 오늘의 지문 홍보 배너 — daily 탭 밖에서 최신 발행분을 한 줄로 노출.
@@ -21,6 +21,7 @@ export default function DailyPromo({ onGo }) {
     let alive = true;
     (async () => {
       try {
+        const supabase = await getSupabase();
         const { data, error } = await withTimeout(
           supabase.from('daily_passages')
             .select('id, publish_date, passage_title, topic')

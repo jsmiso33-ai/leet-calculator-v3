@@ -121,7 +121,6 @@
     max-width: 1200px;
     margin: 0 auto;
     animation: pageFadeIn var(--motion-medium) var(--ease-out-soft);
-    transition: max-width var(--motion-medium) var(--ease-out);
   }
   /* 오늘의 지문 탭: 시험지 가독성을 위해 사이트 폭을 좁힘 (좌우 2단은 유지) */
   .container--daily { max-width: 960px; }

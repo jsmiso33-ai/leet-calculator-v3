@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import Chart from 'chart.js/auto';
+import Chart from '../lib/chart.js';
 
 // app.js renderLogChart 이식 — 시간순 표준점수 추이
 export default function LogChart({ rows }) {
