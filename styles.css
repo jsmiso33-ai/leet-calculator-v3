@@ -205,15 +205,8 @@
     to { opacity: 1; }
   }
 
-  /* 접근성: 사용자가 모션 감소를 원하면 모든 애니메이션 비활성화 */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
+  /* 접근성: 모션 감소 대체 경로는 파일 맨 끝의 "REDUCED MOTION" 블록에 있다.
+     (@keyframes는 뒤에 정의된 것이 이기므로 모든 키프레임 정의 뒤에 둬야 한다) */
 
   header.masthead {
     padding: 24px 28px;
@@ -7666,3 +7659,39 @@
   .masthead .meta.is-guest .auth-sync-copy strong { font-size: 11px; }
   .masthead .meta.is-guest .auth-sync-card .auth-actions { grid-column: 2; width: auto; }
 }
+
+  /* ===== REDUCED MOTION =====
+     모션 감소 설정 사용자: 공간 이동(슬라이드·확대·리프트·스윕)과 반복 루프는 없애고,
+     "무엇이 바뀌었는지" 알려주는 페이드와 색 전환은 짧게 남긴다.
+     전부 0.01ms로 끄면 탭 전환·점수 갱신·토스트가 순간이동처럼 보여 변화를 놓치게 된다.
+     @keyframes는 뒤에 정의된 것이 이기므로 이 블록은 반드시 파일 맨 끝에 둔다. */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-iteration-count: 1 !important; }
+
+    /* 이동이 섞인 등장·퇴장 → 같은 이름의 순수 페이드로 교체 */
+    @keyframes tabFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes hpMeterIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes toastSlideUp { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes toastSlideDown { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes confirmPopIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes travelDialogIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes admCardIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes admSlotSettle { from, to { transform: none; } }
+    @keyframes heroPulse { from, to { opacity: 1; transform: none; } }
+    @keyframes ddayShine { from, to { transform: translateX(-120%); } }
+
+    /* 호버 리프트·눌림 축소 제거 — 배경·그림자 변화는 그대로 상태를 알려준다 */
+    .btn-primary:hover, .btn-primary:active,
+    .btn-accent:hover, .btn-accent:active,
+    .auth-btn:hover, .login-nudge-btn:hover,
+    .tab-btn:active, .favorite-btn:active,
+    .qg-cell:hover, .admin-cell:hover,
+    .fb-fab:hover, .fb-fab:active,
+    .hp-next-step button:active,
+    .adm-compare-clear:hover { transform: none; }
+
+    /* 탭 램프는 미끄러지지 않고 새 탭 자리에서 켜진다 */
+    .tab-lamp { transition: opacity var(--motion-fast) var(--ease-out); }
+    .hp-years-popover, .hp-years-chevron { transition: none; }
+  }
