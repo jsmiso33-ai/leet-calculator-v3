@@ -44,7 +44,6 @@
     "@visx/responsive": "^4.0.1-alpha.0",
     "@visx/scale": "^4.0.1-alpha.0",
     "@visx/shape": "^4.0.1-alpha.0",
-    "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "d3-array": "^3.2.4",

@@ -485,10 +485,19 @@ function domainExtendsPastData(
   }
   const domainEnd = xScale.domain()[1];
   const lastPoint = data.at(-1);
-  if (!(domainEnd && lastPoint)) {
+  const firstPoint = data[0];
+  if (!(domainEnd && lastPoint && firstPoint)) {
     return false;
   }
-  return domainEnd.getTime() > xAccessor(lastPoint).getTime();
+  const lastTime = xAccessor(lastPoint).getTime();
+  const extension = domainEnd.getTime() - lastTime;
+  // 마커가 잘리지 않게 도메인을 한 칸 미만으로 살짝 늘린 경우는 투영 구간으로 보지 않는다
+  // (그렇지 않으면 도메인 끝 날짜가 여분 눈금 라벨로 붙는다).
+  const slot =
+    data.length > 1
+      ? (lastTime - xAccessor(firstPoint).getTime()) / (data.length - 1)
+      : 0;
+  return slot > 0 ? extension >= slot : extension > 0;
 }
 
 /** Domain ticks for the projection tail when brush keeps data-aligned labels. */
