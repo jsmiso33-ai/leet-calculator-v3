@@ -28,7 +28,7 @@ export default function UpdateBanner({ onGo }) {
       </div>
       <button
         type="button"
-        className="notice-banner__action tw:!shrink-0 tw:!rounded-lg tw:!bg-emerald-600 tw:!px-3.5 tw:!py-2 tw:!text-sm tw:!font-bold tw:!text-white tw:transition-colors tw:hover:!bg-emerald-700"
+        className="notice-banner__action tw:!shrink-0 tw:!rounded-lg tw:!bg-[var(--success)] tw:!px-3.5 tw:!py-2 tw:!text-sm tw:!font-bold tw:!text-white tw:transition-colors tw:hover:!bg-[#166534]"
         onClick={() => { track('update_2027_banner_click', {}); onGo(); }}
       >
         확인하기
