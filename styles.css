@@ -128,7 +128,12 @@
     overflow-x: hidden; /* 가로 스크롤 완전 차단 */
   }
   html { scroll-behavior: smooth; }
-  body { min-height: 100vh; padding: 32px 24px 80px; }
+  body { min-height: 100vh; padding: 32px 24px 80px; padding-top: 32px !important; padding-right: 24px !important; padding-left: 24px !important; }
+  /* Radix Select/Dialog의 스크롤 잠금(react-remove-scroll)은 열리는 동안 body의 좌·상·우 padding을 0으로,
+     margin-right를 스크롤바 폭만큼 덮어쓴다. 이 사이트는 html이 스크롤 컨테이너라 스크롤바가 사라지지 않으므로
+     그대로 두면 페이지가 좌상단으로 튄다. 그래서 body 좌·상·우 padding 선언에는 모두 !important를 붙이고
+     (하단은 잠금이 건드리지 않고 body:has(.timer-dock) 규칙이 덮어써야 하므로 제외) 보정 margin은 없앤다. */
+  html body[data-scroll-locked] { margin-right: 0 !important; }
 
   /* 접근성: 키보드 사용자가 헤더/탭을 건너뛰고 본문으로 점프 */
   .skip-link {
@@ -832,14 +837,46 @@
   }
   .hp-years-trigger.open .hp-years-chevron { transform: rotate(180deg); }
 
-  /* 팝오버: grid-rows 트랜지션으로 부드럽게 펼침 (overflow 클리핑 회피) */
+  /* 팝오버: 열릴 때 마운트되므로 트랜지션 대신 등장 애니메이션으로 펼치고,
+     안의 칩들은 --i 순번만큼 늦게 차례로 떠오른다(촤르륵). */
   .hp-years-popover {
     display: grid;
-    grid-template-rows: 0fr;
-    margin-top: 0;
-    transition: grid-template-rows var(--motion-base) var(--ease-out), margin-top var(--motion-base) var(--ease-out);
+    grid-template-rows: 1fr;
+    margin-top: 10px;
+    animation: hpYearsExpand 260ms var(--ease-out) both;
   }
-  .hp-years-popover.open { grid-template-rows: 1fr; margin-top: 10px; }
+  @keyframes hpYearsExpand {
+    from { grid-template-rows: 0fr; margin-top: 0; opacity: 0.4; }
+    to { grid-template-rows: 1fr; margin-top: 10px; opacity: 1; }
+  }
+  .hp-years-popover .year-chips > *,
+  .hp-years-popover .hp-quick-actions > button {
+    /* backwards: 끝난 뒤 transform을 붙잡아 hover/눌림 효과를 막지 않도록 */
+    animation: hpChipIn 240ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 16ms + 60ms);
+  }
+  @keyframes hpChipIn {
+    from { opacity: 0; transform: translateY(6px) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  /* 닫힘: 칩이 먼저 가라앉듯 사라지고, 이어서 패널이 접힌다. 여는 것보다 짧게. */
+  .hp-years-popover.closing {
+    pointer-events: none;
+    animation: hpYearsCollapse 220ms var(--ease-out) 40ms both;
+  }
+  .hp-years-popover.closing .year-chips > *,
+  .hp-years-popover.closing .hp-quick-actions > button {
+    animation: hpChipOut 140ms ease-in both;
+    animation-delay: 0ms;
+  }
+  @keyframes hpYearsCollapse {
+    from { grid-template-rows: 1fr; margin-top: 10px; opacity: 1; }
+    to { grid-template-rows: 0fr; margin-top: 0; opacity: 0; }
+  }
+  @keyframes hpChipOut {
+    from { opacity: 1; transform: none; }
+    to { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  }
   .hp-years-inner { overflow: hidden; min-height: 0; }
   .hp-years-body {
     display: flex;
@@ -2975,6 +3012,39 @@
     padding: 4px 22px 18px;
     border-top: 1px solid var(--line);
   }
+  /* 학교 선택 펼침/접힘 — 히어로 학년도 선택기와 같은 모션(패널 펼침 + 칩 순차 등장).
+     열림·닫힘 상태는 useAnimatedDisclosure가 제어하고, 닫힘 동안 .closing이 붙는다. */
+  .sf-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+    animation: discExpand 260ms var(--ease-out) both;
+  }
+  .sf-panel-inner { overflow: hidden; min-height: 0; }
+  .sf-panel .sf-quick-actions button,
+  .sf-panel .sch-chip-glabel,
+  .sf-panel .sch-chip {
+    animation: hpChipIn 240ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 16ms + 60ms);
+  }
+  details.school-filter-card.closing summary::after { content: '＋'; }
+  details.school-filter-card.closing .sf-panel {
+    pointer-events: none;
+    animation: discCollapse 220ms var(--ease-out) 40ms both;
+  }
+  details.school-filter-card.closing .sf-quick-actions button,
+  details.school-filter-card.closing .sch-chip-glabel,
+  details.school-filter-card.closing .sch-chip {
+    animation: hpChipOut 140ms ease-in forwards;
+    animation-delay: 0ms;
+  }
+  @keyframes discExpand {
+    from { grid-template-rows: 0fr; opacity: 0.4; }
+    to { grid-template-rows: 1fr; opacity: 1; }
+  }
+  @keyframes discCollapse {
+    from { grid-template-rows: 1fr; opacity: 1; }
+    to { grid-template-rows: 0fr; opacity: 0; }
+  }
   .sf-quick-actions {
     display: flex;
     gap: 6px;
@@ -3172,7 +3242,7 @@
   /* 전체 레이아웃 */
   @media (max-width: 640px) {
     .container { padding: 0 12px; }
-    body { padding: 16px 12px 60px; }
+    body { padding: 16px 12px 60px; padding-top: 16px !important; padding-right: 12px !important; padding-left: 12px !important; }
     .masthead { padding: 16px 18px; flex-wrap: wrap; gap: 12px; }
     .masthead h1 { font-size: 18px; }
     .title-block::before { width: 38px; height: 38px; font-size: 17px; }
@@ -3250,7 +3320,7 @@
   /* 더 작은 화면 (아이폰 mini, 갤럭시 미니 등) */
   @media (max-width: 380px) {
     .container { padding: 0 8px; }
-    body { padding: 12px 8px 60px; }
+    body { padding: 12px 8px 60px; padding-top: 12px !important; padding-right: 8px !important; padding-left: 8px !important; }
     .masthead { padding: 14px 14px; }
     .masthead h1 { font-size: 17px; }
     .title-block::before { width: 34px; height: 34px; font-size: 15px; }
@@ -3474,6 +3544,9 @@
   @media (max-width: 640px) {
     body {
       padding: 10px 12px 56px;
+      padding-top: 10px !important;
+      padding-right: 12px !important;
+      padding-left: 12px !important;
     }
 
     header.masthead {
@@ -3839,14 +3912,14 @@
   /* iPhone 노치/홈 인디케이터 영역 — safe area 대응 */
   @supports (padding: env(safe-area-inset-bottom)) {
     body {
-      padding-left: max(24px, env(safe-area-inset-left));
-      padding-right: max(24px, env(safe-area-inset-right));
+      padding-left: max(24px, env(safe-area-inset-left)) !important;
+      padding-right: max(24px, env(safe-area-inset-right)) !important;
       padding-bottom: max(80px, calc(60px + env(safe-area-inset-bottom)));
     }
     @media (max-width: 640px) {
       body {
-        padding-left: max(12px, env(safe-area-inset-left));
-        padding-right: max(12px, env(safe-area-inset-right));
+        padding-left: max(12px, env(safe-area-inset-left)) !important;
+        padding-right: max(12px, env(safe-area-inset-right)) !important;
         padding-bottom: max(60px, calc(40px + env(safe-area-inset-bottom)));
       }
     }
@@ -5133,7 +5206,7 @@
   /* Mobile polish pass: keep dense tools readable and tap-friendly */
   @media (max-width: 640px) {
     body {
-      padding-top: 12px;
+      padding-top: 12px !important;
     }
 
     .container {
@@ -7331,10 +7404,10 @@
     }
     body {
       min-height: 100dvh;
-      padding-top: max(10px, env(safe-area-inset-top));
-      padding-right: max(12px, env(safe-area-inset-right));
+      padding-top: max(10px, env(safe-area-inset-top)) !important;
+      padding-right: max(12px, env(safe-area-inset-right)) !important;
       padding-bottom: max(96px, calc(72px + env(safe-area-inset-bottom)));
-      padding-left: max(12px, env(safe-area-inset-left));
+      padding-left: max(12px, env(safe-area-inset-left)) !important;
       overflow-x: clip;
     }
     body:has(.timer-dock) {
@@ -7765,6 +7838,17 @@
     /* 탭 램프는 미끄러지지 않고 새 탭 자리에서 켜진다 */
     .tab-lamp { transition: opacity var(--motion-fast) var(--ease-out); }
     .hp-years-popover, .hp-years-chevron { transition: none; }
+    @keyframes hpYearsExpand { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes hpChipIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes hpYearsCollapse { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes hpChipOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes discExpand { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes discCollapse { from { opacity: 1; } to { opacity: 0; } }
+    .hp-years-popover .year-chips > *,
+    .hp-years-popover .hp-quick-actions > button,
+    .sf-panel .sf-quick-actions button,
+    .sf-panel .sch-chip-glabel,
+    .sf-panel .sch-chip { animation-delay: 0ms; }
   }
 
   /* ===== TOUCH TARGETS =====

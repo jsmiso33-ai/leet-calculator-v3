@@ -9,6 +9,7 @@ import { withTimeout } from '../lib/supabase.js';
 import { track } from '../lib/analytics.js';
 import { Input } from '../components/ui/input.jsx';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
+import { useAnimatedDisclosure } from '../lib/useAnimatedDisclosure.js';
 
 const SORTS = [
   ['leet', 'LEET 비중 높은 순'],
@@ -112,6 +113,7 @@ function ImportLogRow({ onApply }) {
 export default function SchoolsTab() {
   const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite, handoff } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
+  const schoolFilter = useAnimatedDisclosure();
 
   const gpaMissing = schState.gpaPct === null && schState.gpaScore === null;
   const engMissing = schState.engScore === null;
@@ -310,36 +312,41 @@ export default function SchoolsTab() {
         </div>
       </section>
 
-      <details className="school-filter-card">
-        <summary>
+      <details className={'school-filter-card' + (schoolFilter.closing ? ' closing' : '')} open={schoolFilter.open}>
+        <summary onClick={schoolFilter.onSummaryClick}>
           <span className="sf-label">학교 선택</span>
           <span className="sf-count">{countText}</span>
         </summary>
+        <div className="sf-panel"><div className="sf-panel-inner">
         <div className="sf-body">
           <div className="sf-quick-actions">
-            <button onClick={() => quickSelect('all')}>전체 선택</button>
-            <button onClick={() => quickSelect('favorites')}>즐겨찾기만</button>
-            <button onClick={() => quickSelect('seoul')}>서울권만</button>
-            <button onClick={() => quickSelect('metro')}>서울/경기·인천</button>
-            <button onClick={() => quickSelect('clear')}>선택 해제</button>
+            <button style={{ '--i': 0 }} onClick={() => quickSelect('all')}>전체 선택</button>
+            <button style={{ '--i': 1 }} onClick={() => quickSelect('favorites')}>즐겨찾기만</button>
+            <button style={{ '--i': 2 }} onClick={() => quickSelect('seoul')}>서울권만</button>
+            <button style={{ '--i': 3 }} onClick={() => quickSelect('metro')}>서울/경기·인천</button>
+            <button style={{ '--i': 4 }} onClick={() => quickSelect('clear')}>선택 해제</button>
           </div>
           <div className="sf-chips">
-            {Object.entries(groups).map(([gName, gSchools]) => gSchools.length === 0 ? null : (
-              <div key={gName} className="sch-chip-group" data-region={gName}>
-                <div className="sch-chip-glabel">{gName}</div>
-                <div className="sch-chip-row">
-                  {gSchools.map((s) => (
-                    <div key={s.name} className={'sch-chip' + (selSetForChips.has(s.name) ? ' active' : '')} role="button" tabIndex={0}
-                      onClick={() => toggleChip(s.name)}
-                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleChip(s.name); } }}>
-                      {s.name}
-                    </div>
-                  ))}
+            {(() => {
+              let stagger = 5;
+              return Object.entries(groups).map(([gName, gSchools]) => gSchools.length === 0 ? null : (
+                <div key={gName} className="sch-chip-group" data-region={gName}>
+                  <div className="sch-chip-glabel" style={{ '--i': stagger++ }}>{gName}</div>
+                  <div className="sch-chip-row">
+                    {gSchools.map((s) => (
+                      <div key={s.name} style={{ '--i': stagger++ }} className={'sch-chip' + (selSetForChips.has(s.name) ? ' active' : '')} role="button" tabIndex={0}
+                        onClick={() => toggleChip(s.name)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleChip(s.name); } }}>
+                        {s.name}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ));
+            })()}
           </div>
         </div>
+        </div></div>
       </details>
 
       <div className="school-search-bar tw:!flex tw:!items-center tw:!gap-2 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!py-2 tw:!shadow-sm">

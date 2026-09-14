@@ -11,6 +11,8 @@ import { LATEST_YEAR } from '../../data/site.js';
 const TrendChart = lazy(() => import('../components/TrendChart.jsx'));
 
 const STORAGE_KEY = 'leet_calculator_state_v1';
+// styles.css의 hpYearsCollapse(40ms 지연 + 220ms)가 끝난 뒤 팝오버를 언마운트한다.
+const PICKER_CLOSE_MS = 260;
 
 function loadState() {
   try {
@@ -71,8 +73,26 @@ export default function CalcTab() {
   );
   const [detailYear, setDetailYear] = useState(LATEST_YEAR);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [pickerClosing, setPickerClosing] = useState(false);
   const pickerRef = useRef(null);
   const pickerTriggerRef = useRef(null);
+  const closeTimerRef = useRef(0);
+
+  const openPicker = () => {
+    clearTimeout(closeTimerRef.current);
+    setPickerClosing(false);
+    setPickerOpen(true);
+  };
+  const closePicker = (restoreFocus = false) => {
+    if (!pickerOpen || pickerClosing) return;
+    setPickerClosing(true);
+    closeTimerRef.current = setTimeout(() => {
+      setPickerOpen(false);
+      setPickerClosing(false);
+      if (restoreFocus) pickerTriggerRef.current?.focus();
+    }, PICKER_CLOSE_MS);
+  };
+  useEffect(() => () => clearTimeout(closeTimerRef.current), []);
 
   const heroYear = selectedYears.size ? Math.max(...selectedYears) : LATEST_YEAR;
   const heroData = LEET[heroYear];
@@ -95,18 +115,14 @@ export default function CalcTab() {
 
   // 연도 팝오버: 바깥 클릭/Esc로 닫기
   useEffect(() => {
-    if (!pickerOpen) return;
-    const onDoc = (e) => { if (pickerRef.current && !pickerRef.current.contains(e.target)) setPickerOpen(false); };
-    const onKey = (e) => {
-      if (e.key === 'Escape') {
-        setPickerOpen(false);
-        requestAnimationFrame(() => pickerTriggerRef.current?.focus());
-      }
-    };
+    if (!pickerOpen || pickerClosing) return;
+    const onDoc = (e) => { if (pickerRef.current && !pickerRef.current.contains(e.target)) closePicker(); };
+    const onKey = (e) => { if (e.key === 'Escape') closePicker(true); };
     document.addEventListener('click', onDoc);
     document.addEventListener('keydown', onKey);
     return () => { document.removeEventListener('click', onDoc); document.removeEventListener('keydown', onKey); };
-  }, [pickerOpen]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickerOpen, pickerClosing]);
 
   const results = useMemo(
     () => [...selectedYears].sort((a, b) => a - b).map((y) => calcForYear(y, eonRaw, chuRaw)).filter(Boolean),
@@ -172,26 +188,26 @@ export default function CalcTab() {
         <div className="hp-input">
           <div className="hp-input-header"><strong>원점수 입력</strong><span className="save-tag">· 자동 저장</span></div>
           <div className="hp-years" id="hpYearsPicker" ref={pickerRef}>
-            <button ref={pickerTriggerRef} type="button" className={'hp-years-trigger' + (pickerOpen ? ' open' : '')} aria-expanded={pickerOpen} aria-controls="hpYearsPopover"
-              onClick={(e) => { e.stopPropagation(); setPickerOpen((o) => !o); }}>
+            <button ref={pickerTriggerRef} type="button" className={'hp-years-trigger' + (pickerOpen && !pickerClosing ? ' open' : '')} aria-expanded={pickerOpen && !pickerClosing} aria-controls="hpYearsPopover"
+              onClick={(e) => { e.stopPropagation(); if (pickerOpen && !pickerClosing) closePicker(); else openPicker(); }}>
               <span className="hp-years-label">비교할 학년도</span>
               <span className="hp-years-current">{yearsSummary(selectedYears)}</span>
               <svg className="hp-years-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
             </button>
-            {pickerOpen && <div className="hp-years-popover open" id="hpYearsPopover" onClick={(e) => e.stopPropagation()}>
+            {pickerOpen && <div className={'hp-years-popover open' + (pickerClosing ? ' closing' : '')} id="hpYearsPopover" onClick={(e) => e.stopPropagation()}>
               <div className="hp-years-inner">
                 <div className="hp-years-body">
                   <div className="year-chips">
-                    {chips.map((c) => c.type === 'label'
-                      ? <div key={c.key} className="year-era-label">{c.text}</div>
-                      : <button key={c.key} type="button" className={'y-chip' + (c.isOld ? ' era-old' : '') + (selectedYears.has(c.y) ? ' active' : '')} aria-pressed={selectedYears.has(c.y)} onClick={() => toggleYear(c.y)}>{c.y}</button>
+                    {chips.map((c, i) => c.type === 'label'
+                      ? <div key={c.key} className="year-era-label" style={{ '--i': i }}>{c.text}</div>
+                      : <button key={c.key} type="button" style={{ '--i': i }} className={'y-chip' + (c.isOld ? ' era-old' : '') + (selectedYears.has(c.y) ? ' active' : '')} aria-pressed={selectedYears.has(c.y)} onClick={() => toggleYear(c.y)}>{c.y}</button>
                     )}
                   </div>
                   <div className="hp-quick-actions">
-                    <button type="button" onClick={() => quick('all')}>전체 선택</button>
-                    <button type="button" onClick={() => quick('new')}>신리트만 (2020~)</button>
-                    <button type="button" onClick={() => quick('recent')}>최근 5개년</button>
-                    <button type="button" onClick={() => quick('clear')}>선택 해제</button>
+                    <button type="button" style={{ '--i': chips.length }} onClick={() => quick('all')}>전체 선택</button>
+                    <button type="button" style={{ '--i': chips.length + 1 }} onClick={() => quick('new')}>신리트만 (2020~)</button>
+                    <button type="button" style={{ '--i': chips.length + 2 }} onClick={() => quick('recent')}>최근 5개년</button>
+                    <button type="button" style={{ '--i': chips.length + 3 }} onClick={() => quick('clear')}>선택 해제</button>
                   </div>
                 </div>
               </div>

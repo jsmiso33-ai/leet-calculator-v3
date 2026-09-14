@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAnimatedDisclosure } from './lib/useAnimatedDisclosure.js';
 
 const gradeLabels = {
   all: '전체',
@@ -133,12 +134,15 @@ function DecisionToolbar({ model, actions }) {
 }
 
 function SchoolFilter({ model, actions }) {
+  const disclosure = useAnimatedDisclosure();
+  let stagger = 5;
   return (
-    <details className="school-filter-card">
-      <summary>
+    <details className={cx('school-filter-card', disclosure.closing && 'closing')} open={disclosure.open}>
+      <summary onClick={disclosure.onSummaryClick}>
         <span className="sf-label">학교 선택</span>
         <span className="sf-count">{model.filterCountText}</span>
       </summary>
+      <div className="sf-panel"><div className="sf-panel-inner">
       <div className="sf-body">
         <div className="sf-quick-actions">
           {[
@@ -147,18 +151,19 @@ function SchoolFilter({ model, actions }) {
             ['seoul', '서울권만'],
             ['metro', '서울/경기·인천'],
             ['clear', '선택 해제'],
-          ].map(([key, label]) => (
-            <button key={key} type="button" onClick={() => actions.setSchoolQuickAction(key)}>{label}</button>
+          ].map(([key, label], i) => (
+            <button key={key} type="button" style={{ '--i': i }} onClick={() => actions.setSchoolQuickAction(key)}>{label}</button>
           ))}
         </div>
         <div className="sf-chips">
           {model.filterGroups.map((group) => (
             <div key={group.name} className="sch-chip-group" data-region={group.name}>
-              <div className="sch-chip-glabel">{group.name}</div>
+              <div className="sch-chip-glabel" style={{ '--i': stagger++ }}>{group.name}</div>
               <div className="sch-chip-row">
                 {group.schools.map((school) => (
                   <div
                     key={school.name}
+                    style={{ '--i': stagger++ }}
                     className={cx('sch-chip', school.selected && 'active')}
                     role="button"
                     tabIndex={0}
@@ -178,6 +183,7 @@ function SchoolFilter({ model, actions }) {
           ))}
         </div>
       </div>
+      </div></div>
     </details>
   );
 }
