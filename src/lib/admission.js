@@ -1,4 +1,5 @@
 import { ADMISSION_2026, LAW_SCHOOLS } from '../../data/schools.js';
+import { gradeFromCutoffs } from './admGrade.js';
 
 // app.js 입시결과(admission) 로직 이식 — 전역 상태를 파라미터(ui)로 받도록 재구성
 
@@ -41,13 +42,8 @@ function classifyAdm(school, ad, leetSum, calc) {
     if (leetSum === null) return null;
     myLeet = leetSum;
   }
-  const leet50 = ad.leet.val;
   const leet75 = (ad.leet75 && ad.leet75.val !== null) ? ad.leet75.val : null;
-  if (leet75 !== null && myLeet >= leet75) return 'safe';
-  if (myLeet >= leet50) return 'match';
-  const step = (leet75 !== null) ? (leet75 - leet50) : 3;
-  if (myLeet >= leet50 - step) return 'reach';
-  return 'hard';
+  return gradeFromCutoffs(myLeet, ad.leet.val, leet75);
 }
 
 function getMyCompareValue(row, leetSum, calc) {
@@ -157,7 +153,7 @@ function getPlainRow(row, leetSum, gpaPct, calc) {
       { label: leetLabel, value: stripHtml(row.leet50Text) },
       { label: '학점 50%', value: stripHtml(row.gpa50Text) },
       { label: '내 학점', value: myGpaLabel },
-      { label: '합격 가능성', value: `${getAdmGradeLabel(row.grade)} · ${row.leetDiffDisplay || '-'}`, tone: diffTone },
+      { label: '지원권 · 50%선 대비', value: `${getAdmGradeLabel(row.grade)} · ${row.leetDiffDisplay || '-'}`, tone: diffTone },
     ],
     tone: row.grade || 'pending',
   };
@@ -222,10 +218,10 @@ export function buildModel({ leetSum, gpaPct, calc, isFav, sortKey, gradeFilter,
     recCopy = '학교별 환산점수 탭에서 LEET와 학점 정보를 입력하면 지원권이 자동 분류됩니다.';
   } else if (bestSafeName) {
     recTitle = `${bestSafeName}까지 안정권`;
-    recCopy = `안정권 ${gradeCounts.safe}곳, 적정권 ${gradeCounts.match}곳이 잡힙니다. 즐겨찾기로 관심 학교를 좁혀보세요.`;
+    recCopy = `2026학년도 합격자 LEET 50%선 이상 ${gradeCounts.safe}곳(안정), 75%선 이상 ${gradeCounts.match}곳(적정)입니다. 학점·정성평가는 빠진 LEET 기준이니 즐겨찾기로 관심 학교를 좁혀보세요.`;
   } else if (bestMatchName) {
     recTitle = `${bestMatchName}가 가장 가까운 적정권`;
-    recCopy = `안정권은 없지만 적정권 ${gradeCounts.match}곳이 있습니다. 75%선과의 차이를 같이 확인하세요.`;
+    recCopy = `LEET 50%선을 넘는 학교는 없지만 75%선 이상인 적정권이 ${gradeCounts.match}곳 있습니다. 50%선과의 차이를 같이 확인하세요.`;
   } else {
     recTitle = '현재는 도전권 이하 중심';
     recCopy = 'LEET 50%선 대비 차이가 큰 학교부터 확인하고 지원 조합을 보수적으로 잡는 편이 좋습니다.';
