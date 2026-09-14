@@ -385,7 +385,7 @@ function ConvTables({ detail, detailYear, eonRaw, chuRaw }) {
     const keys = Object.keys(table).map(Number).sort((a, b) => b - a);
     return (
       <div className="conv-table" key={subject}>
-        <div className="ct-head">{subName} <span style={{ fontWeight: 400, color: 'var(--ink-mute)', fontSize: '11px' }}>{items}문항</span></div>
+        <div className="ct-head">{subName} <span style={{ fontWeight: 400, color: 'var(--ink-mute)', fontSize: '12px' }}>{items}문항</span></div>
         <table className="conv">
           <thead><tr><th>원점수</th><th>표점</th><th>백분위</th></tr></thead>
           <tbody>

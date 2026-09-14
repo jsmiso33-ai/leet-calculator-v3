@@ -404,7 +404,7 @@ function SchoolCard({ s, c, isFavorite, onToggleFavorite }) {
         <div className="sc-leet-pct tw:!mt-1 tw:!text-xs tw:!font-bold tw:!text-slate-500">LEET 실질반영 <span className="num tw:!font-mono tw:!font-extrabold tw:!text-slate-700">{s.leetRatio.toFixed(1)}%</span></div>
       </div>
       <div className="sc-total-row tw:!mb-4 tw:!flex tw:!items-end tw:!justify-between tw:!gap-3 tw:!rounded-xl tw:!bg-slate-50 tw:!p-3">
-        <div><span className="sc-total-label tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">정량 환산점수</span></div>
+        <div><span className="sc-total-label tw:!text-xs tw:!font-extrabold tw:!text-slate-500">정량 환산점수</span></div>
         {c.total !== null
           ? <span className="sc-total-val tw:!font-mono tw:!text-2xl tw:!font-extrabold tw:!text-blue-600">{c.total.toFixed(1)}<span className="denom tw:!text-sm tw:!font-bold tw:!text-slate-500">/{c.totalDenom}</span></span>
           : <span className="sc-total-val empty tw:!text-sm tw:!font-bold tw:!text-slate-500">{missingParts.length ? `${missingParts.join('·')} 입력 필요` : '— 점수 입력 필요'}</span>}

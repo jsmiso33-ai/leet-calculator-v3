@@ -61,7 +61,7 @@
 
     /* 폰트 */
     --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Helvetica Neue', sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --font-mono: 'JetBrains Mono', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', ui-monospace, 'SF Mono', Menlo, monospace; /* 한글 글리프는 Pretendard로 폴백 */
     --font-serif: 'Noto Serif KR', 'Nanum Myeongjo', 'Apple SD Gothic Neo', serif; /* 시험지(명조) — 오늘의 지문 */
     --font-display: 'Noto Serif KR', Georgia, 'Apple SD Gothic Neo', serif; /* 헤딩용 세리프 */
 
@@ -7642,6 +7642,68 @@
   .masthead .meta.is-guest .auth-sync-copy strong { font-size: 11px; }
   .masthead .meta.is-guest .auth-sync-card .auth-actions { grid-column: 2; width: auto; }
 }
+
+  /* ===== TYPE FLOOR =====
+     한글 라벨·본문은 최소 12px, 알약형 배지만 11px. 한글에는 자간 확대·대문자 변환·이탤릭을 쓰지 않는다.
+     (JetBrains Mono에는 한글이 없어 고정폭 폴백으로 "학 년 도"처럼 벌어지던 문제는 --font-mono 스택에서 해결)
+     여러 번의 모바일 패스가 같은 선택자를 더 작게 덮어써 왔으므로, 이 블록이 파일 끝쪽에서 최종 값을 정한다. */
+  table.score-table th,
+  table.adm-table th,
+  .field label,
+  .field label .max,
+  .hp-years-label,
+  .sch-chip-glabel,
+  .sc-total-label,
+  .sc-row .sc-area,
+  .sc-leet-pct,
+  .schools-controls .ctrl-label,
+  .login-nudge-kicker,
+  .sf-count,
+  .adm-summary-item .as-label,
+  .adm-summary-item .as-sub,
+  .adm-school-sub,
+  .exam-qtype,
+  .header-timer-controls label,
+  .header-timer-controls select,
+  .header-timer-controls input,
+  .header-timer-controls button,
+  .exam-timer-controls label,
+  .exam-timer-ring > span,
+  .timer-dock-label,
+  table.conv th,
+  .header-timer-copy span,
+  .auth-sync-copy span,
+  .sf-quick-actions button {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  /* 숫자 없이 한글이 주인 값(예: "학점·영어 입력 필요")도 모노의 고정폭 공백을 쓰지 않는다 */
+  .sc-total-val.empty { font-family: var(--font-sans); }
+  table.adm-table tr.adm-separator-row td,
+  .exam-meta { letter-spacing: 0; }
+  .adm-school-sub { font-family: var(--font-sans); font-variant-numeric: tabular-nums; }
+  .adm-region-badge,
+  .sc-eng-pf { font-size: 11px; letter-spacing: 0; }
+  .empty-state,
+  .log-entry .e-memo { font-style: normal; }
+
+  /* 계산기 → 학교별 환산점수로 넘어왔을 때의 안내 */
+  .handoff-note {
+    display: grid;
+    gap: 2px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid rgb(var(--accent-rgb) / 0.16);
+    border-radius: var(--radius-md);
+    background: var(--bg-tint);
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.55;
+    scroll-margin-top: 16px;
+  }
+  .handoff-note strong { color: var(--accent-hover); font-size: 13px; font-weight: 700; }
 
   /* ===== REDUCED MOTION =====
      모션 감소 설정 사용자: 공간 이동(슬라이드·확대·리프트·스윕)과 반복 루프는 없애고,

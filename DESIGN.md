@@ -33,9 +33,9 @@ typography:
     fontFamily: "'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif"
     fontSize: "12px"
     fontWeight: 700
-    letterSpacing: "0.04em"
+    letterSpacing: "0"
   mono:
-    fontFamily: "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace"
+    fontFamily: "'JetBrains Mono', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', ui-monospace, 'SF Mono', Menlo, monospace"
     fontSize: "28px"
     fontWeight: 700
     lineHeight: 1
@@ -139,7 +139,7 @@ components:
 
 **Display Font:** 'Noto Serif KR' (with Georgia, 'Apple SD Gothic Neo' fallback)
 **Body Font:** 'Pretendard' (with -apple-system, 'Apple SD Gothic Neo', Helvetica Neue, sans-serif fallback)
-**Label/Mono Font:** 'JetBrains Mono' (with ui-monospace, SF Mono, Menlo fallback)
+**Label/Mono Font:** 'JetBrains Mono' (한글 글리프는 스택의 Pretendard로 폴백, 이후 ui-monospace, SF Mono, Menlo)
 
 **Character:** 세리프 헤딩이 진지함과 권위를, 산세리프 본문이 실무 도구다운 가독성을, 모노스페이스가 숫자 데이터의 정밀함을 나눠 맡는 3역할 조합.
 
@@ -148,11 +148,13 @@ components:
 ### Hierarchy
 - **Display** (600, 24px, line-height 1.15): 마스트헤드 `h1` 등 페이지 최상단 타이틀 전용. Noto Serif KR.
 - **Body** (500, 14px, line-height 1.5): 기본 본문. Pretendard 스택.
-- **Label** (700, 12~13px, letter-spacing 0.04~0.06em, 종종 대문자): 탭 배지, 통계 라벨, 킥커 텍스트 등 메타 정보.
+- **Label** (700, 12~13px, 한글은 letter-spacing 0·대문자 변환 없음): 입력 라벨, 표 머리글, 통계 라벨 등 메타 정보. 알약형 배지(지역·등급·P/F)만 11px.
 - **숫자 표시 (mono)** (700, 필드에 따라 13~92px까지 가변, tabular-nums): 표준점수·타이머·통계 수치 전용. 아래 Named Rule 참고.
 
 ### Named Rules
 **The Score Display Rule.** 표준점수, 타이머, 통계처럼 사용자가 신뢰해야 할 핵심 수치는 항상 JetBrains Mono + `font-variant-numeric: tabular-nums`로 렌더링한다. 자릿수가 바뀌어도 폭이 흔들리지 않아야 계기판처럼 신뢰가 간다.
+
+**The Hangul Floor Rule.** 한글 라벨·본문은 최소 12px, 알약형 배지만 11px로 둔다. 한글에는 자간 확대, 대문자 변환, 이탤릭을 쓰지 않는다 — Hangul에는 효과가 없거나(대문자) 가짜 기울임이 되고(이탤릭), 좁은 크기에서 글자가 흩어진다. 모노 폰트 요소에 한글이 섞여도 `--font-mono` 스택이 한글만 Pretendard로 그린다. 최종 값은 `styles.css`의 TYPE FLOOR 블록이 정한다.
 
 ## Layout
 
@@ -239,4 +241,5 @@ components:
 - **Don't** 새 코드에서 `--blue`·`--gold` 레거시 별칭을 쓰지 않는다(각각 `--ink`·`--teal`의 별칭일 뿐이다).
 - **Don't** 카드·목록·안내 박스에 3px 이상 좌우 컬러 스트라이프를 두지 않는다(The No-Stripe Rule).
 - **Don't** 토큰과 같은 색을 hex·rgba 리터럴로 다시 적지 않는다(The Single Source Rule).
+- **Don't** 한글에 11px 이하 크기(배지 제외), 자간 확대, 대문자 변환, 이탤릭을 쓰지 않는다(The Hangul Floor Rule).
 - **Don't** 새 폰트 패밀리를 추가하지 않는다 — 이미 산세리프(Pretendard) · 세리프(Noto Serif KR) · 모노(JetBrains Mono) 3역할이 모두 채워져 있고, 한국어 웹폰트는 한 벌 추가할 때마다 로딩 비용이 크다.

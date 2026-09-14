@@ -213,7 +213,7 @@ export default function LogTab() {
                 </div>
                 <div className="e-scores tw:!text-right">
                   <div className="e-total tw:!font-mono tw:!text-lg tw:!font-extrabold tw:!text-slate-950">{e.total !== null ? e.total.toFixed(1) : '—'}</div>
-                  <div className="e-sub tw:!text-[11px] tw:!font-bold tw:!text-slate-500">표점 합계</div>
+                  <div className="e-sub tw:!text-xs tw:!font-bold tw:!text-slate-500">표점 합계</div>
                 </div>
                 <button className="e-delete tw:!inline-flex tw:!h-8 tw:!w-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!text-base tw:!font-bold tw:!text-slate-500 tw:transition-colors tw:hover:!border-red-300 tw:hover:!text-red-600 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" onClick={() => deleteEntry(e.id)} title="삭제">×</button>
               </div>

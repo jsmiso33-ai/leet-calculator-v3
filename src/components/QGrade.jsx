@@ -212,7 +212,7 @@ function QStats({ year, session }) {
     cats.sort((a, b) => b.weaknessScore - a.weaknessScore);
     return (
       <div key={sec}>
-        <div className="qstats-block-title">{LEET_TAXONOMY[sec].name} 유형별 <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
+        <div className="qstats-block-title">{LEET_TAXONOMY[sec].name} 유형별 <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
         {cats.map((c) => {
           const actualPct = c.actualRate * 100;
           const expectedPct = c.expectedRate !== null ? c.expectedRate * 100 : null;
@@ -267,7 +267,7 @@ function QStats({ year, session }) {
                       <div className="weakness-name">{sectionName} · {c.name}</div>
                       <div className="weakness-detail">{detailText}</div>
                     </div>
-                    <div style={{ fontSize: '10px', color: 'var(--ink-on-dark-mute)', textAlign: 'right', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
+                    <div style={{ fontSize: '12px', color: 'var(--ink-on-dark-mute)', textAlign: 'right', letterSpacing: '0.04em', textTransform: 'uppercase', fontWeight: 600 }}>
                       약점 점수<br />
                       <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--accent-on-dark)', fontSize: '18px', letterSpacing: '-0.02em' }}>{(c.weaknessScore * 100).toFixed(0)}</span>
                     </div>
@@ -279,14 +279,14 @@ function QStats({ year, session }) {
         )}
         {sectionBlock.length > 0 && (
           <div>
-            <div className="qstats-block-title">영역별 종합 <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
+            <div className="qstats-block-title">영역별 종합 <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
             {sectionBlock}
           </div>
         )}
         {catBlocks}
         {diffRows.length > 0 && (
           <div>
-            <div className="qstats-block-title">난이도별 <span style={{ fontSize: '10px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
+            <div className="qstats-block-title">난이도별 <span style={{ fontSize: '12px', fontWeight: 400, color: 'var(--ink-muted,#6b6256)' }}>· 점선=예상 정답률</span></div>
             {diffRows}
           </div>
         )}

@@ -21,7 +21,7 @@ export default function UpdateBanner({ onGo }) {
     <div className="notice-banner notice-banner--update tw:!mb-4 tw:!flex tw:!items-center tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-emerald-200 tw:!bg-gradient-to-r tw:!from-emerald-50 tw:!to-teal-50 tw:!px-4 tw:!py-3 tw:!shadow-sm">
       <GraduationCap className="notice-banner__icon" size={20} strokeWidth={2} aria-hidden="true" />
       <div className="notice-banner__content tw:!min-w-0 tw:!flex-1">
-        <div className="notice-banner__eyebrow tw:!text-[11px] tw:!font-extrabold tw:!tracking-wide tw:!text-emerald-700">UPDATE · 2027학년도 모집요강 반영</div>
+        <div className="notice-banner__eyebrow tw:!text-xs tw:!font-extrabold tw:!text-emerald-700">UPDATE · 2027학년도 모집요강 반영</div>
         <div className="notice-banner__message tw:!truncate tw:!text-sm tw:!font-bold tw:!text-slate-900">
           25개 로스쿨 반영비율·환산식이 2027학년도 기준으로 업데이트됐습니다
         </div>

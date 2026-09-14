@@ -50,7 +50,7 @@ export default function DailyPromo({ onGo }) {
     <div className="notice-banner notice-banner--daily tw:!mb-4 tw:!flex tw:!items-center tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-blue-200 tw:!bg-gradient-to-r tw:!from-blue-50 tw:!to-indigo-50 tw:!px-4 tw:!py-3 tw:!shadow-sm">
       <BookOpenText className="notice-banner__icon" size={20} strokeWidth={2} aria-hidden="true" />
       <div className="notice-banner__content tw:!min-w-0 tw:!flex-1">
-        <div className="notice-banner__eyebrow tw:!text-[11px] tw:!font-extrabold tw:!tracking-wide tw:!text-blue-700">NEW · 오늘의 지문</div>
+        <div className="notice-banner__eyebrow tw:!text-xs tw:!font-extrabold tw:!text-blue-700">NEW · 오늘의 지문</div>
         <div className="notice-banner__message tw:!truncate tw:!text-sm tw:!font-bold tw:!text-slate-900">
           {fmtShort(row.publish_date)} — {row.passage_title}
         </div>
