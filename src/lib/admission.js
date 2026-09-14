@@ -181,7 +181,15 @@ function filterCountText(selectedSchools) {
 function getCompareRows(allRows, shortlistRows, compareSchools) {
   const byName = new Map(allRows.map((row) => [row.name, row]));
   let rows = compareSchools.map((name) => byName.get(name)).filter(Boolean);
-  if (rows.length === 0) rows = shortlistRows.slice(0, ADM_COMPARE_LIMIT);
+  if (rows.length === 0) {
+    // 아무것도 직접 고르지 않았으면, 정렬 순서(기본은 컷 높은 순)가 아니라
+    // 사용자 점수와 50%선 차이가 가장 작은(=지금 판단이 갈리는) 학교부터 보여준다.
+    // 그래야 "추천 상위 3개"가 실제로 가장 어려운 학교 3곳이 아니라 경계선 학교가 된다.
+    const withDiff = shortlistRows.filter((r) => r.leetDiffVal !== null && r.leetDiffVal !== undefined);
+    rows = withDiff.length
+      ? [...withDiff].sort((a, b) => Math.abs(a.leetDiffVal) - Math.abs(b.leetDiffVal)).slice(0, ADM_COMPARE_LIMIT)
+      : shortlistRows.slice(0, ADM_COMPARE_LIMIT);
+  }
   return rows.slice(0, ADM_COMPARE_LIMIT);
 }
 
