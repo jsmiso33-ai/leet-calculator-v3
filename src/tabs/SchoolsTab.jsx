@@ -110,8 +110,31 @@ function ImportLogRow({ onApply }) {
 }
 
 export default function SchoolsTab() {
-  const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite } = useSchoolInput();
+  const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite, handoff } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
+
+  const gpaMissing = schState.gpaPct === null && schState.gpaScore === null;
+  const engMissing = schState.engScore === null;
+
+  // 계산기에서 넘어왔으면 아직 비어 있는 다음 입력칸으로 바로 안내한다.
+  const handledHandoffRef = useRef(null);
+  useEffect(() => {
+    if (!handoff || handledHandoffRef.current === handoff.at) return undefined;
+    handledHandoffRef.current = handoff.at;
+    const frame = requestAnimationFrame(() => {
+      const nextId = gpaMissing ? 'sch-gpa-pct' : (engMissing ? 'sch-eng-score' : null);
+      const el = nextId ? document.getElementById(nextId) : null;
+      if (!el) return;
+      const behavior = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      const note = document.querySelector('#tab-schools .handoff-note');
+      // 안내 문구를 화면 위쪽에 두면 바로 아래의 입력칸도 함께 보인다(모바일 포함)
+      if (note) note.scrollIntoView({ block: 'start', behavior });
+      else el.scrollIntoView({ block: 'center', behavior });
+      el.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [handoff]);
 
   const applyLogResult = (result) => {
     const p = {};
@@ -187,39 +210,51 @@ export default function SchoolsTab() {
         <div className="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">정량 점수 입력</div>
         <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
 
+        {handoff && (
+          <div className="handoff-note" role="status">
+            <strong>계산기 점수를 가져왔어요</strong>
+            <span>
+              {handoff.year}학년도 언어이해 {handoff.eonStd.toFixed(1)} · 추리논증 {handoff.chuStd.toFixed(1)} (백분위 포함).{' '}
+              {gpaMissing
+                ? '학점을 입력하면 25개교 정량 환산점수가 완성됩니다.'
+                : (engMissing ? '영어 점수를 반영하는 학교는 영어 점수를 입력하면 완성됩니다.' : '아래 학교 카드에서 환산점수를 확인하세요.')}
+            </span>
+          </div>
+        )}
+
         <ImportLogRow onApply={applyLogResult} />
 
         <div className="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
           <div className="field">
-            <label>LEET 언어이해 표준점수</label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" value={schState.eonStd ?? ''} onChange={numChange('eonStd')} />
+            <label htmlFor="sch-eon-std">LEET 언어이해 표준점수</label>
+            <Input id="sch-eon-std" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" value={schState.eonStd ?? ''} onChange={numChange('eonStd')} />
           </div>
           <div className="field">
-            <label>LEET 추리논증 표준점수</label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" value={schState.chuStd ?? ''} onChange={numChange('chuStd')} />
-          </div>
-        </div>
-
-        <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
-          <div className="field">
-            <label>LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" value={schState.eonPct ?? ''} onChange={numChange('eonPct')} />
-          </div>
-          <div className="field">
-            <label>LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" value={schState.chuPct ?? ''} onChange={numChange('chuPct')} />
+            <label htmlFor="sch-chu-std">LEET 추리논증 표준점수</label>
+            <Input id="sch-chu-std" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" value={schState.chuStd ?? ''} onChange={numChange('chuStd')} />
           </div>
         </div>
 
         <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
           <div className="field">
-            <label>GPA 백분위 <span className="max">(0–100)</span></label>
-            <Input type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" value={schState.gpaPct ?? ''} onChange={numChange('gpaPct')} />
+            <label htmlFor="sch-eon-pct">LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
+            <Input id="sch-eon-pct" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" value={schState.eonPct ?? ''} onChange={numChange('eonPct')} />
           </div>
           <div className="field">
-            <label>GPA <span className="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
+            <label htmlFor="sch-chu-pct">LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
+            <Input id="sch-chu-pct" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" value={schState.chuPct ?? ''} onChange={numChange('chuPct')} />
+          </div>
+        </div>
+
+        <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
+          <div className="field">
+            <label htmlFor="sch-gpa-pct">GPA 백분위 <span className="max">(0–100)</span></label>
+            <Input id="sch-gpa-pct" type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" value={schState.gpaPct ?? ''} onChange={numChange('gpaPct')} />
+          </div>
+          <div className="field">
+            <label htmlFor="sch-gpa-score">GPA <span className="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
             <div style={{ display: 'flex', gap: '6px' }}>
-              <Input type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} value={schState.gpaScore ?? ''} onChange={numChange('gpaScore')} />
+              <Input id="sch-gpa-score" type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} value={schState.gpaScore ?? ''} onChange={numChange('gpaScore')} />
               <Select value={schState.gpaScale} onValueChange={(v) => patch({ gpaScale: v })}>
                 <SelectTrigger className="w-[104px] shrink-0" aria-label="GPA 만점 기준">
                   <SelectValue />
@@ -249,8 +284,8 @@ export default function SchoolsTab() {
             </Select>
           </div>
           <div className="field">
-            <label>영어 점수</label>
-            <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" value={schState.engScore ?? ''} onChange={numChange('engScore')} />
+            <label htmlFor="sch-eng-score">영어 점수</label>
+            <Input id="sch-eng-score" type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" value={schState.engScore ?? ''} onChange={numChange('engScore')} />
           </div>
         </div>
 
@@ -345,6 +380,11 @@ function ValWithDenom({ value, denom }) {
 }
 
 function SchoolCard({ s, c, isFavorite, onToggleFavorite }) {
+  // 총점이 비어 있으면 무엇이 빠졌는지 알려준다 ("점수 입력 필요"만 반복하지 않도록)
+  const missingParts = [];
+  if (c.leet === null) missingParts.push('LEET');
+  if (c.gpa === null) missingParts.push('학점');
+  if (s.engType === 'score' && c.eng === null) missingParts.push('영어');
   const tier = s.leetRatio >= 50 ? '' : (s.leetRatio >= 40 ? 'tier-mid' : 'tier-low');
   const favoriteLabel = isFavorite ? '즐겨찾기 해제' : '즐겨찾기 추가';
   const leetBarPct = c.leet !== null ? (c.leet / c.leetDenom * 100) : 0;
@@ -367,7 +407,7 @@ function SchoolCard({ s, c, isFavorite, onToggleFavorite }) {
         <div><span className="sc-total-label tw:!text-[11px] tw:!font-extrabold tw:!text-slate-500">정량 환산점수</span></div>
         {c.total !== null
           ? <span className="sc-total-val tw:!font-mono tw:!text-2xl tw:!font-extrabold tw:!text-blue-600">{c.total.toFixed(1)}<span className="denom tw:!text-sm tw:!font-bold tw:!text-slate-500">/{c.totalDenom}</span></span>
-          : <span className="sc-total-val empty tw:!text-sm tw:!font-bold tw:!text-slate-400">— 점수 입력 필요</span>}
+          : <span className="sc-total-val empty tw:!text-sm tw:!font-bold tw:!text-slate-500">{missingParts.length ? `${missingParts.join('·')} 입력 필요` : '— 점수 입력 필요'}</span>}
       </div>
       <div className="sc-rows tw:!grid tw:!gap-3">
         <ScoreRow area="LEET" fillClass="" barPct={leetBarPct} valNode={<ValWithDenom value={c.leet} denom={c.leetDenom} />} />

@@ -62,7 +62,7 @@ function useCountUp(target, duration = 480) {
 
 export default function CalcTab() {
   const { setActiveTab } = useApp();
-  const { patch: patchSchoolInput } = useSchoolInput();
+  const { patch: patchSchoolInput, markHandoff } = useSchoolInput();
   const saved = useMemo(loadState, []);
   const [eonInput, setEonInput] = useState(String(saved?.eonRaw ?? ''));
   const [chuInput, setChuInput] = useState(String(saved?.chuRaw ?? ''));
@@ -131,6 +131,7 @@ export default function CalcTab() {
       eonPct: Number(eonPct.toFixed(1)),
       chuPct: Number(chuPct.toFixed(1)),
     });
+    markHandoff({ year: heroYear, eonStd, chuStd });
     track('calc_continue_to_schools', { year: heroYear });
     setActiveTab('schools');
     window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });

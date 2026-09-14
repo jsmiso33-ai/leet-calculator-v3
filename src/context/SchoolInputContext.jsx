@@ -22,6 +22,10 @@ export function SchoolInputProvider({ children }) {
 
   useEffect(() => { saveSchInput(schState); }, [schState]);
 
+  // 계산기에서 막 넘어온 경우의 일회성 안내 상태 (저장하지 않음)
+  const [handoff, setHandoff] = useState(null);
+  const markHandoff = (info) => setHandoff({ ...info, at: Date.now() });
+
   const patch = (p) => setSchState((prev) => ({ ...prev, ...p }));
 
   const favSet = useMemo(() => new Set(normalizeFavoriteSchools(schState.favoriteSchools)), [schState.favoriteSchools]);
@@ -34,6 +38,7 @@ export function SchoolInputProvider({ children }) {
 
   const value = {
     schState, patch,
+    handoff, markHandoff,
     input: toCalcInput(schState),
     favSet, getFavoriteSchoolNames, toggleFavorite,
   };
