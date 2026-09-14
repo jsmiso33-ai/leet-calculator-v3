@@ -3012,28 +3012,34 @@
     padding: 4px 22px 18px;
     border-top: 1px solid var(--line);
   }
-  /* 학교 선택 펼침/접힘 — 히어로 학년도 선택기와 같은 모션(패널 펼침 + 칩 순차 등장).
-     열림·닫힘 상태는 useAnimatedDisclosure가 제어하고, 닫힘 동안 .closing이 붙는다. */
-  .sf-panel {
+  /* <details> 펼침/접힘(학교 선택·전체 환산표) — 히어로 학년도 선택기와 같은 모션(패널 펼침 + 항목 순차 등장).
+     열림·닫힘 상태는 useAnimatedDisclosure가 제어하고, 닫힘 동안 details에 .closing이 붙는다.
+     순차 등장 항목은 --i 순번을 인라인 style로 받는다. */
+  .disclosure-panel {
     display: grid;
     grid-template-rows: 1fr;
     animation: discExpand 260ms var(--ease-out) both;
   }
-  .sf-panel-inner { overflow: hidden; min-height: 0; }
-  .sf-panel .sf-quick-actions button,
-  .sf-panel .sch-chip-glabel,
-  .sf-panel .sch-chip {
+  .disclosure-panel-inner { overflow: hidden; min-height: 0; }
+  .disclosure-panel .sf-quick-actions button,
+  .disclosure-panel .sch-chip-glabel,
+  .disclosure-panel .sch-chip,
+  .disclosure-panel .y-tab,
+  .disclosure-panel .conv-tables-wrap {
     animation: hpChipIn 240ms var(--ease-out) backwards;
     animation-delay: calc(var(--i, 0) * 16ms + 60ms);
   }
-  details.school-filter-card.closing summary::after { content: '＋'; }
-  details.school-filter-card.closing .sf-panel {
+  details.school-filter-card.closing summary::after,
+  details.detail-viewer.closing summary::after { content: '＋'; }
+  details.closing > .disclosure-panel {
     pointer-events: none;
     animation: discCollapse 220ms var(--ease-out) 40ms both;
   }
-  details.school-filter-card.closing .sf-quick-actions button,
-  details.school-filter-card.closing .sch-chip-glabel,
-  details.school-filter-card.closing .sch-chip {
+  details.closing .sf-quick-actions button,
+  details.closing .sch-chip-glabel,
+  details.closing .sch-chip,
+  details.closing .y-tab,
+  details.closing .conv-tables-wrap {
     animation: hpChipOut 140ms ease-in forwards;
     animation-delay: 0ms;
   }
@@ -7846,9 +7852,11 @@
     @keyframes discCollapse { from { opacity: 1; } to { opacity: 0; } }
     .hp-years-popover .year-chips > *,
     .hp-years-popover .hp-quick-actions > button,
-    .sf-panel .sf-quick-actions button,
-    .sf-panel .sch-chip-glabel,
-    .sf-panel .sch-chip { animation-delay: 0ms; }
+    .disclosure-panel .sf-quick-actions button,
+    .disclosure-panel .sch-chip-glabel,
+    .disclosure-panel .sch-chip,
+    .disclosure-panel .y-tab,
+    .disclosure-panel .conv-tables-wrap { animation-delay: 0ms; }
   }
 
   /* ===== TOUCH TARGETS =====

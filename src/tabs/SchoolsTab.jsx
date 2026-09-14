@@ -317,7 +317,7 @@ export default function SchoolsTab() {
           <span className="sf-label">학교 선택</span>
           <span className="sf-count">{countText}</span>
         </summary>
-        <div className="sf-panel"><div className="sf-panel-inner">
+        <div className="disclosure-panel"><div className="disclosure-panel-inner">
         <div className="sf-body">
           <div className="sf-quick-actions">
             <button style={{ '--i': 0 }} onClick={() => quickSelect('all')}>전체 선택</button>

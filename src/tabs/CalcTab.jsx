@@ -7,6 +7,7 @@ import { track } from '../lib/analytics.js';
 import HeaderTimer from '../components/HeaderTimer.jsx';
 import { validateRawInput } from '../lib/rawInput.js';
 import { LATEST_YEAR } from '../../data/site.js';
+import { useAnimatedDisclosure } from '../lib/useAnimatedDisclosure.js';
 
 const TrendChart = lazy(() => import('../components/TrendChart.jsx'));
 
@@ -72,6 +73,7 @@ export default function CalcTab() {
     () => new Set((Array.isArray(saved?.selectedYears) ? saved.selectedYears : ALL_YEARS.slice(-4)).filter((y) => LEET[y]))
   );
   const [detailYear, setDetailYear] = useState(LATEST_YEAR);
+  const detailViewer = useAnimatedDisclosure();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerClosing, setPickerClosing] = useState(false);
   const pickerRef = useRef(null);
@@ -306,16 +308,18 @@ export default function CalcTab() {
         ) : <p className="empty-state">두 영역의 원점수를 입력하면 연도별 추이를 보여드립니다.</p>}
       </section>
 
-      <details className="detail-viewer">
-        <summary>전체 환산표 (연도별 원점수–표준점수–백분위)</summary>
-        <div className="viewer-body">
-          <div className="year-tabs">
-            {ALL_YEARS.map((y) => (
-              <button key={y} className={'y-tab' + (detailYear === y ? ' active' : '')} onClick={() => setDetailYear(y)}>{y}</button>
-            ))}
+      <details className={'detail-viewer' + (detailViewer.closing ? ' closing' : '')} open={detailViewer.open}>
+        <summary onClick={detailViewer.onSummaryClick}>전체 환산표 (연도별 원점수–표준점수–백분위)</summary>
+        <div className="disclosure-panel"><div className="disclosure-panel-inner">
+          <div className="viewer-body">
+            <div className="year-tabs">
+              {ALL_YEARS.map((y, i) => (
+                <button key={y} style={{ '--i': i }} className={'y-tab' + (detailYear === y ? ' active' : '')} onClick={() => setDetailYear(y)}>{y}</button>
+              ))}
+            </div>
+            <div className="conv-tables-wrap" style={{ '--i': ALL_YEARS.length }}><ConvTables detail={detail} detailYear={detailYear} eonRaw={eonRaw} chuRaw={chuRaw} /></div>
           </div>
-          <div><ConvTables detail={detail} detailYear={detailYear} eonRaw={eonRaw} chuRaw={chuRaw} /></div>
-        </div>
+        </div></div>
       </details>
     </>
   );
