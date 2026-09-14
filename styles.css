@@ -1971,7 +1971,7 @@
     justify-content: flex-end;
   }
   .btn-primary {
-    background: var(--ink);
+    background: var(--accent);
     color: #fff;
     border: none;
     padding: 9px 18px;
@@ -1983,7 +1983,7 @@
     transition: all var(--motion-fast) var(--ease-out);
     letter-spacing: -0.01em;
   }
-  .btn-primary:hover { background: var(--ink-soft); transform: translateY(-1px); box-shadow: 0 2px 8px rgba(24,24,27,0.12); }
+  .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 2px 8px rgb(var(--accent-rgb) / 0.24); }
   .btn-primary:active { transform: translateY(0); }
   .btn-primary:disabled { background: var(--ink-tertiary); cursor: not-allowed; transform: none; box-shadow: none; }
 
