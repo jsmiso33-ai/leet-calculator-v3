@@ -34,13 +34,23 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
+    "@number-flow/react": "^0.6.2",
     "@radix-ui/react-dialog": "^1.1.16",
     "@radix-ui/react-select": "^2.3.0",
     "@supabase/supabase-js": "^2.107.0",
+    "@visx/curve": "^4.0.1-alpha.0",
+    "@visx/event": "^4.0.1-alpha.0",
+    "@visx/grid": "^4.0.1-alpha.0",
+    "@visx/responsive": "^4.0.1-alpha.0",
+    "@visx/scale": "^4.0.1-alpha.0",
+    "@visx/shape": "^4.0.1-alpha.0",
     "chart.js": "^4.5.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "d3-array": "^3.2.4",
+    "d3-shape": "^3.2.0",
     "lucide-react": "^1.17.0",
+    "motion": "^13.3.0",
     "tailwind-merge": "^3.6.0"
   }
 }

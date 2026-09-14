@@ -87,11 +87,11 @@ export default function QGrade({ onSave }) {
 
   return (
     <>
-      <section className="qgrade-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7" id="modePerQuestion">
-        <div className="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">문항별 채점</div>
-        <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">학년도와 풀이 날짜를 선택하고 본인이 고른 답을 순서대로 입력하면 메타데이터의 정답과 비교해 자동 채점되고, 카테고리·난이도별 약점이 분석됩니다.</div>
+      <section className="qgrade-section" id="modePerQuestion">
+        <div className="section-label">문항별 채점</div>
+        <div className="section-desc">학년도와 풀이 날짜를 선택하고 본인이 고른 답을 순서대로 입력하면 메타데이터의 정답과 비교해 자동 채점되고, 카테고리·난이도별 약점이 분석됩니다.</div>
 
-        <div className="qgrade-controls tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-3">
+        <div className="qgrade-controls">
           <div className="field">
             <label>학년도 기출</label>
             <select className="log-select" value={year} onChange={(e) => setYear(Number(e.target.value))}>
@@ -153,7 +153,7 @@ export default function QGrade({ onSave }) {
 function QStats({ year, session }) {
   if (!hasMeta(year)) {
     return (
-      <section className="qstats-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="qstatsSection" style={{ display: 'block' }}>
+      <section className="qstats-section" id="qstatsSection" style={{ display: 'block' }}>
         <div className="qstats-header"><div className="section-label" style={{ margin: 0 }}>유형별 정답률 분석</div></div>
         <div className="qstats-grid" id="qstatsGrid">
           <div className="qstats-empty" style={{ gridColumn: '1/-1' }}>{year}학년도 메타데이터가 아직 입력되지 않았습니다.<br />관리자 모드(URL에 ?admin=1)에서 정답·카테고리·난이도를 입력하면 약점 분석이 활성화됩니다.</div>
@@ -164,7 +164,7 @@ function QStats({ year, session }) {
   const totalGraded = Object.keys(session.eon).length + Object.keys(session.chu).length;
   if (totalGraded === 0) {
     return (
-      <section className="qstats-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="qstatsSection" style={{ display: 'block' }}>
+      <section className="qstats-section" id="qstatsSection" style={{ display: 'block' }}>
         <div className="qstats-header"><div className="section-label" style={{ margin: 0 }}>유형별 정답률 분석</div></div>
         <div className="qstats-grid" id="qstatsGrid">
           <div className="qstats-empty" style={{ gridColumn: '1/-1' }}>위에서 답안을 입력하면 카테고리·난이도별 정답률이 표시됩니다.</div>
@@ -237,7 +237,7 @@ function QStats({ year, session }) {
   });
 
   return (
-    <section className="qstats-section tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="qstatsSection" style={{ display: 'block' }}>
+    <section className="qstats-section" id="qstatsSection" style={{ display: 'block' }}>
       <div className="qstats-header">
         <div className="section-label" style={{ margin: 0 }}>유형별 정답률 분석</div>
         <span className="qstats-summary">{summaryText}</span>

@@ -390,9 +390,9 @@ export default function DailyTab() {
 
   return (
     <>
-      <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
-        <div className="section-label tw:!text-2xl tw:!font-extrabold tw:!text-slate-950">오늘의 지문</div>
-        <div className="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">
+      <section className="input-area">
+        <div className="section-label">오늘의 지문</div>
+        <div className="section-desc">
           매일 LEET 언어이해 스타일 지문 1개와 문항 3개가 올라옵니다. 출퇴근길 10분 워밍업으로 활용하세요.
           AI가 생성하고 교차 검증한 학습용 콘텐츠로, 실제 기출과는 출제 수준이 다를 수 있습니다.
         </div>
@@ -407,7 +407,7 @@ export default function DailyTab() {
       {current && <PassageCard row={current} />}
 
       {rows && rows.length > 1 && (
-        <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm">
+        <section className="input-area">
           <div className="section-label">지난 지문</div>
           <div className="tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-2 tw:md:!grid-cols-2">
             {rows.map((r) => {

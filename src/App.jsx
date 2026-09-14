@@ -3,7 +3,6 @@ import { useApp } from './context/AppContext.jsx';
 import { track } from './lib/analytics.js';
 import Masthead from './components/Masthead.jsx';
 import TabNav from './components/TabNav.jsx';
-import UpdateBanner from './components/UpdateBanner.jsx';
 import Feedback from './components/Feedback.jsx';
 import Footer from './components/Footer.jsx';
 import TimerDock from './components/TimerDock.jsx';
@@ -114,7 +113,6 @@ export default function App() {
             )}
           </div>
         ))}
-        {activeTab !== 'schools' && <UpdateBanner onGo={() => onSelect('schools')} />}
         <Footer />
       </div>
       <Feedback />

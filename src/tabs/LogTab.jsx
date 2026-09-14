@@ -88,7 +88,7 @@ export default function LogTab() {
       </div>
 
       {!user && (
-        <section className="login-nudge-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm" id="loginNudgeCard">
+        <section className="login-nudge-card" id="loginNudgeCard">
           <div className="login-nudge-copy">
             <div className="login-nudge-kicker">게스트 기록 저장 중</div>
             <div className="login-nudge-title" id="loginNudgeTitle">
@@ -113,11 +113,11 @@ export default function LogTab() {
       )}
 
       {mode === 'total' ? (
-        <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7" id="modeTotal">
-          <div className="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">새 기출 기록 추가</div>
-          <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
+        <section className="input-area" id="modeTotal">
+          <div className="section-label">새 기출 기록 추가</div>
+          <div className="section-desc">푼 학년도 기출, 풀이 날짜, 점수를 입력하면 표준점수가 자동 계산되어 기록됩니다.</div>
 
-          <div className="log-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:xl:!grid-cols-4">
+          <div className="log-input-grid">
             <div className="field">
               <label>학년도 기출</label>
               <Select value={String(logYear)} onValueChange={(v) => setLogYear(Number(v))}>
@@ -167,7 +167,7 @@ export default function LogTab() {
       )}
 
       {validTotals.length > 0 && (
-        <section className="log-stats tw:!grid tw:!grid-cols-2 tw:!gap-3 tw:lg:!grid-cols-4" id="logStats" style={{ display: 'grid' }}>
+        <section className="log-stats" id="logStats" style={{ display: 'grid' }}>
           <div className="stat-card"><div className="stat-label">총 풀이 기록</div><div className="stat-value">{enriched.length}</div></div>
           <div className="stat-card"><div className="stat-label">평균 합계</div><div className="stat-value">{avg !== null ? avg.toFixed(1) : '—'}</div></div>
           <div className="stat-card"><div className="stat-label">최고 합계</div><div className="stat-value">{Math.max(...validTotals).toFixed(1)}</div></div>
@@ -176,14 +176,14 @@ export default function LogTab() {
       )}
 
       {validTotals.length >= 2 && (
-        <section className="chart-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm" id="logChartCard" style={{ display: 'block' }}>
+        <section className="chart-card" id="logChartCard" style={{ display: 'block' }}>
           <div className="section-label">시간순 표준점수 추이</div>
           <div className="section-desc">푼 날짜 순으로 표준점수 합계 변화를 보여줍니다.</div>
           <LogChart rows={sortedByDate} />
         </section>
       )}
 
-      <section className="log-list-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+      <section className="log-list-card">
         <div style={{ display: 'flex', alignItems: 'center', padding: '24px 28px 0' }}>
           <div className="section-label" style={{ margin: 0 }}>기록 목록</div>
           {user && syncStatus && (
@@ -204,7 +204,7 @@ export default function LogTab() {
             const chuText = e.chu !== null && e.chu !== undefined ? `추리 ${e.chu}→${e.chuStd !== null ? e.chuStd.toFixed(1) : '—'}` : '';
             const detailParts = [eonText, chuText].filter(Boolean).join(' · ');
             return (
-              <div key={e.id} className="log-entry tw:!grid tw:!grid-cols-[88px_minmax(0,1fr)_auto_auto] tw:!items-center tw:!gap-3 tw:!border-t tw:!border-slate-100 tw:!px-4 tw:!py-3 tw:transition-colors tw:hover:!bg-blue-50/40 tw:max-sm:!grid-cols-[1fr_auto]">
+              <div key={e.id} className="log-entry">
                 <div className="e-date tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-500">{dateFormatted}</div>
                 <div className="e-info tw:!min-w-0">
                   <div className="e-year tw:!text-sm tw:!font-extrabold tw:!text-slate-950">{e.year}학년도 기출</div>

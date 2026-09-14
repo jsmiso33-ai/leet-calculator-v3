@@ -40,6 +40,36 @@
     /* 보조 신호색 (Ledger Teal) — 기록·추적 계열 */
     --teal: #0F766E;
 
+    /* 차트 (Bklit 컴포넌트가 참조하는 토큰) */
+    --foreground: var(--ink);
+    --muted-foreground: var(--ink-mute);
+    --chart-1: var(--accent);
+    --chart-2: var(--teal);
+    --chart-3: var(--ink-tertiary);
+    --chart-4: #CBD5E1;
+    --chart-5: #F1F5F9;
+    --chart-background: var(--bg-subtle);
+    --chart-foreground: var(--ink-mute);
+    --chart-foreground-muted: rgba(15, 23, 42, 0.14);
+    --chart-label: var(--ink-mute);
+    --chart-line-primary: var(--accent);
+    --chart-line-secondary: var(--teal);
+    --chart-crosshair: rgba(15, 23, 42, 0.28);
+    --chart-grid: rgba(15, 23, 42, 0.07);
+    --chart-brush-border: var(--chart-grid);
+    --chart-tooltip-background: rgba(255, 255, 255, 0.96);
+    --chart-tooltip-foreground: var(--ink);
+    --chart-tooltip-muted: var(--ink-mute);
+    --chart-indicator-color: var(--accent);
+    --chart-indicator-secondary-color: var(--bg-card);
+    --chart-marker-background: var(--bg-card);
+    --chart-marker-border: var(--line-strong);
+    --chart-marker-foreground: var(--ink-soft);
+    --chart-marker-badge-background: var(--ink);
+    --chart-marker-badge-foreground: #FFFFFF;
+    --chart-segment-background: rgb(var(--accent-rgb) / 0.06);
+    --chart-segment-line: rgb(var(--accent-rgb) / 0.25);
+
     /* 레거시 별칭 — 이름과 실제 색이 다르다. 새 코드는 --ink / --teal을 쓸 것 */
     --blue: var(--ink);
     --blue-soft: var(--ink-soft);

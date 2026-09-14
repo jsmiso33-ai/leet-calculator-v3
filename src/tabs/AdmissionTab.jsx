@@ -54,9 +54,9 @@ export default function AdmissionTab() {
 
   return (
     <>
-      <section className="input-area adm-intro tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-5 tw:!py-5 tw:!shadow-sm tw:md:!px-8 tw:md:!py-7">
-        <div className="section-label tw:!text-2xl tw:!font-extrabold tw:!leading-tight tw:!text-slate-950 tw:md:!text-3xl">입시결과 비교 분석</div>
-        <div className="section-desc tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!leading-6 tw:!text-slate-600">나의 LEET·학점 입력값과 2026학년도 25개 로스쿨 입시결과를 비교해 추천 쇼트리스트와 학교별 비교표를 구성합니다. (점수 입력은 학교별 환산점수 탭과 공유됩니다.)</div>
+      <section className="input-area adm-intro">
+        <div className="section-label">입시결과 비교 분석</div>
+        <div className="section-desc">나의 LEET·학점 입력값과 2026학년도 25개 로스쿨 입시결과를 비교해 추천 쇼트리스트와 학교별 비교표를 구성합니다. (점수 입력은 학교별 환산점수 탭과 공유됩니다.)</div>
       </section>
       <AdmissionApp model={model} actions={actions} />
     </>

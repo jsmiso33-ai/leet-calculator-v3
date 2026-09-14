@@ -134,7 +134,7 @@ function DecisionToolbar({ model, actions }) {
 
 function SchoolFilter({ model, actions }) {
   return (
-    <details className="school-filter-card tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+    <details className="school-filter-card">
       <summary>
         <span className="sf-label">학교 선택</span>
         <span className="sf-count">{model.filterCountText}</span>
@@ -185,7 +185,7 @@ function SchoolFilter({ model, actions }) {
 function Shortlist({ model, actions }) {
   return (
     <section className="adm-shortlist-panel tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:md:!p-5">
-      <div className="adm-panel-head tw:!mb-4 tw:!flex tw:!items-start tw:!justify-between tw:!gap-3 tw:max-sm:!flex-col">
+      <div className="adm-panel-head">
         <div>
           <h3 className="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">학교별 입시결과</h3>
           <p className="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">선택한 정렬과 지원권 필터 기준으로 모든 학교를 카드로 보여줍니다.</p>
@@ -248,17 +248,17 @@ function ShortlistCard({ row, index, selected, actions }) {
 function ComparePanel({ model, actions }) {
   const compareRows = model.compareRows;
   return (
-    <section className="adm-compare-panel tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm tw:md:!p-5">
-      <div className="adm-panel-head tw:!mb-4 tw:!flex tw:!items-start tw:!justify-between tw:!gap-3 tw:max-sm:!flex-col">
+    <section className="adm-compare-panel">
+      <div className="adm-panel-head">
         <div>
           <h3 className="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">선택 학교 비교</h3>
           <p className="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">관심 학교를 최대 3개까지 골라 같은 기준으로 나란히 비교합니다.</p>
         </div>
         <div className="adm-compare-actions tw:!flex tw:!shrink-0 tw:!items-center tw:!gap-2 tw:max-sm:!w-full tw:max-sm:!flex-col tw:max-sm:!items-stretch">
-          <span className="adm-compare-status tw:!min-h-8 tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-slate-50 tw:!px-2.5 tw:!py-2 tw:!text-center tw:!text-xs tw:!font-extrabold tw:!leading-tight tw:!text-slate-500" aria-live="polite">
+          <span className="adm-compare-status" aria-live="polite">
             {model.compareStatus}
           </span>
-          <button type="button" className="adm-compare-clear tw:!inline-flex tw:!min-h-8 tw:!items-center tw:!justify-center tw:!rounded-lg tw:!border tw:!border-slate-200 tw:!bg-white tw:!px-3 tw:!text-xs tw:!font-extrabold tw:!text-slate-600 tw:!shadow-sm tw:transition-colors tw:hover:!border-blue-300 tw:hover:!text-blue-700 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500" onClick={actions.clearCompare}>
+          <button type="button" className="adm-compare-clear" onClick={actions.clearCompare}>
             선택 초기화
           </button>
         </div>
@@ -282,7 +282,7 @@ function ComparePanel({ model, actions }) {
         })}
       </div>
 
-      <div className="adm-compare-table-wrap tw:!overflow-x-auto tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white">
+      <div className="adm-compare-table-wrap">
         {compareRows.length ? <CompareTable model={model} /> : (
           <div className="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
             <strong>비교할 학교가 없습니다</strong>
@@ -346,7 +346,7 @@ function CompareTable({ model }) {
 
 function DetailTable({ model, actions }) {
   return (
-    <details className="adm-table-details tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+    <details className="adm-table-details">
       <summary className="tw:!flex tw:!min-h-12 tw:!cursor-pointer tw:!items-center tw:!justify-between tw:!gap-3 tw:!px-4 tw:!text-sm tw:!font-extrabold tw:!text-slate-900 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500">
         <span>전체 상세 표</span>
         <span className="adm-table-meta tw:!ml-auto tw:!font-mono tw:!text-xs tw:!font-medium tw:!text-slate-500">{model.tableMeta}</span>

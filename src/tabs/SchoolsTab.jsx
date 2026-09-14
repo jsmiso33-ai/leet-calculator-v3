@@ -206,9 +206,9 @@ export default function SchoolsTab() {
 
   return (
     <>
-      <section className="input-area tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm tw:md:!p-7">
-        <div className="section-label tw:!text-xl tw:!font-extrabold tw:!text-slate-950">정량 점수 입력</div>
-        <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
+      <section className="input-area">
+        <div className="section-label">정량 점수 입력</div>
+        <div className="section-desc">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
 
         {handoff && (
           <div className="handoff-note" role="status">
@@ -224,7 +224,7 @@ export default function SchoolsTab() {
 
         <ImportLogRow onApply={applyLogResult} />
 
-        <div className="schools-input-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2">
+        <div className="schools-input-grid">
           <div className="field">
             <label htmlFor="sch-eon-std">LEET 언어이해 표준점수</label>
             <Input id="sch-eon-std" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" value={schState.eonStd ?? ''} onChange={numChange('eonStd')} />
@@ -235,7 +235,7 @@ export default function SchoolsTab() {
           </div>
         </div>
 
-        <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
+        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
           <div className="field">
             <label htmlFor="sch-eon-pct">LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
             <Input id="sch-eon-pct" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" value={schState.eonPct ?? ''} onChange={numChange('eonPct')} />
@@ -246,7 +246,7 @@ export default function SchoolsTab() {
           </div>
         </div>
 
-        <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
+        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
           <div className="field">
             <label htmlFor="sch-gpa-pct">GPA 백분위 <span className="max">(0–100)</span></label>
             <Input id="sch-gpa-pct" type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" value={schState.gpaPct ?? ''} onChange={numChange('gpaPct')} />
@@ -269,7 +269,7 @@ export default function SchoolsTab() {
           </div>
         </div>
 
-        <div className="schools-input-grid tw:!mt-3 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2" style={{ marginTop: '12px' }}>
+        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
           <div className="field">
             <label>공인영어 종류</label>
             <Select value={schState.engType} onValueChange={(v) => patch({ engType: v })}>
@@ -301,16 +301,16 @@ export default function SchoolsTab() {
         </details>
       </section>
 
-      <section className="schools-controls tw:!flex tw:!flex-wrap tw:!items-center tw:!gap-2">
-        <div className="ctrl-label tw:!text-xs tw:!font-bold tw:!text-slate-500">정렬 기준:</div>
-        <div className="ctrl-buttons tw:!flex tw:!flex-wrap tw:!gap-2">
+      <section className="schools-controls">
+        <div className="ctrl-label">정렬 기준:</div>
+        <div className="ctrl-buttons">
           {SORTS.map(([key, label]) => (
             <button key={key} className={'sort-btn' + (schState.sortBy === key ? ' active' : '')} data-sort={key} onClick={() => setSort(key)}>{label}</button>
           ))}
         </div>
       </section>
 
-      <details className="school-filter-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+      <details className="school-filter-card">
         <summary>
           <span className="sf-label">학교 선택</span>
           <span className="sf-count">{countText}</span>
@@ -351,7 +351,7 @@ export default function SchoolsTab() {
         )}
       </div>
 
-      <section className="schools-grid tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-2 tw:lg:!grid-cols-3">
+      <section className="schools-grid">
         {schools.length === 0 ? (
           <div className="empty-state" style={{ gridColumn: '1 / -1' }}>
             {q ? `"${searchQuery.trim()}" 검색 결과가 없습니다. 다른 학교 이름으로 검색해 보세요.` : '선택된 학교가 없습니다. 학교 선택에서 하나 이상 선택하세요.'}
@@ -366,10 +366,10 @@ export default function SchoolsTab() {
 
 function ScoreRow({ area, fillClass, barPct, valNode }) {
   return (
-    <div className="sc-row tw:!grid tw:!grid-cols-[52px_minmax(0,1fr)_auto] tw:!items-center tw:!gap-3">
-      <div className="sc-area tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{area}</div>
+    <div className="sc-row">
+      <div className="sc-area">{area}</div>
       <div className="sc-bar">{barPct != null && <div className={'sc-bar-fill' + (fillClass ? ' ' + fillClass : '')} style={{ width: `${barPct}%` }} />}</div>
-      <div className="sc-val tw:!font-mono tw:!text-xs tw:!font-bold tw:!text-slate-900">{valNode}</div>
+      <div className="sc-val">{valNode}</div>
     </div>
   );
 }
@@ -391,32 +391,32 @@ function SchoolCard({ s, c, isFavorite, onToggleFavorite }) {
   const gpaBarPct = c.gpa !== null ? (c.gpa / c.gpaDenom * 100) : 0;
 
   return (
-    <div className={'school-card ' + tier + ' tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm'}>
-      <div className="sc-head tw:!mb-4">
-        <div className="sc-title-row tw:!flex tw:!items-start tw:!justify-between tw:!gap-3">
-          <div className="sc-name tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">{s.name}</div>
+    <div className={'school-card ' + tier}>
+      <div className="sc-head">
+        <div className="sc-title-row">
+          <div className="sc-name">{s.name}</div>
           <button
-            className={'favorite-btn ' + (isFavorite ? 'active tw:!border-amber-300 tw:!bg-amber-50 tw:!text-amber-700' : 'tw:!border-slate-200 tw:!bg-white tw:!text-slate-500') + ' tw:!inline-flex tw:!h-8 tw:!w-8 tw:!items-center tw:!justify-center tw:!rounded-full tw:!border tw:!text-sm tw:!font-extrabold tw:transition-colors tw:hover:!border-amber-300 tw:hover:!text-amber-700 tw:focus-visible:!outline tw:focus-visible:!outline-2 tw:focus-visible:!outline-offset-2 tw:focus-visible:!outline-blue-500'}
+            className={'favorite-btn' + (isFavorite ? ' active' : '')}
             type="button" aria-pressed={isFavorite} aria-label={`${s.name} ${favoriteLabel}`} title={favoriteLabel} onClick={onToggleFavorite}>
             {isFavorite ? '★' : '☆'}
           </button>
         </div>
-        <div className="sc-leet-pct tw:!mt-1 tw:!text-xs tw:!font-bold tw:!text-slate-500">LEET 실질반영 <span className="num tw:!font-mono tw:!font-extrabold tw:!text-slate-700">{s.leetRatio.toFixed(1)}%</span></div>
+        <div className="sc-leet-pct">LEET 실질반영 <span className="num">{s.leetRatio.toFixed(1)}%</span></div>
       </div>
-      <div className="sc-total-row tw:!mb-4 tw:!flex tw:!items-end tw:!justify-between tw:!gap-3 tw:!rounded-xl tw:!bg-slate-50 tw:!p-3">
-        <div><span className="sc-total-label tw:!text-xs tw:!font-extrabold tw:!text-slate-500">정량 환산점수</span></div>
+      <div className="sc-total-row">
+        <div><span className="sc-total-label">정량 환산점수</span></div>
         {c.total !== null
-          ? <span className="sc-total-val tw:!font-mono tw:!text-2xl tw:!font-extrabold tw:!text-blue-600">{c.total.toFixed(1)}<span className="denom tw:!text-sm tw:!font-bold tw:!text-slate-500">/{c.totalDenom}</span></span>
-          : <span className="sc-total-val empty tw:!text-sm tw:!font-bold tw:!text-slate-500">{missingParts.length ? `${missingParts.join('·')} 입력 필요` : '— 점수 입력 필요'}</span>}
+          ? <span className="sc-total-val">{c.total.toFixed(1)}<span className="denom">/{c.totalDenom}</span></span>
+          : <span className="sc-total-val empty">{missingParts.length ? `${missingParts.join('·')} 입력 필요` : '— 점수 입력 필요'}</span>}
       </div>
-      <div className="sc-rows tw:!grid tw:!gap-3">
+      <div className="sc-rows">
         <ScoreRow area="LEET" fillClass="" barPct={leetBarPct} valNode={<ValWithDenom value={c.leet} denom={c.leetDenom} />} />
         <ScoreRow area="학점" fillClass="gpa" barPct={gpaBarPct} valNode={<ValWithDenom value={c.gpa} denom={c.gpaDenom} />} />
         {s.engType === 'pf'
           ? <ScoreRow area="영어" fillClass={null} barPct={null} valNode={<span className="sc-eng-pf">P/F</span>} />
           : <ScoreRow area="영어" fillClass="eng" barPct={c.eng !== null ? (c.eng / c.engDenom * 100) : 0} valNode={<ValWithDenom value={c.eng} denom={c.engDenom} />} />}
       </div>
-      {s.note && <div className="sc-note tw:!mt-4 tw:!rounded-lg tw:!bg-slate-50 tw:!p-3 tw:!text-xs tw:!leading-5 tw:!text-slate-500">{s.note}</div>}
+      {s.note && <div className="sc-note">{s.note}</div>}
     </div>
   );
 }

@@ -167,7 +167,7 @@ export default function CalcTab() {
 
   return (
     <>
-      <section className="hero-pulse tw:!mb-4 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" id="heroPulse">
+      <section className="hero-pulse" id="heroPulse">
         <div className="hero-pulse-bg"></div>
         <div className="hp-input">
           <div className="hp-input-header"><strong>원점수 입력</strong><span className="save-tag">· 자동 저장</span></div>
@@ -271,26 +271,26 @@ export default function CalcTab() {
 
       <CombinedSection results={results} />
 
-      <div className="results-area tw:!grid tw:!grid-cols-1 tw:!gap-4 tw:lg:!grid-cols-2">
-        <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+      <div className="results-area">
+        <div className="result-card">
           <div className="head"><span className="name">언어이해</span><span className="max-info">{eonRaw ?? '—'} / {heroData.items_eon}</span></div>
           <SubjectTable results={results} subjectKey="eon" raw={eonRaw} />
         </div>
-        <div className="result-card tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+        <div className="result-card">
           <div className="head"><span className="name">추리논증</span><span className="max-info">{chuRaw ?? '—'} / {heroData.items_chu}</span></div>
           <SubjectTable results={results} subjectKey="chu" raw={chuRaw} />
         </div>
       </div>
 
-      <section className="chart-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5 tw:!shadow-sm">
-        <div className="section-label tw:!text-lg tw:!font-extrabold tw:!text-slate-950">연도별 표준점수 합계 추이</div>
-        <div className="section-desc tw:!mt-1 tw:!text-sm tw:!leading-6 tw:!text-slate-600">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
+      <section className="chart-card">
+        <div className="section-label">연도별 표준점수 합계 추이</div>
+        <div className="section-desc">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
         {results.some((r) => r.eon?.std != null && r.chu?.std != null) ? (
           <Suspense fallback={<p role="status">차트 불러오는 중…</p>}><TrendChart results={results} /></Suspense>
         ) : <p className="empty-state">두 영역의 원점수를 입력하면 연도별 추이를 보여드립니다.</p>}
       </section>
 
-      <details className="detail-viewer tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm">
+      <details className="detail-viewer">
         <summary>전체 환산표 (연도별 원점수–표준점수–백분위)</summary>
         <div className="viewer-body">
           <div className="year-tabs">
@@ -341,7 +341,7 @@ function CombinedSection({ results }) {
   const sorted = [...valid].sort((a, b) => a.year - b.year);
   const latestYear = sorted[sorted.length - 1].year;
   return (
-    <section className="combined tw:!mb-4 tw:!overflow-hidden tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!shadow-sm" style={{ display: 'grid' }}>
+    <section className="combined" style={{ display: 'grid' }}>
       <div className="label-block"><div className="lbl">표준점수 합계</div><div className="lbl-main">언어 + 추리</div></div>
       <div className="table-block">
         <table id="combinedTable" aria-describedby="combined-estimate-note">
