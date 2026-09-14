@@ -42,6 +42,10 @@ const ALL_TABS = [
 // 새 기능 홍보: daily 탭에 한 번 들어가기 전까지 탭 버튼에 NEW 배지 표시
 const DAILY_SEEN_KEY = 'leet_daily_seen_v1';
 
+// 오늘의 지문: 7/15 이후 발행이 멈춰 일단 비활성화(2026-09-14). 다시 열려면 true로 바꾸고
+// GitHub Actions "Generate daily passage" 워크플로도 다시 켤 것(gh workflow enable).
+const DAILY_PASSAGE_ENABLED = false;
+
 function scrollToTabPanel(id) {
   if (!window.matchMedia?.('(max-width: 820px)').matches) return;
   requestAnimationFrame(() => {
@@ -64,6 +68,7 @@ export default function App() {
     try { return !!localStorage.getItem(DAILY_SEEN_KEY); } catch { return true; }
   });
   const tabs = ALL_TABS
+    .filter((t) => DAILY_PASSAGE_ENABLED || t.id !== 'daily')
     .filter((t) => !t.adminOnly || isAdmin)
     .map((t) => (t.id === 'daily' && !dailySeen ? { ...t, badge: 'NEW' } : t));
 
