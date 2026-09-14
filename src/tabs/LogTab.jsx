@@ -130,22 +130,22 @@ export default function LogTab() {
               </Select>
             </div>
             <div className="field">
-              <label>푼 날짜</label>
-              <Input type="date" value={logDate} onChange={(e) => { setLogDate(e.target.value); setDateError(''); }} />
+              <label htmlFor="log-date">푼 날짜</label>
+              <Input id="log-date" type="date" value={logDate} onChange={(e) => { setLogDate(e.target.value); setDateError(''); }} />
               {dateError && <div className="field-error" role="alert">{dateError}</div>}
             </div>
             <div className="field">
-              <label>언어이해 원점수 <span className="max">/ {d ? d.items_eon : 30}</span></label>
-              <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_eon : 40} step="1" placeholder="0" value={logEon} onChange={(e) => setLogEon(e.target.value)} />
+              <label htmlFor="log-eon">언어이해 원점수 <span className="max">/ {d ? d.items_eon : 30}</span></label>
+              <Input id="log-eon" type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_eon : 40} step="1" placeholder="0" value={logEon} onChange={(e) => setLogEon(e.target.value)} />
             </div>
             <div className="field">
-              <label>추리논증 원점수 <span className="max">/ {d ? d.items_chu : 40}</span></label>
-              <Input type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_chu : 40} step="1" placeholder="0" value={logChu} onChange={(e) => setLogChu(e.target.value)} />
+              <label htmlFor="log-chu">추리논증 원점수 <span className="max">/ {d ? d.items_chu : 40}</span></label>
+              <Input id="log-chu" type="number" inputMode="numeric" pattern="[0-9]*" min="0" max={d ? d.items_chu : 40} step="1" placeholder="0" value={logChu} onChange={(e) => setLogChu(e.target.value)} />
             </div>
           </div>
           <div className="field" style={{ marginTop: '12px' }}>
-            <label>메모 (선택)</label>
-            <Input type="text" placeholder="예: 시간 부족, 추리 연습장 활용 등" value={logMemo} onChange={(e) => setLogMemo(e.target.value)} />
+            <label htmlFor="log-memo">메모 (선택)</label>
+            <Input id="log-memo" type="text" placeholder="예: 시간 부족, 추리 연습장 활용 등" value={logMemo} onChange={(e) => setLogMemo(e.target.value)} />
           </div>
 
           {showPreview && (
