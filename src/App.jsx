@@ -45,6 +45,9 @@ const DAILY_SEEN_KEY = 'leet_daily_seen_v1';
 // GitHub Actions "Generate daily passage" 워크플로도 다시 켤 것(gh workflow enable).
 const DAILY_PASSAGE_ENABLED = false;
 
+// 기출문제 탭: 일단 비활성화(2026-10-07). 다시 열려면 true로 바꿀 것.
+const EXAMS_TAB_ENABLED = false;
+
 function scrollToTabPanel(id) {
   if (!window.matchMedia?.('(max-width: 820px)').matches) return;
   requestAnimationFrame(() => {
@@ -68,6 +71,7 @@ export default function App() {
   });
   const tabs = ALL_TABS
     .filter((t) => DAILY_PASSAGE_ENABLED || t.id !== 'daily')
+    .filter((t) => EXAMS_TAB_ENABLED || t.id !== 'exams')
     .filter((t) => !t.adminOnly || isAdmin)
     .map((t) => (t.id === 'daily' && !dailySeen ? { ...t, badge: 'NEW' } : t));
 
