@@ -8061,7 +8061,9 @@
   }
   .adm-verdict-head {
     display: grid;
+    justify-items: center;
     gap: 6px;
+    text-align: center;
   }
   .adm-verdict-title {
     color: var(--ink);
@@ -8089,12 +8091,14 @@
     padding-top: 16px;
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px 24px;
   }
   .adm-verdict-stats > div {
     display: grid;
     align-content: start;
+    justify-items: center;
+    text-align: center;
     gap: 6px;
     min-width: 0;
   }
@@ -8122,6 +8126,7 @@
   .adm-verdict-distrib {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 6px;
   }
 
