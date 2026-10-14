@@ -8484,7 +8484,7 @@
 
   /* 정량 점수 입력: 디자인 요소 (2026-10-15)
      성적 증명서 같은 인상 — 제목 아래 이중 괘선, 세리프 묶음 이름과 짧은 밑줄(완료 시 감청),
-     값이 들어간 칸은 감청 글씨와 옅은 바탕, 선택된 기준은 감청 채움. */
+     선택된 기준은 흰 바탕에 감청 글씨. */
   .qs-head {
     border-bottom: 3px double var(--line-strong);
     padding-bottom: 20px;
@@ -8517,18 +8517,7 @@
     background: var(--accent);
   }
   .qs-state { font-family: var(--font-sans); letter-spacing: 0; }
-  .qs-num.filled input {
-    border-color: rgb(var(--accent-rgb) / 0.35);
-    background: rgb(var(--accent-rgb) / 0.04);
-    color: var(--accent);
-  }
-  .qs-num.filled .qs-suffix { color: rgb(var(--accent-rgb) / 0.7); }
-  .qs-choice.on span {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 1px 2px rgb(var(--accent-rgb) / 0.3);
-  }
-  .qs-choice:hover:not(.on) span { color: var(--accent); }
+  .qs-choice.on span { color: var(--accent); }
   @media (prefers-reduced-motion: reduce) {
     .qs-block-head::after { transition: none; }
   }
