@@ -129,9 +129,9 @@ function rangeError(value, min, max) {
 }
 
 // 숫자 입력칸: 단위/만점 표시를 칸 안쪽 오른쪽에 붙이고, 범위를 벗어나면 바로 알려준다
-function NumField({ id, label, value, onChange, placeholder, suffix, error, step = '0.1', inputMode = 'decimal' }) {
+function NumField({ id, label, value, onChange, placeholder, prefix, suffix, error, step = '0.1', inputMode = 'decimal' }) {
   return (
-    <div className={'qs-num' + (error ? ' invalid' : (value !== null && value !== undefined ? ' filled' : ''))}>
+    <div className={'qs-num' + (prefix ? ' has-prefix' : '') + (error ? ' invalid' : (value !== null && value !== undefined ? ' filled' : ''))}>
       <input
         id={id}
         type="number"
@@ -145,6 +145,7 @@ function NumField({ id, label, value, onChange, placeholder, suffix, error, step
         onChange={onChange}
         data-qs-input=""
       />
+      {prefix && <span className="qs-prefix" aria-hidden="true">{prefix}</span>}
       {suffix && <span className="qs-suffix" aria-hidden="true">{suffix}</span>}
       {error && <span className="qs-error" id={`${id}-error`} aria-live="polite">{error}</span>}
     </div>
@@ -313,12 +314,12 @@ export default function SchoolsTab() {
             </legend>
             <div className="qs-cols"><label htmlFor="sch-eon-std">언어이해</label><label htmlFor="sch-chu-std">추리논증</label></div>
             <div className="qs-row qs-row-2">
-              <NumField id="sch-eon-std" label="언어이해 표준점수" value={schState.eonStd} onChange={numChange('eonStd')} placeholder="표준점수" error={inputErrors.eonStd} />
-              <NumField id="sch-chu-std" label="추리논증 표준점수" value={schState.chuStd} onChange={numChange('chuStd')} placeholder="표준점수" error={inputErrors.chuStd} />
+              <NumField id="sch-eon-std" prefix="표준점수" label="언어이해 표준점수" value={schState.eonStd} onChange={numChange('eonStd')} placeholder="입력" error={inputErrors.eonStd} />
+              <NumField id="sch-chu-std" prefix="표준점수" label="추리논증 표준점수" value={schState.chuStd} onChange={numChange('chuStd')} placeholder="입력" error={inputErrors.chuStd} />
             </div>
             <div className="qs-row qs-row-2">
-              <NumField id="sch-eon-pct" label="언어이해 백분위 (%)" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="백분위" suffix="%" error={inputErrors.eonPct} />
-              <NumField id="sch-chu-pct" label="추리논증 백분위 (%)" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="백분위" suffix="%" error={inputErrors.chuPct} />
+              <NumField id="sch-eon-pct" prefix="백분위" label="언어이해 백분위 (%)" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="입력" suffix="%" error={inputErrors.eonPct} />
+              <NumField id="sch-chu-pct" prefix="백분위" label="추리논증 백분위 (%)" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="입력" suffix="%" error={inputErrors.chuPct} />
             </div>
           </fieldset>
 

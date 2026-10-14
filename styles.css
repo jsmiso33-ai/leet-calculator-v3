@@ -7083,10 +7083,11 @@
   }
   .qs-guide li + li { margin-top: 8px; }
 
+  /* 중간 폭: LEET를 위 한 줄 전체로, 학부 성적·공인영어를 아래 두 칸으로 */
   @media (max-width: 1100px) and (min-width: 761px) {
-    .qs-block { padding-inline: 16px; }
-    .qs-num input { padding: 0 32px; font-size: 19px; }
-    .qs-choice span { font-size: 12px; }
+    .qs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .qs-block:first-child { grid-column: 1 / -1; border-bottom: 1px solid var(--line); }
+    .qs-block:nth-child(2) { border-left: 0; }
   }
   @media (max-width: 760px) {
     .qs-head { padding: 22px 20px 18px; }
@@ -7146,3 +7147,17 @@
   @media (prefers-reduced-motion: reduce) {
     .qs-block-head::after { transition: none; }
   }
+
+  /* LEET 칸 왼쪽 안쪽에 '표준점수'/'백분위' 표시 */
+  .qs-prefix {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .qs-panel .qs-num.has-prefix input { padding-left: 64px; padding-right: 30px; }
