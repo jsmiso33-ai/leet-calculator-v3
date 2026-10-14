@@ -291,7 +291,6 @@ export default function SchoolsTab() {
         <div className="qs-head">
           <div>
             <h2 id="qs-title">정량 점수 입력</h2>
-            <p>성적표의 점수를 입력하면 학교별 환산점수에 바로 반영됩니다.</p>
           </div>
           <span className="qs-save-note">입력값 자동 저장</span>
         </div>
@@ -326,7 +325,6 @@ export default function SchoolsTab() {
               <NumField id="sch-eon-pct" label="언어이해 백분위 (%)" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="입력" suffix="%" error={inputErrors.eonPct} />
               <NumField id="sch-chu-pct" label="추리논증 백분위 (%)" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="입력" suffix="%" error={inputErrors.chuPct} />
             </div>
-            <p className="qs-hint">백분위는 서울대·고려대·아주대·부산대 등에 사용됩니다.</p>
           </fieldset>
 
           <fieldset className="qs-block">
@@ -344,7 +342,6 @@ export default function SchoolsTab() {
               <NumField id="sch-gpa-score" label={`학부 평점 (${schState.gpaScale} 만점)`} value={schState.gpaScore} onChange={numChange('gpaScore')} placeholder="입력" step="0.01" suffix={`/ ${schState.gpaScale}`} error={inputErrors.gpaScore} />
               <NumField id="sch-gpa-pct" label="학부 성적 백분위 (%)" value={schState.gpaPct} onChange={numChange('gpaPct')} placeholder="입력" step="0.01" suffix="%" error={inputErrors.gpaPct} />
             </div>
-            <p className="qs-hint">성적표에 평점과 백분위가 모두 있다면 함께 입력하세요.</p>
           </fieldset>
 
           <fieldset className="qs-block">
@@ -361,7 +358,6 @@ export default function SchoolsTab() {
             <div className="qs-row">
               <NumField id="sch-eng-score" label={`공인영어 점수 (${ENG_MAX[schState.engType]} 만점)`} value={schState.engScore} onChange={numChange('engScore')} placeholder="입력" step="1" inputMode="numeric" suffix={`/ ${ENG_MAX[schState.engType]}`} error={inputErrors.engScore} />
             </div>
-            <p className="qs-hint">{schState.engType === 'teps' ? '뉴텝스 600점 기준입니다.' : `점수 미반영 학교는 P/F 기준을 확인하세요.`}</p>
           </fieldset>
         </div>
 
