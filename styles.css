@@ -7982,12 +7982,12 @@
 
   /* ===== 계산기 결과 영역 정리 (2026-10-14) =====
      하늘·민트 그라데이션, 깜빡이는 점 배지, 통계 칩, 가운데 정렬을 걷어내고
-     성적표처럼 왼쪽 정렬 + 라벨/값 한 줄 목록으로. */
+     가운데 정렬 + 라벨/값 한 줄 목록으로. */
   .hp-result {
     background: var(--bg-subtle);
     border-right: 1px solid var(--line);
-    align-items: flex-start;
-    text-align: left;
+    align-items: center;
+    text-align: center;
     gap: 14px;
   }
   .hp-basis {
@@ -7997,7 +7997,7 @@
     font-weight: 600;
   }
   .hp-score-block {
-    align-items: flex-start;
+    align-items: center;
   }
   .hp-score-meta {
     text-transform: none;
@@ -8012,6 +8012,7 @@
     border-top: 1px solid var(--line-strong);
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     column-gap: 32px;
     row-gap: 10px;
   }
@@ -8034,6 +8035,10 @@
   }
   .hp-next-step {
     max-width: 320px;
+  }
+  .hp-result .hp-estimate-note {
+    margin-inline: auto;
+    text-align: center;
   }
   @media (max-width: 900px) {
     .hp-result {
