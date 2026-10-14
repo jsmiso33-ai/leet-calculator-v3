@@ -8497,3 +8497,67 @@
   @media (prefers-reduced-motion: reduce) {
     .qs-num input, .qs-choice span { transition: none; }
   }
+
+  /* 정량 점수 입력: 전부 가운데 정렬 (2026-10-15) */
+  .qs-panel .qs-head {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+  }
+  .qs-panel .qs-head p { margin-inline: auto; }
+  .qs-panel .qs-block { text-align: center; }
+  .qs-panel .qs-block-head,
+  .qs-panel .qs-block-head {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .qs-panel .qs-block-name,
+  .qs-panel .qs-state { justify-content: center; }
+  .qs-panel .qs-cols label,
+  .qs-panel .qs-sub,
+  .qs-panel .qs-hint { text-align: center; }
+  .qs-panel .qs-num input,
+  .qs-panel .qs-num:has(.qs-suffix) input {
+    padding-inline: 36px;
+    text-align: center;
+  }
+  .qs-panel .handoff-note {
+    justify-items: center;
+    text-align: center;
+    word-break: keep-all;
+  }
+  .qs-panel .qs-import {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+  .qs-panel .qs-import-action { justify-content: center; }
+  .qs-panel details.guidance-callout summary {
+    justify-content: center;
+    gap: 8px;
+  }
+  .qs-panel details.guidance-callout ul {
+    margin-inline: 0;
+    padding: 14px 18px;
+    list-style: none;
+    text-align: center;
+    word-break: keep-all;
+  }
+  .qs-panel details.guidance-callout li + li { margin-top: 8px; }
+  @media (max-width: 1100px) {
+    .qs-panel .qs-block-head { flex-direction: column; align-items: center; }
+    .qs-panel .qs-num input,
+    .qs-panel .qs-num:has(.qs-suffix) input { padding-inline: 32px; }
+  }
+  @media (max-width: 760px) {
+    .qs-panel .qs-head { align-items: center; }
+    .qs-panel .qs-head p { max-width: 36ch; }
+  }
+  @media (max-width: 380px) {
+    .qs-panel .qs-num input[type="number"],
+    .qs-panel .qs-num input#sch-gpa-score { padding-inline: 28px; }
+  }
