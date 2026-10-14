@@ -226,10 +226,10 @@ export function buildModel({ leetSum, gpaPct, calc, isFav, sortKey, gradeFilter,
     recCopy = '학교별 환산점수 탭에서 LEET와 학점 정보를 입력하면 지원권이 자동 분류됩니다.';
   } else if (bestSafeName) {
     recTitle = `${bestSafeName}까지 안정권`;
-    recCopy = `2026학년도 합격자 LEET 50%선 이상 ${gradeCounts.safe}곳(안정), 75%선 이상 ${gradeCounts.match}곳(적정)입니다. 학점·정성평가는 반영하지 않은 LEET 기준입니다.`;
+    recCopy = `2026학년도 합격자 LEET 50%선 이상 ${gradeCounts.safe}곳(안정), 75%선 이상 ${gradeCounts.match}곳(적정)입니다.\n학점·정성평가는 반영하지 않은 LEET 기준입니다.`;
   } else if (bestMatchName) {
     recTitle = `${bestMatchName}가 가장 가까운 적정권`;
-    recCopy = `LEET 50%선을 넘는 학교는 없지만 75%선 이상인 적정권이 ${gradeCounts.match}곳 있습니다. 50%선과의 차이를 같이 확인하세요.`;
+    recCopy = `LEET 50%선을 넘는 학교는 없지만 75%선 이상인 적정권이 ${gradeCounts.match}곳 있습니다.\n50%선과의 차이를 같이 확인하세요.`;
   } else {
     recTitle = '현재는 도전권 이하 중심';
     recCopy = 'LEET 50%선 대비 차이가 큰 학교부터 확인하고 지원 조합을 보수적으로 잡는 편이 좋습니다.';
