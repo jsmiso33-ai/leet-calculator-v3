@@ -186,7 +186,6 @@ export default function CalcTab() {
   return (
     <>
       <section className="hero-pulse" id="heroPulse">
-        <div className="hero-pulse-bg"></div>
         <div className="hp-input">
           <div className="hp-input-header"><strong>원점수 입력</strong><span className="save-tag">· 자동 저장</span></div>
           <div className="hp-years" id="hpYearsPicker" ref={pickerRef}>
@@ -242,27 +241,27 @@ export default function CalcTab() {
         </div>
 
         <div className="hp-result">
-          <div className="hp-era-badge">
-            <span className="hp-era-dot"></span>
-            <span className="hp-era-text"><span>{heroYear}</span>학년도 환산</span>
-          </div>
+          <p className="hp-basis">{heroYear}학년도 환산표 기준</p>
           <div className="hp-score-block">
             <div className={'hp-score' + (hasHero ? ' has-value' : '')}>{hasHero && animTotal != null ? animTotal.toFixed(1) : '—'}</div>
-            <div className="hp-score-meta">합계 표준점수 <span className="dim">· 언어 + 추리</span></div>
+            <div className="hp-score-meta">합계 표준점수 <span className="dim">언어이해 + 추리논증</span></div>
           </div>
-          {hasHero && (heroResult.eon.estimated || heroResult.chu.estimated) && (
-            <p className="hp-estimate-note">표에 없는 구간을 보정한 추정 표준점수가 포함되어 있습니다.</p>
+          {hasHero ? (
+            <dl className="hp-breakdown">
+              <div><dt>언어이해</dt><dd>{eonStd.toFixed(1)}{heroResult.eon.estimated && '*'}</dd></div>
+              <div><dt>추리논증</dt><dd>{chuStd.toFixed(1)}{heroResult.chu.estimated && '*'}</dd></div>
+              {combinedPct != null && (
+                <div><dt>추정 백분위</dt><dd>{(animPct ?? combinedPct).toFixed(1)}</dd></div>
+              )}
+            </dl>
+          ) : (
+            <p className="hp-percentile-text">
+              {inputError ? '입력한 원점수를 확인하세요' : !selectedYears.size ? '비교할 학년도를 선택하세요' : '원점수를 입력하세요'}
+            </p>
           )}
-          <div className={'hp-percentile-text' + (hasHero ? ' has-stats' : '')}>
-            {!hasHero ? (inputError ? '입력한 원점수를 확인하세요' : !selectedYears.size ? '비교할 학년도를 선택하세요' : '원점수를 입력하세요') : (
-              <>
-                {combinedPct != null && (
-                  <div className="hp-stat"><span className="hp-stat-label">추정 백분위</span><span className="hp-stat-val">{(animPct ?? combinedPct).toFixed(1)}</span></div>
-                )}
-                <div className="hp-stat"><span className="hp-stat-label">원점수</span><span className="hp-stat-val">{eonRaw}+{chuRaw}</span></div>
-              </>
-            )}
-          </div>
+          {hasHero && (heroResult.eon.estimated || heroResult.chu.estimated) && (
+            <p className="hp-estimate-note">* 표에 없는 구간을 보정한 추정 표준점수입니다.</p>
+          )}
           {hasHero && combinedPct != null && (
             <p className="hp-estimate-note">
               두 영역 백분위의 기하평균(√(언어백분위 × 추리백분위))으로 계산한 참고값입니다.
@@ -271,9 +270,8 @@ export default function CalcTab() {
           )}
           {hasHero && eonPct != null && chuPct != null && (
             <div className="hp-next-step">
-              <span>현재 점수로 지원 학교를 비교해보세요</span>
               <button type="button" onClick={continueToSchools}>
-                학교별 환산점수 보기
+                이 점수로 25개교 환산점수 보기
                 <span aria-hidden="true">→</span>
               </button>
             </div>
