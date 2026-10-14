@@ -9,7 +9,7 @@ import { track } from '../lib/analytics.js';
 // 입시결과 비교 — schState(점수)는 학교 탭과 공유, 입시 UI 상태는 로컬
 export default function AdmissionTab() {
   const { input, favSet, getFavoriteSchoolNames, toggleFavorite } = useSchoolInput();
-  const [sortKey, setSortKey] = useState('leet-cut');
+  const [sortKey, setSortKey] = useState('grade');
   const [gradeFilter, setGradeFilter] = useState('all');
   const [selectedSchools, setSelectedSchools] = useState(null);
   const [compareSchools, setCompareSchools] = useState([]);
@@ -24,7 +24,7 @@ export default function AdmissionTab() {
 
   const actions = {
     setGrade(grade) { setGradeFilter(grade || 'all'); if (window.track) track('admission_grade_filter', { grade: grade || 'all' }); },
-    setSort(sort) { setSortKey(sort || 'leet-cut'); if (window.track) track('admission_sort', { sort: sort || 'leet-cut' }); },
+    setSort(sort) { setSortKey(sort || 'grade'); if (window.track) track('admission_sort', { sort: sort || 'grade' }); },
     toggleSchool(name) {
       const cur = selectedSchools === null ? new Set(admSchoolNames()) : new Set(selectedSchools);
       if (cur.has(name)) cur.delete(name); else cur.add(name);

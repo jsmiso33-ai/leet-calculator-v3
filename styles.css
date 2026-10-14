@@ -7881,3 +7881,92 @@
       inset: -8px;
     }
   }
+
+  /* ===== 템플릿 장식 정리 (2026-10-14) =====
+     AI 생성물처럼 읽히던 장식을 걷어낸다: 탭 램프·유리 캡슐 → 밑줄 탭,
+     섹션 제목 앞 막대·카드 상단 색 띠 삭제, 입시결과 요약 그라데이션·센터 정렬 해제,
+     한글 문구에 입혀진 고정폭 글꼴은 본문 글꼴 + 고정폭 숫자로. */
+  nav.tab-nav {
+    gap: 4px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .tab-lamp {
+    height: 2px;
+    transform: translate3d(var(--tab-lamp-x, 0px), calc(var(--tab-lamp-y, 0px) + var(--tab-lamp-height, 0px) - 1px), 0);
+    border-radius: 0;
+    background: var(--accent);
+    box-shadow: none;
+    z-index: 2;
+  }
+  .tab-lamp::before,
+  .tab-lamp::after {
+    display: none;
+  }
+  .tab-btn {
+    border-radius: 0;
+  }
+  .tab-btn:hover {
+    background: transparent;
+  }
+  .tab-btn.active {
+    color: var(--ink);
+  }
+
+  .section-label::before,
+  .sf-label::before,
+  .school-card::before {
+    display: none;
+  }
+  .section-desc {
+    margin-left: 0;
+  }
+
+  .adm-summary-lead,
+  #tab-admission .adm-summary-item {
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+  }
+  #tab-admission .adm-report-card {
+    background: var(--bg-card);
+    border-color: var(--line);
+    box-shadow: none;
+  }
+  #tab-admission .adm-metric-card:hover {
+    transform: none;
+    border-color: var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  .adm-short-card,
+  .adm-short-card.grade-safe,
+  .adm-short-card.grade-match,
+  .adm-short-card.grade-reach,
+  .adm-short-card.grade-hard {
+    border-top: 1px solid var(--line);
+  }
+  .adm-short-card.selected {
+    border-color: rgb(var(--accent-rgb) / 0.45);
+  }
+  .adm-short-top {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .meta,
+  .hp-percentile-text,
+  .sc-total-label,
+  .sc-leet-pct,
+  .login-nudge-kicker,
+  .adm-short-lines strong,
+  #tab-admission .adm-summary-item .as-val.empty {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0;
+    text-transform: none;
+  }

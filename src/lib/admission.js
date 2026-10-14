@@ -236,13 +236,18 @@ export function buildModel({ leetSum, gpaPct, calc, isFav, sortKey, gradeFilter,
   }
 
   // 정렬
-  if (sortKey === 'leet-cut') {
-    rows.sort((a, b) => {
-      if (!a.leet50IsConverted && !b.leet50IsConverted) return (b.leet50Val ?? -999) - (a.leet50Val ?? -999);
-      if (!a.leet50IsConverted && b.leet50IsConverted) return -1;
-      if (a.leet50IsConverted && !b.leet50IsConverted) return 1;
-      return a.name.localeCompare(b.name, 'ko');
-    });
+  const byLeetCut = (a, b) => {
+    if (!a.leet50IsConverted && !b.leet50IsConverted) return (b.leet50Val ?? -999) - (a.leet50Val ?? -999);
+    if (!a.leet50IsConverted && b.leet50IsConverted) return -1;
+    if (a.leet50IsConverted && !b.leet50IsConverted) return 1;
+    return a.name.localeCompare(b.name, 'ko');
+  };
+  if (sortKey === 'grade') {
+    // 지원권 순: 안정 → 적정 → 도전 → 위험 → 판정 불가, 같은 지원권 안에서는 LEET 50%선 높은 순
+    const gradeRank = { safe: 0, match: 1, reach: 2, hard: 3 };
+    rows.sort((a, b) => (gradeRank[a.grade] ?? 4) - (gradeRank[b.grade] ?? 4) || byLeetCut(a, b));
+  } else if (sortKey === 'leet-cut') {
+    rows.sort(byLeetCut);
   } else if (sortKey === 'enrolled') {
     rows.sort((a, b) => b.enrolled - a.enrolled);
   } else if (sortKey === 'alpha') {
