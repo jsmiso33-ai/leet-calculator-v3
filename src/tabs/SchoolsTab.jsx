@@ -7,8 +7,6 @@ import { useSchoolInput } from '../context/SchoolInputContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { withTimeout } from '../lib/supabase.js';
 import { track } from '../lib/analytics.js';
-import { Input } from '../components/ui/input.jsx';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
 import { useAnimatedDisclosure } from '../lib/useAnimatedDisclosure.js';
 
 const SORTS = [
@@ -110,6 +108,49 @@ function ImportLogRow({ onApply }) {
   );
 }
 
+const ENG_MAX = { toeic: 990, teps: 600, toefl: 120 };
+const ENG_SCORE_SCHOOLS = LAW_SCHOOLS.filter((s) => s.engType === 'score').length;
+
+function rangeError(value, min, max) {
+  if (value === null || value === undefined) return null;
+  if (value < min || value > max) return `${min}~${max} 사이로 입력하세요`;
+  return null;
+}
+
+// 숫자 입력칸: 단위/만점 표시를 칸 안쪽 오른쪽에 붙이고, 범위를 벗어나면 바로 알려준다
+function NumField({ id, label, value, onChange, placeholder, suffix, error, step = '0.1', inputMode = 'decimal' }) {
+  return (
+    <div className={'qs-num' + (error ? ' invalid' : '')}>
+      <input
+        id={id}
+        type="number"
+        inputMode={inputMode}
+        step={step}
+        placeholder={placeholder}
+        aria-label={label}
+        aria-invalid={error ? 'true' : undefined}
+        aria-describedby={error ? `${id}-error` : undefined}
+        value={value ?? ''}
+        onChange={onChange}
+        data-qs-input=""
+      />
+      {suffix && <span className="qs-suffix" aria-hidden="true">{suffix}</span>}
+      {error && <span className="qs-error" id={`${id}-error`}>{error}</span>}
+    </div>
+  );
+}
+
+function Segmented({ value, onChange, options, label, labelledBy }) {
+  return (
+    <div className="qs-seg" role="radiogroup" aria-label={label} aria-labelledby={labelledBy}>
+      {options.map(([key, text]) => (
+        <button key={key} type="button" role="radio" aria-checked={value === key}
+          className={value === key ? 'on' : ''} onClick={() => onChange(key)}>{text}</button>
+      ))}
+    </div>
+  );
+}
+
 export default function SchoolsTab() {
   const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite, handoff } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
@@ -155,6 +196,19 @@ export default function SchoolsTab() {
     const v = e.target.value;
     patch({ [key]: (v === '' || isNaN(parseFloat(v))) ? null : parseFloat(v) });
     if (window.trackDebounced) window.trackDebounced('school_calc_input', { field: key }, { key: 'school_calc_input', delay: 1500 });
+  };
+
+  const leetDone = schState.eonStd !== null && schState.chuStd !== null;
+  const engScoreSchools = ENG_SCORE_SCHOOLS;
+  const readyCount = useMemo(() => LAW_SCHOOLS.filter((sc) => calcSchool(sc, input).total !== null).length, [input]);
+
+  // Enter를 누르면 다음 입력칸으로 이동
+  const focusNextOnEnter = (e) => {
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+    e.preventDefault();
+    const fields = [...e.currentTarget.querySelectorAll('input[data-qs-input]')];
+    const next = fields[fields.indexOf(e.target) + 1];
+    if (next) next.focus(); else e.target.blur();
   };
 
   // 필터
@@ -208,13 +262,21 @@ export default function SchoolsTab() {
 
   return (
     <>
-      <section className="input-area">
-        <div className="section-label">정량 점수 입력</div>
-        <div className="section-desc">본인의 LEET 표준점수, 백분위, GPA, 영어 점수를 입력하면 25개 로스쿨 각각의 정량 환산점수가 계산됩니다. 입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
+      <section className="input-area qs-panel">
+        <div className="qs-head">
+          <div>
+            <div className="section-label">정량 점수 입력</div>
+            <div className="section-desc">입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
+          </div>
+          <div className="qs-progress" aria-live="polite">
+            <span className="qs-progress-text"><b>{readyCount}</b> / {LAW_SCHOOLS.length}개교 환산 완료</span>
+            <span className="qs-progress-track" aria-hidden="true"><span style={{ width: `${(readyCount / LAW_SCHOOLS.length) * 100}%` }} /></span>
+          </div>
+        </div>
 
         {handoff && (
           <div className="handoff-note" role="status">
-            <strong>계산기 점수를 가져왔어요</strong>
+            <strong>계산기 점수를 가져왔습니다</strong>
             <span>
               {handoff.year}학년도 언어이해 {handoff.eonStd.toFixed(1)} · 추리논증 {handoff.chuStd.toFixed(1)} (백분위 포함).{' '}
               {gpaMissing
@@ -224,80 +286,76 @@ export default function SchoolsTab() {
           </div>
         )}
 
-        <ImportLogRow onApply={applyLogResult} />
+        <div className="qs-grid" onKeyDown={focusNextOnEnter}>
+          <fieldset className="qs-block qs-block-leet">
+            <legend className="qs-block-head">
+              <span className="qs-block-name">LEET</span>
+              <span className={'qs-state' + (leetDone ? ' done' : '')}>{leetDone ? '입력됨' : '표준점수 필수'}</span>
+            </legend>
+            <table className="qs-sheet">
+              <thead>
+                <tr><th scope="col"><span className="sr-only">영역</span></th><th scope="col">표준점수</th><th scope="col">백분위</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">언어이해</th>
+                  <td><NumField id="sch-eon-std" label="언어이해 표준점수" value={schState.eonStd} onChange={numChange('eonStd')} placeholder="62.5" error={rangeError(schState.eonStd, 0, 100)} /></td>
+                  <td><NumField id="sch-eon-pct" label="언어이해 백분위" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="88.5" suffix="%" error={rangeError(schState.eonPct, 0, 100)} /></td>
+                </tr>
+                <tr>
+                  <th scope="row">추리논증</th>
+                  <td><NumField id="sch-chu-std" label="추리논증 표준점수" value={schState.chuStd} onChange={numChange('chuStd')} placeholder="78.9" error={rangeError(schState.chuStd, 0, 100)} /></td>
+                  <td><NumField id="sch-chu-pct" label="추리논증 백분위" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="95.2" suffix="%" error={rangeError(schState.chuPct, 0, 100)} /></td>
+                </tr>
+              </tbody>
+            </table>
+            <p className="qs-hint">백분위는 서울대·고려대·아주대·부산대 환산에 쓰입니다.</p>
+            <ImportLogRow onApply={applyLogResult} />
+          </fieldset>
 
-        <div className="schools-input-grid">
-          <div className="field">
-            <label htmlFor="sch-eon-std">LEET 언어이해 표준점수</label>
-            <Input id="sch-eon-std" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 62.5" value={schState.eonStd ?? ''} onChange={numChange('eonStd')} />
-          </div>
-          <div className="field">
-            <label htmlFor="sch-chu-std">LEET 추리논증 표준점수</label>
-            <Input id="sch-chu-std" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 78.9" value={schState.chuStd ?? ''} onChange={numChange('chuStd')} />
-          </div>
-        </div>
-
-        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
-          <div className="field">
-            <label htmlFor="sch-eon-pct">LEET 언어이해 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input id="sch-eon-pct" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 88.5" value={schState.eonPct ?? ''} onChange={numChange('eonPct')} />
-          </div>
-          <div className="field">
-            <label htmlFor="sch-chu-pct">LEET 추리논증 백분위 <span className="max">(서울대·고려대·아주대·부산대용)</span></label>
-            <Input id="sch-chu-pct" type="number" inputMode="decimal" min="0" max="100" step="0.1" placeholder="예: 95.2" value={schState.chuPct ?? ''} onChange={numChange('chuPct')} />
-          </div>
-        </div>
-
-        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
-          <div className="field">
-            <label htmlFor="sch-gpa-pct">GPA 백분위 <span className="max">(0–100)</span></label>
-            <Input id="sch-gpa-pct" type="number" inputMode="decimal" min="0" max="100" step="0.01" placeholder="예: 95.5" value={schState.gpaPct ?? ''} onChange={numChange('gpaPct')} />
-          </div>
-          <div className="field">
-            <label htmlFor="sch-gpa-score">GPA <span className="max">(평점, 한국외대·중앙대·영남대·동아대 등에서 사용)</span></label>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              <Input id="sch-gpa-score" type="number" inputMode="decimal" min="0" max="4.5" step="0.01" placeholder="예: 4.21" style={{ flex: 1 }} value={schState.gpaScore ?? ''} onChange={numChange('gpaScore')} />
-              <Select value={schState.gpaScale} onValueChange={(v) => patch({ gpaScale: v })}>
-                <SelectTrigger className="w-[104px] shrink-0" aria-label="GPA 만점 기준">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="4.5">4.5만점</SelectItem>
-                  <SelectItem value="4.3">4.3만점</SelectItem>
-                  <SelectItem value="4.0">4.0만점</SelectItem>
-                </SelectContent>
-              </Select>
+          <fieldset className="qs-block">
+            <legend className="qs-block-head">
+              <span className="qs-block-name">학부 성적</span>
+              <span className={'qs-state' + (!gpaMissing ? ' done' : '')}>{!gpaMissing ? '입력됨' : '필요'}</span>
+            </legend>
+            <div className="qs-field">
+              <label htmlFor="sch-gpa-score">평점</label>
+              <NumField id="sch-gpa-score" value={schState.gpaScore} onChange={numChange('gpaScore')} placeholder="4.21" step="0.01" suffix={`/ ${schState.gpaScale}`} error={rangeError(schState.gpaScore, 0, Number(schState.gpaScale))} />
+              <Segmented label="평점 만점 기준" value={schState.gpaScale} onChange={(v) => patch({ gpaScale: v })}
+                options={[['4.5', '4.5 만점'], ['4.3', '4.3 만점'], ['4.0', '4.0 만점']]} />
             </div>
-          </div>
-        </div>
+            <div className="qs-field">
+              <label htmlFor="sch-gpa-pct">백분위 환산</label>
+              <NumField id="sch-gpa-pct" value={schState.gpaPct} onChange={numChange('gpaPct')} placeholder="95.5" step="0.01" suffix="%" error={rangeError(schState.gpaPct, 0, 100)} />
+            </div>
+            <p className="qs-hint">한국외대·중앙대·영남대·동아대 등은 평점을 그대로 씁니다. 백분위만 넣으면 평점을 추정해 계산합니다.</p>
+          </fieldset>
 
-        <div className="schools-input-grid" style={{ marginTop: '12px' }}>
-          <div className="field">
-            <label>공인영어 종류</label>
-            <Select value={schState.engType} onValueChange={(v) => patch({ engType: v })}>
-              <SelectTrigger aria-label="공인영어 종류">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="toeic">TOEIC</SelectItem>
-                <SelectItem value="teps">TEPS (뉴텝스)</SelectItem>
-                <SelectItem value="toefl">TOEFL iBT</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="field">
-            <label htmlFor="sch-eng-score">영어 점수</label>
-            <Input id="sch-eng-score" type="number" inputMode="numeric" pattern="[0-9]*" min="0" max="990" step="1" placeholder="예: 950" value={schState.engScore ?? ''} onChange={numChange('engScore')} />
-          </div>
+          <fieldset className="qs-block">
+            <legend className="qs-block-head">
+              <span className="qs-block-name">공인영어</span>
+              <span className={'qs-state' + (!engMissing ? ' done' : '')}>{!engMissing ? '입력됨' : `${engScoreSchools}개교 반영`}</span>
+            </legend>
+            <div className="qs-field">
+              <span className="qs-label" id="sch-eng-type-label">시험</span>
+              <Segmented labelledBy="sch-eng-type-label" value={schState.engType} onChange={(v) => patch({ engType: v })}
+                options={[['toeic', 'TOEIC'], ['teps', 'TEPS'], ['toefl', 'TOEFL iBT']]} />
+            </div>
+            <div className="qs-field">
+              <label htmlFor="sch-eng-score">점수</label>
+              <NumField id="sch-eng-score" value={schState.engScore} onChange={numChange('engScore')} placeholder={ENG_MAX[schState.engType] === 990 ? '950' : ENG_MAX[schState.engType] === 600 ? '480' : '105'} step="1" inputMode="numeric" suffix={`/ ${ENG_MAX[schState.engType]}`} error={rangeError(schState.engScore, 0, ENG_MAX[schState.engType])} />
+            </div>
+            <p className="qs-hint">점수를 반영하는 {engScoreSchools}개교 외에는 P/F입니다. TEPS는 뉴텝스 기준입니다.</p>
+          </fieldset>
         </div>
 
         <details className="info-callout guidance-callout">
           <summary>입력 방법 안내</summary>
           <ul>
-            <li><strong>LEET 표준점수 / 백분위</strong>: 표준점수는 거의 모든 학교에서 사용되고, 백분위는 서울대·고려대·아주대·부산대 등에서 추가로 사용됩니다. 표준점수만 입력해도 대부분 학교 계산은 가능해요.</li>
+            <li><strong>LEET 표준점수 / 백분위</strong>: 표준점수는 거의 모든 학교에서 사용되고, 백분위는 서울대·고려대·아주대·부산대 등에서 추가로 사용됩니다. 표준점수만 입력해도 대부분 학교는 계산됩니다.</li>
             <li><strong>GPA 백분위</strong>: 학교마다 환산식이 달라서 본인 학교에서 받은 백분위(또는 동일 학과 내 본인 위치)를 직접 입력하세요. 학적팀에서 발급받거나 졸업증명서/성적증명서에서 확인할 수 있습니다.</li>
             <li><strong>GPA 평점</strong>: 한국외대·중앙대·영남대·동아대·원광대·인하대 등은 평점 자체를 환산표에 적용합니다. 백분위만 입력하면 추정 평점으로 계산하니 가능하면 둘 다 입력하세요.</li>
-            <li><strong>영어</strong>: 9개 학교만 점수 반영, 나머지는 P/F입니다 (각 학교 카드에 표시).</li>
+            <li><strong>영어</strong>: {ENG_SCORE_SCHOOLS}개 학교만 점수 반영, 나머지는 P/F입니다 (각 학교 카드에 표시).</li>
             <li>실제 입시 점수는 정성평가(서류·면접)가 더해져 최종 결정되므로, 이 도구는 <strong>정량 영역 비교용</strong>으로만 사용하세요.</li>
           </ul>
         </details>

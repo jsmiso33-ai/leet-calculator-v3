@@ -8197,3 +8197,279 @@
       gap: 12px;
     }
   }
+
+  /* ===== 학교별 환산점수: 정량 점수 입력 (2026-10-14) =====
+     LEET · 학부 성적 · 공인영어 세 묶음을 성적표처럼 한 줄에. 칸 안에 만점/단위,
+     범위 밖 값은 즉시 표시, Enter로 다음 칸 이동, 상단에 환산 완료 학교 수. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .qs-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 24px;
+  }
+  .qs-head .section-desc {
+    margin-bottom: 0;
+  }
+  .qs-progress {
+    display: grid;
+    justify-items: end;
+    gap: 6px;
+  }
+  .qs-progress-text {
+    color: var(--ink-mute);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
+  .qs-progress-text b {
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .qs-progress-track {
+    display: block;
+    width: 180px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--bg-subtle);
+    overflow: hidden;
+  }
+  .qs-progress-track span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    transition: width var(--motion-medium) var(--ease-out);
+  }
+
+  .qs-panel .handoff-note {
+    margin-top: 16px;
+  }
+  .qs-grid {
+    margin-top: 20px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .qs-block {
+    min-width: 0;
+    margin: 0;
+    padding: 20px 24px 4px;
+    border: 0;
+    border-left: 1px solid var(--line);
+  }
+  .qs-block:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .qs-block:last-child {
+    padding-right: 0;
+  }
+  .qs-block-head {
+    float: left;
+    width: 100%;
+    margin-bottom: 14px;
+    padding: 0;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .qs-block > :not(legend) {
+    clear: both;
+  }
+  .qs-block-name {
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .qs-state {
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .qs-state.done {
+    color: var(--success);
+  }
+
+  .qs-sheet {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    margin-top: -8px;
+  }
+  .qs-sheet thead th {
+    padding: 0 4px 0 0;
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .qs-sheet tbody th {
+    width: 1%;
+    padding-right: 12px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+  }
+  .qs-sheet td {
+    padding-right: 8px;
+    vertical-align: top;
+  }
+  .qs-sheet td:last-child {
+    padding-right: 0;
+  }
+
+  .qs-field {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .qs-field > label,
+  .qs-label {
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .qs-num {
+    position: relative;
+    min-width: 0;
+  }
+  .qs-num input {
+    width: 100%;
+    height: 48px;
+    padding: 0 52px 0 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-md);
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
+  }
+  .qs-num input::-webkit-outer-spin-button,
+  .qs-num input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .qs-num input::placeholder {
+    color: rgb(var(--line-rgb) / 0.32);
+    font-weight: 500;
+  }
+  .qs-num input:hover {
+    border-color: rgb(var(--line-rgb) / 0.3);
+  }
+  .qs-num input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.14);
+  }
+  .qs-suffix {
+    position: absolute;
+    top: 24px;
+    right: 12px;
+    transform: translateY(-50%);
+    color: var(--ink-mute);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    pointer-events: none;
+  }
+  .qs-num.invalid input,
+  .qs-num.invalid input:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger) 14%, transparent);
+  }
+  .qs-error {
+    display: block;
+    margin-top: 4px;
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .qs-seg {
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--bg-subtle);
+  }
+  .qs-seg button {
+    min-height: 34px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--ease-out), color var(--motion-fast) var(--ease-out);
+  }
+  .qs-seg button:hover {
+    color: var(--ink);
+  }
+  .qs-seg button.on {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgb(var(--line-rgb) / 0.12), 0 0 0 1px rgb(var(--line-rgb) / 0.06);
+  }
+  .qs-seg button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+
+  .qs-hint {
+    margin: 10px 0 14px;
+    color: var(--ink-mute);
+    font-size: 12px;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+  .qs-block-leet .import-log-row {
+    margin-bottom: 14px;
+  }
+
+  @media (max-width: 900px) {
+    .qs-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .qs-block,
+    .qs-block:first-child,
+    .qs-block:last-child {
+      padding: 18px 0 4px;
+      border-left: 0;
+    }
+    .qs-block + .qs-block {
+      border-top: 1px solid var(--line);
+    }
+    .qs-progress {
+      justify-items: start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .qs-progress-track span,
+    .qs-num input,
+    .qs-seg button {
+      transition: none;
+    }
+  }
