@@ -22,11 +22,20 @@
     --line-rgb: 15 23 42;       /* 반투명 라인·그림자 기준색: rgb(var(--line-rgb) / 0.08) */
 
     /* 액센트 (포인트만 사용) */
-    --accent: #2563EB;          /* 교육/도구형 UI의 명확한 액센트 */
-    --accent-soft: #3B82F6;     /* 호버 시 */
-    --accent-hover: #1D4ED8;    /* 진한 호버/액티브 */
-    --accent-on-dark: #60A5FA;  /* 다크 배경 위 액센트 (밝은 블루) */
-    --accent-rgb: 37 99 235;    /* 반투명 액센트(포커스 링·틴트): rgb(var(--accent-rgb) / 0.12) */
+    --accent: #1D3F8F;          /* 법전 감청 — 판단 지점에만 쓰는 액센트 (2026-10-14, 기존 #2563EB) */
+    --accent-soft: #3A5AA6;     /* 옅은 강조 */
+    --accent-hover: #16306E;    /* 진한 호버/액티브 */
+    --accent-on-dark: #8FA9E3;  /* 다크 배경 위 액센트 (밝은 감청) */
+    --accent-rgb: 29 63 143;    /* 반투명 액센트(포커스 링·틴트): rgb(var(--accent-rgb) / 0.12) */
+
+    /* JSX의 Tailwind 파랑 유틸(tw:!text-blue-600 등)도 같은 감청 계열로 맞춘다 */
+    --tw-color-blue-50: color-mix(in oklab, #1D3F8F 6%, white);
+    --tw-color-blue-100: color-mix(in oklab, #1D3F8F 12%, white);
+    --tw-color-blue-200: color-mix(in oklab, #1D3F8F 22%, white);
+    --tw-color-blue-300: color-mix(in oklab, #1D3F8F 40%, white);
+    --tw-color-blue-500: #3A5AA6;
+    --tw-color-blue-600: #1D3F8F;
+    --tw-color-blue-700: #16306E;
 
     /* 시맨틱 */
     --success: #15803D;         /* 정답/긍정 */

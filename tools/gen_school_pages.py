@@ -175,7 +175,7 @@ SCHOOLS = [
 GROUP_ORDER = ["서울", "경기/인천", "지방"]
 
 CSS = """
-:root{--bg:#FAFAF9;--bg-card:#FFFFFF;--bg-tint:#F1F5F9;--bg-subtle:#F4F4F5;--ink:#18181B;--ink-soft:#27272A;--ink-mute:#71717A;--ink-tertiary:#A1A1AA;--line:rgba(24,24,27,.06);--line-strong:rgba(24,24,27,.12);--accent:#1A56DB;--accent-hover:#1747B8;--success:#15803D;--warning:#B45309;--danger:#B91C1C;--shadow-sm:0 1px 2px rgba(24,24,27,.04),0 0 0 1px rgba(24,24,27,.05);--shadow-md:0 1px 3px rgba(24,24,27,.05),0 0 0 1px rgba(24,24,27,.05);--radius-md:8px;--radius-lg:12px;--font-sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;--font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
+:root{--bg:#FAFAF9;--bg-card:#FFFFFF;--bg-tint:#F1F5F9;--bg-subtle:#F4F4F5;--ink:#18181B;--ink-soft:#27272A;--ink-mute:#71717A;--ink-tertiary:#A1A1AA;--line:rgba(24,24,27,.06);--line-strong:rgba(24,24,27,.12);--accent:#1D3F8F;--accent-hover:#16306E;--success:#15803D;--warning:#B45309;--danger:#B91C1C;--shadow-sm:0 1px 2px rgba(24,24,27,.04),0 0 0 1px rgba(24,24,27,.05);--shadow-md:0 1px 3px rgba(24,24,27,.05),0 0 0 1px rgba(24,24,27,.05);--radius-md:8px;--radius-lg:12px;--font-sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo',sans-serif;--font-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;line-height:1.6;padding:32px 24px 80px}
 .container{max-width:760px;margin:0 auto}

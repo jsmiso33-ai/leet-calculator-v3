@@ -4,7 +4,7 @@
   "title": "Design System: LEET 표준점수 계산기",
   "extensions": {
     "colorMeta": {
-      "precision-blue": { "role": "primary", "displayName": "Precision Blue", "canonical": "#2563EB", "tonalRamp": ["#061A46", "#0C3183", "#1146BB", "#1F5FEA", "#5787F0", "#8AABF4", "#B9CDF9", "#E8EEFD"] },
+      "precision-blue": { "role": "primary", "displayName": "Precision Blue", "canonical": "#1D3F8F", "tonalRamp": ["#061A46", "#0C3183", "#1146BB", "#1F5FEA", "#5787F0", "#8AABF4", "#B9CDF9", "#E8EEFD"] },
       "ledger-teal": { "role": "secondary", "displayName": "Ledger Teal", "canonical": "#0F766E", "tonalRamp": ["#09443F", "#107F76", "#17B5A9", "#26E3D5", "#5CEADF", "#8EF1E9", "#BBF6F2", "#E8FCFB"] },
       "deep-charcoal": { "role": "neutral", "displayName": "Deep Charcoal", "canonical": "#18181B", "tonalRamp": ["#242429", "#43434C", "#60606C", "#7D7D8C", "#9E9EA9", "#BBBBC3", "#D7D7DB", "#F2F2F3"] },
       "quiet-paper": { "role": "neutral", "displayName": "Quiet Paper", "canonical": "#F6F7F9" },
@@ -51,7 +51,7 @@
       "refersTo": "button-primary",
       "description": "기본 액션 버튼. Deep Charcoal 배경, 흰 텍스트.",
       "html": "<button class=\"ds-btn-primary\">저장</button>",
-      "css": ".ds-btn-primary { background: #18181B; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-primary:hover { background: #27272A; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(24,24,27,0.12); } .ds-btn-primary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(0); }"
+      "css": ".ds-btn-primary { background: #18181B; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-primary:hover { background: #27272A; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(24,24,27,0.12); } .ds-btn-primary:focus-visible { outline: 2px solid #1D3F8F; outline-offset: 2px; } .ds-btn-primary:active { transform: translateY(0); }"
     },
     {
       "name": "Secondary Button",
@@ -59,7 +59,7 @@
       "refersTo": "button-secondary",
       "description": "보조/취소 액션. 흰 배경에 중성 보더.",
       "html": "<button class=\"ds-btn-secondary\">취소</button>",
-      "css": ".ds-btn-secondary { background: #FFFFFF; color: #18181B; border: 1px solid rgba(15,23,42,0.14); padding: 9px 16px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-secondary:hover { background: #F4F6F8; border-color: rgba(24,24,27,0.18); } .ds-btn-secondary:focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }"
+      "css": ".ds-btn-secondary { background: #FFFFFF; color: #18181B; border: 1px solid rgba(15,23,42,0.14); padding: 9px 16px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-secondary:hover { background: #F4F6F8; border-color: rgba(24,24,27,0.18); } .ds-btn-secondary:focus-visible { outline: 2px solid #1D3F8F; outline-offset: 2px; }"
     },
     {
       "name": "Accent Button",
@@ -67,7 +67,7 @@
       "refersTo": "button-accent",
       "description": "강조 액션(다운로드 등). Precision Blue 배경 — 예외적으로만 사용.",
       "html": "<button class=\"ds-btn-accent\">다운로드</button>",
-      "css": ".ds-btn-accent { background: #2563EB; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-accent:hover { background: #1D4ED8; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(37,99,235,0.18); } .ds-btn-accent:focus-visible { outline: 2px solid #1D4ED8; outline-offset: 2px; }"
+      "css": ".ds-btn-accent { background: #1D3F8F; color: #fff; border: none; padding: 9px 18px; font-family: 'Pretendard', -apple-system, sans-serif; font-size: 13px; font-weight: 500; letter-spacing: -0.01em; border-radius: 10px; cursor: pointer; transition: all 150ms cubic-bezier(0.32,0.72,0.27,1); } .ds-btn-accent:hover { background: #16306E; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(37,99,235,0.18); } .ds-btn-accent:focus-visible { outline: 2px solid #16306E; outline-offset: 2px; }"
     },
     {
       "name": "Stat Card",
@@ -83,7 +83,7 @@
       "refersTo": "input-field",
       "description": "라벨 + 큰 모노스페이스 숫자 입력. 결과가 나올 자리처럼 보이도록 설계된 카드형 필드.",
       "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">언어이해 원점수</span><input class=\"ds-field-input\" type=\"number\" placeholder=\"0\" /></label>",
-      "css": ".ds-field { display: block; background: #FFFFFF; border: 1px solid rgba(15,23,42,0.14); border-radius: 10px; padding: 14px 16px; cursor: text; transition: border-color 150ms, box-shadow 150ms; } .ds-field:focus-within { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); } .ds-field-label { display: block; font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 700; color: #52525B; margin-bottom: 4px; } .ds-field-input { border: none; outline: none; background: none; font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: #18181B; width: 72px; }"
+      "css": ".ds-field { display: block; background: #FFFFFF; border: 1px solid rgba(15,23,42,0.14); border-radius: 10px; padding: 14px 16px; cursor: text; transition: border-color 150ms, box-shadow 150ms; } .ds-field:focus-within { border-color: #1D3F8F; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); } .ds-field-label { display: block; font-family: 'Pretendard', sans-serif; font-size: 12px; font-weight: 700; color: #52525B; margin-bottom: 4px; } .ds-field-input { border: none; outline: none; background: none; font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: #18181B; width: 72px; }"
     },
     {
       "name": "Grade Pill",
@@ -99,7 +99,7 @@
       "refersTo": "tab-nav",
       "description": "반투명 캡슐형 탭 바. 활성 탭 아래로 빛나는 파란 램프가 이동하는 시그니처 인터랙션(모션 감소 시 제자리 점등).",
       "html": "<nav class=\"ds-tab-nav\"><button class=\"ds-tab-btn ds-tab-btn--active\">계산기</button><button class=\"ds-tab-btn\">학교별 비교</button><button class=\"ds-tab-btn\">기출문제</button></nav>",
-      "css": ".ds-tab-nav { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.72); border: 1px solid rgba(24,24,27,0.08); backdrop-filter: blur(18px); padding: 6px; border-radius: 999px; box-shadow: 0 18px 45px rgba(24,24,27,0.08); } .ds-tab-btn { background: none; border: none; padding: 11px 22px; font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 500; color: #52525B; cursor: pointer; border-radius: 8px; transition: color 150ms, background-color 150ms; } .ds-tab-btn:hover { color: #18181B; background: rgba(24,24,27,0.04); } .ds-tab-btn--active { color: #2563EB; font-weight: 700; box-shadow: 0 0 0 1px rgba(37,99,235,0.08) inset, 0 10px 24px rgba(37,99,235,0.12); background: rgba(37,99,235,0.08); }"
+      "css": ".ds-tab-nav { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.72); border: 1px solid rgba(24,24,27,0.08); backdrop-filter: blur(18px); padding: 6px; border-radius: 999px; box-shadow: 0 18px 45px rgba(24,24,27,0.08); } .ds-tab-btn { background: none; border: none; padding: 11px 22px; font-family: 'Pretendard', sans-serif; font-size: 15px; font-weight: 500; color: #52525B; cursor: pointer; border-radius: 8px; transition: color 150ms, background-color 150ms; } .ds-tab-btn:hover { color: #18181B; background: rgba(24,24,27,0.04); } .ds-tab-btn--active { color: #1D3F8F; font-weight: 700; box-shadow: 0 0 0 1px rgba(37,99,235,0.08) inset, 0 10px 24px rgba(37,99,235,0.12); background: rgba(37,99,235,0.08); }"
     },
     {
       "name": "Verdict Score Display",
@@ -107,7 +107,7 @@
       "refersTo": "hero-pulse",
       "description": "히어로 점수 카드 — calc 탭의 시그니처 컴포넌트. 값이 채워지면 회색에서 진한 차콜로 전환되는 거대한 모노스페이스 숫자와 블루→틸 그라데이션 진행 미터.",
       "html": "<div class=\"ds-hero-score\"><span class=\"ds-hero-badge\">2027학년도</span><div class=\"ds-hero-number has-value\">128.4</div><div class=\"ds-hero-meter\"><div class=\"ds-hero-meter-fill\" style=\"width:72%\"></div></div></div>",
-      "css": ".ds-hero-score { background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%); border-radius: 12px; padding: 44px 34px; text-align: center; } .ds-hero-badge { display: inline-flex; padding: 7px 16px; background: rgba(255,255,255,0.78); color: #1D4ED8; border: 1px solid rgba(37,99,235,0.16); border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 16px; } .ds-hero-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(64px, 7vw, 92px); font-weight: 700; color: rgba(15,23,42,0.32); line-height: 1; font-variant-numeric: tabular-nums; transition: color 220ms; } .ds-hero-number.has-value { color: #0F172A; } .ds-hero-meter { max-width: 300px; margin: 16px auto 0; height: 8px; border-radius: 999px; background: rgba(15,23,42,0.08); overflow: hidden; } .ds-hero-meter-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #2563EB 0%, #0F766E 100%); }"
+      "css": ".ds-hero-score { background: linear-gradient(135deg, #EFF6FF 0%, #ECFDF5 100%); border-radius: 12px; padding: 44px 34px; text-align: center; } .ds-hero-badge { display: inline-flex; padding: 7px 16px; background: rgba(255,255,255,0.78); color: #16306E; border: 1px solid rgba(37,99,235,0.16); border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 16px; } .ds-hero-number { font-family: 'JetBrains Mono', monospace; font-size: clamp(64px, 7vw, 92px); font-weight: 700; color: rgba(15,23,42,0.32); line-height: 1; font-variant-numeric: tabular-nums; transition: color 220ms; } .ds-hero-number.has-value { color: #0F172A; } .ds-hero-meter { max-width: 300px; margin: 16px auto 0; height: 8px; border-radius: 999px; background: rgba(15,23,42,0.08); overflow: hidden; } .ds-hero-meter-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #1D3F8F 0%, #0F766E 100%); }"
     }
   ],
   "narrative": {

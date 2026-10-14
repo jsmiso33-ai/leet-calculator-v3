@@ -80,7 +80,7 @@ function DotMap() {
         [[sx, sy, 2.5], [x, y, 3]].forEach(([px, py, radius]) => {
           ctx.beginPath();
           ctx.arc(px, py, radius, 0, Math.PI * 2);
-          ctx.fillStyle = '#2563eb';
+          ctx.fillStyle = '#1D3F8F';
           ctx.fill();
         });
         if (!reduceMotion) {

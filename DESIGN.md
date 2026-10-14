@@ -2,9 +2,9 @@
 name: LEET 표준점수 계산기
 description: LEET 원점수를 표준점수·백분위·표점합으로 환산하고 25개 로스쿨을 비교하는 무료 도구
 colors:
-  precision-blue: "#2563EB"
-  precision-blue-hover: "#1D4ED8"
-  precision-blue-soft: "#3B82F6"
+  precision-blue: "#1D3F8F"
+  precision-blue-hover: "#16306E"
+  precision-blue-soft: "#3A5AA6"
   deep-charcoal: "#18181B"
   ink-soft: "#27272A"
   muted-slate: "#52525B"
@@ -107,9 +107,9 @@ components:
 절제된 중성 팔레트에 파란색 하나만 신호로 얹은 팔레트. 채도 높은 색은 정답/오답 같은 명확한 판정에만 쓴다.
 
 ### Primary
-- **Precision Blue** (`#2563EB`): 유일한 핵심 액센트. 활성 탭, 주요 강조 버튼(`btn-accent`), 포커스 링, 진행률 미터, D-day 배지에만 등장한다.
-- **Precision Blue Hover** (`#1D4ED8`): 액센트 버튼/트리거의 hover·active 상태.
-- **Precision Blue Soft** (`#3B82F6`): 더 옅은 강조가 필요한 보조 표면(예: 배지 점 애니메이션의 확장 상태).
+- **Precision Blue** (`#1D3F8F`): 유일한 핵심 액센트. 활성 탭, 주요 강조 버튼(`btn-accent`), 포커스 링, 진행률 미터, D-day 배지에만 등장한다.
+- **Precision Blue Hover** (`#16306E`): 액센트 버튼/트리거의 hover·active 상태.
+- **Precision Blue Soft** (`#3A5AA6`): 더 옅은 강조가 필요한 보조 표면(예: 배지 점 애니메이션의 확장 상태).
 
 ### Secondary
 - **Ledger Teal** (`#0F766E`, 토큰 `--teal`): 기록·추적 계열의 보조 신호색. 동기화 진행 표시, 저장 태그, 성적 추이 차트의 두 번째 계열(영어 점수 막대), 백분위 미터 그라데이션의 끝점에 쓰인다. Primary(판단의 순간)와 역할이 분리되어 있다 — Precision Blue가 "지금 결정할 것"을, Ledger Teal은 "쌓여가는 기록"을 가리킨다.
