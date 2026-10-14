@@ -23,8 +23,8 @@ function formatAdmValue(value) {
   return `${Number(value).toFixed(1)}`;
 }
 function getAdmDiffToneTw(cls) {
-  if (cls === 'plus') return 'tw:!text-emerald-700';
-  if (cls === 'minus') return 'tw:!text-red-600';
+  if (cls === 'plus') return 'adm-diff-plus';
+  if (cls === 'minus') return 'adm-diff-minus';
   return 'tw:!text-slate-500';
 }
 
@@ -153,7 +153,7 @@ function getPlainRow(row, leetSum, gpaPct, calc) {
       { label: leetLabel, value: stripHtml(row.leet50Text) },
       { label: '학점 50%', value: stripHtml(row.gpa50Text) },
       { label: '내 학점', value: myGpaLabel },
-      { label: '지원권 · 50%선 대비', value: `${getAdmGradeLabel(row.grade)} · ${row.leetDiffDisplay || '-'}`, tone: diffTone },
+      { label: '50%선 대비', value: row.leetDiffDisplay || '-', tone: diffTone },
     ],
     tone: row.grade || 'pending',
   };
@@ -226,7 +226,7 @@ export function buildModel({ leetSum, gpaPct, calc, isFav, sortKey, gradeFilter,
     recCopy = '학교별 환산점수 탭에서 LEET와 학점 정보를 입력하면 지원권이 자동 분류됩니다.';
   } else if (bestSafeName) {
     recTitle = `${bestSafeName}까지 안정권`;
-    recCopy = `2026학년도 합격자 LEET 50%선 이상 ${gradeCounts.safe}곳(안정), 75%선 이상 ${gradeCounts.match}곳(적정)입니다. 학점·정성평가는 빠진 LEET 기준이니 즐겨찾기로 관심 학교를 좁혀보세요.`;
+    recCopy = `2026학년도 합격자 LEET 50%선 이상 ${gradeCounts.safe}곳(안정), 75%선 이상 ${gradeCounts.match}곳(적정)입니다. 학점·정성평가는 반영하지 않은 LEET 기준입니다.`;
   } else if (bestMatchName) {
     recTitle = `${bestMatchName}가 가장 가까운 적정권`;
     recCopy = `LEET 50%선을 넘는 학교는 없지만 75%선 이상인 적정권이 ${gradeCounts.match}곳 있습니다. 50%선과의 차이를 같이 확인하세요.`;
@@ -278,7 +278,7 @@ export function buildModel({ leetSum, gpaPct, calc, isFav, sortKey, gradeFilter,
     compareRows: compareRows.map((row) => getPlainRow(row, leetSum, gpaPct, calc)),
     compareSelected: [...compareSchools],
     compareLimit: ADM_COMPARE_LIMIT,
-    compareStatus: compareSchools.length ? `비교 선택 ${compareRows.length}/${ADM_COMPARE_LIMIT}` : '추천 상위 3개 자동 비교',
+    compareStatus: compareSchools.length ? `비교 선택 ${compareRows.length}/${ADM_COMPARE_LIMIT}` : '50%선과 가까운 3곳 자동 표시',
     tableRows,
     tableMeta: `${filterLabel} 카드 ${cardRows.length}개 · 상세 표 ${rows.length}개`,
   };

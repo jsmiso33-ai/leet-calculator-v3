@@ -56,7 +56,7 @@ export default function AdmissionTab() {
     <>
       <section className="input-area adm-intro">
         <div className="section-label">입시결과 비교 분석</div>
-        <div className="section-desc">나의 LEET·학점 입력값과 2026학년도 25개 로스쿨 입시결과를 비교해 추천 쇼트리스트와 학교별 비교표를 구성합니다. (점수 입력은 학교별 환산점수 탭과 공유됩니다.)</div>
+        <div className="section-desc">2026학년도 25개 로스쿨 합격자 50%·75%선과 내 점수를 비교합니다. 점수는 학교별 환산점수 탭에서 입력한 값을 그대로 씁니다.</div>
       </section>
       <AdmissionApp model={model} actions={actions} />
     </>

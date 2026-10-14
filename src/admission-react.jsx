@@ -16,16 +16,17 @@ const sortLabels = {
   alpha: '학교명 가나다순',
 };
 
+// 지원권 색은 styles.css의 .grade-pill.grade-* (사이트 시맨틱 토큰)에서 정한다
 const gradePillClass = {
-  safe: 'grade-safe tw:!bg-emerald-50 tw:!text-emerald-700',
-  match: 'grade-match tw:!bg-sky-50 tw:!text-sky-700',
-  reach: 'grade-reach tw:!bg-amber-50 tw:!text-amber-700',
-  hard: 'grade-hard tw:!bg-zinc-100 tw:!text-zinc-600',
+  safe: 'grade-safe',
+  match: 'grade-match',
+  reach: 'grade-reach',
+  hard: 'grade-hard',
 };
 
 const diffToneClass = {
-  plus: 'tw:!text-emerald-700',
-  minus: 'tw:!text-red-600',
+  plus: 'adm-diff-plus',
+  minus: 'adm-diff-minus',
   even: 'tw:!text-slate-500',
   na: 'tw:!text-slate-500',
 };
@@ -36,52 +37,39 @@ function cx(...parts) {
 
 function Summary({ model }) {
   const counts = model.gradeCounts;
+  const missing = model.readinessText.startsWith('입력 필요');
   return (
-    <section className="adm-summary adm-summary-react tw:!mb-4 tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:lg:!grid-cols-[1.45fr_1fr]">
-      <div className="adm-summary-lead adm-report-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-5">
-        <strong className="tw:!block tw:!text-3xl tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">
-          {model.recTitle}
-        </strong>
-        <p className="tw:!mt-2 tw:!max-w-3xl tw:!text-sm tw:!font-semibold tw:!leading-6 tw:!text-slate-600">{model.recCopy}</p>
-        <p className="adm-readiness tw:!mt-3 tw:!text-xs tw:!font-bold tw:!text-slate-600">{model.readinessText}</p>
+    <section className="adm-verdict">
+      <div className="adm-verdict-head">
+        <strong className="adm-verdict-title">{model.recTitle}</strong>
+        <p className="adm-verdict-copy">{model.recCopy}</p>
+        {missing && <p className="adm-verdict-missing">{model.readinessText}</p>}
       </div>
 
-      <div className="adm-summary-stack tw:!grid tw:!grid-cols-1 tw:!gap-3 tw:md:!grid-cols-3 tw:lg:!grid-cols-1">
-        <div className="adm-summary-item adm-metric-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
-          <div className="as-label tw:!text-xs tw:!font-extrabold tw:!text-slate-500">LEET 표점합</div>
-          <div className={cx('as-val tw:!mt-1.5 tw:!font-extrabold', model.leetSum === null ? 'empty tw:!text-base tw:!text-slate-600' : 'tw:!font-mono tw:!text-3xl tw:!text-blue-600')}>
+      <dl className="adm-verdict-stats">
+        <div>
+          <dt>LEET 표점합</dt>
+          <dd className={cx('adm-verdict-num', model.leetSum === null && 'empty')}>
             {model.leetSum === null ? '입력 필요' : model.leetSum.toFixed(1)}
-          </div>
-          <div className="as-sub tw:!mt-1.5 tw:!text-xs tw:!font-semibold tw:!text-slate-500">학교별 환산점수 기준</div>
+          </dd>
         </div>
-
-        <div className="adm-summary-item adm-metric-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!shadow-sm">
-          <div className="as-label tw:!text-xs tw:!font-extrabold tw:!text-slate-500">학점 백분위</div>
-          <div className={cx('as-val tw:!mt-1.5 tw:!font-extrabold', model.gpaPct === null ? 'empty tw:!text-base tw:!text-slate-600' : 'tw:!font-mono tw:!text-3xl tw:!text-slate-950')}>
+        <div>
+          <dt>학점 백분위</dt>
+          <dd className={cx('adm-verdict-num', model.gpaPct === null && 'empty')}>
             {model.gpaPct === null ? '입력 필요' : `${model.gpaPct.toFixed(1)}%`}
-          </div>
-          <div className="as-sub tw:!mt-1.5 tw:!text-xs tw:!font-semibold tw:!text-slate-500">입력 학점 백분위</div>
+          </dd>
         </div>
-
-        <div className="adm-summary-item adm-summary-distrib adm-metric-card tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-4 tw:!text-center tw:!shadow-sm">
-          <div className="as-label tw:!mb-3 tw:!text-xs tw:!font-extrabold tw:!text-slate-500">
-            지원권 분포 {model.totalGraded > 0 ? `(${model.totalGraded}개교)` : ''}
-          </div>
-          {model.totalGraded > 0 ? (
-            <div className="as-distrib tw:!flex tw:!flex-wrap tw:!items-center tw:!justify-center tw:!gap-2">
-              {['safe', 'match', 'reach', 'hard'].map((grade) => (
-                <span key={grade} className={cx('grade-pill tw:!rounded-full tw:!px-2.5 tw:!py-1.5 tw:!text-xs tw:!font-extrabold', gradePillClass[grade])}>
-                  {gradeLabels[grade]} {counts[grade] || 0}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <div className="as-val empty tw:!text-sm tw:!font-extrabold tw:!text-slate-600">
-              {model.leetSum === null ? 'LEET 입력 필요' : '데이터 없음'}
-            </div>
-          )}
+        <div>
+          <dt>지원권 분포{model.totalGraded > 0 ? ` · ${model.totalGraded}개교` : ''}</dt>
+          <dd className="adm-verdict-distrib">
+            {model.totalGraded > 0 ? ['safe', 'match', 'reach', 'hard'].map((grade) => (
+              <span key={grade} className={cx('grade-pill', gradePillClass[grade])}>
+                {gradeLabels[grade]} {counts[grade] || 0}
+              </span>
+            )) : <span className="adm-verdict-num empty">{model.leetSum === null ? 'LEET 입력 필요' : '데이터 없음'}</span>}
+          </dd>
         </div>
-      </div>
+      </dl>
     </section>
   );
 }
@@ -89,7 +77,7 @@ function Summary({ model }) {
 function DecisionToolbar({ model, actions }) {
   return (
     <section className="adm-decision-toolbar tw:!mb-3 tw:!flex tw:!flex-wrap tw:!items-center tw:!justify-between tw:!gap-3 tw:!rounded-xl tw:!border tw:!border-slate-200 tw:!bg-white tw:!p-3 tw:!shadow-sm" aria-label="입시결과 보기 옵션">
-      <div className="adm-grade-tabs tw:!flex tw:!min-w-0 tw:!flex-wrap tw:!gap-2" role="tablist" aria-label="지원권 필터">
+      <div className="adm-grade-tabs" role="tablist" aria-label="지원권 필터">
         {['all', 'safe', 'match', 'reach', 'hard'].map((grade) => (
           <button
             key={grade}
@@ -184,7 +172,6 @@ function Shortlist({ model, actions }) {
       <div className="adm-panel-head">
         <div>
           <h3 className="tw:!m-0 tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">학교별 입시결과</h3>
-          <p className="tw:!mt-1 tw:!text-xs tw:!leading-5 tw:!text-slate-500">선택한 정렬과 지원권 필터 기준으로 모든 학교를 카드로 보여줍니다.</p>
         </div>
         <span className="tw:!shrink-0 tw:!rounded-lg tw:!bg-slate-100 tw:!px-2.5 tw:!py-1.5 tw:!tabular-nums tw:!text-xs tw:!font-extrabold tw:!text-slate-600 tw:max-sm:!w-full tw:max-sm:!text-center">
           {model.shortlistMeta}
@@ -197,7 +184,7 @@ function Shortlist({ model, actions }) {
         )) : (
           <div className="adm-empty-card tw:!min-h-40 tw:!rounded-xl tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-5 tw:!text-center tw:!text-sm tw:!text-slate-500">
             <strong>표시할 학교가 없습니다</strong>
-            <span>지원권 필터나 학교 선택 조건을 조정해보세요.</span>
+            <span>지원권 필터나 학교 선택을 바꾸면 다시 표시됩니다.</span>
           </div>
         )}
       </section>
@@ -214,12 +201,12 @@ function ShortlistCard({ row, selected, actions }) {
           <strong className="tw:!block tw:!truncate tw:!text-lg tw:!font-extrabold tw:!leading-tight tw:!text-slate-950">{row.name}</strong>
           <span className="tw:!mt-1 tw:!block tw:!text-xs tw:!font-semibold tw:!text-slate-600">{row.regionText}</span>
         </div>
-        <span className={cx('grade-pill tw:!rounded-full tw:!px-2.5 tw:!py-1 tw:!text-xs tw:!font-extrabold', gradePillClass[grade] || 'tw:!bg-zinc-100 tw:!text-zinc-600')}>{row.gradeLabel}</span>
+        <span className={cx('grade-pill', gradePillClass[grade] || 'grade-pending')}>{row.gradeLabel}</span>
       </div>
 
       <div className="adm-short-lines tw:!grid tw:!divide-y tw:!divide-slate-100 tw:!border-y tw:!border-slate-100">
         {row.lines.map((line) => (
-          <div key={line.label} className="tw:!flex tw:!min-h-10 tw:!items-center tw:!justify-between tw:!gap-3 tw:max-sm:!items-start tw:max-sm:!py-2 tw:max-sm:!flex-col">
+          <div key={line.label} className="tw:!flex tw:!min-h-10 tw:!items-center tw:!justify-between tw:!gap-3">
             <span className="tw:!text-xs tw:!font-bold tw:!text-slate-500">{line.label}</span>
             <strong className={cx('tw:!tabular-nums tw:!text-sm tw:!font-extrabold', line.tone || 'tw:!text-slate-900')}>{line.value}</strong>
           </div>
@@ -267,7 +254,7 @@ function ComparePanel({ model, actions }) {
               <span className="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-slate-100 tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{index + 1}</span>
               <strong className="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-900">{row.name}</strong>
               <small className="tw:!flex tw:!min-w-0 tw:!items-center tw:!gap-1.5 tw:!text-xs tw:!font-bold tw:!text-slate-500">
-                <span className={cx('grade-pill', gradePillClass[grade] || 'tw:!bg-zinc-100 tw:!text-zinc-600')}>{row.gradeLabel}</span>
+                <span className={cx('grade-pill', gradePillClass[grade] || 'grade-pending')}>{row.gradeLabel}</span>
                 {row.diffDisplay || '-'}
               </small>
             </div>
@@ -292,7 +279,7 @@ function EmptyCompareSlot({ index }) {
     <div className="adm-compare-slot empty tw:!grid tw:!min-h-16 tw:!grid-cols-[auto_minmax(0,1fr)] tw:!items-center tw:!gap-x-2 tw:!rounded-lg tw:!border tw:!border-dashed tw:!border-slate-300 tw:!bg-slate-50 tw:!p-3">
       <span className="tw:!row-span-2 tw:!inline-flex tw:!h-7 tw:!w-7 tw:!items-center tw:!justify-center tw:!rounded-full tw:!bg-white tw:!font-mono tw:!text-xs tw:!font-extrabold tw:!text-slate-500">{index + 1}</span>
       <strong className="tw:!truncate tw:!text-sm tw:!font-extrabold tw:!text-slate-600">학교 선택</strong>
-      <small className="tw:!text-xs tw:!font-bold tw:!text-slate-400">학교 카드에서 추가</small>
+      <small className="tw:!text-xs tw:!font-bold tw:!text-slate-500">학교 카드에서 추가</small>
     </div>
   );
 }

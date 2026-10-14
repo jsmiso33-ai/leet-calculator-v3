@@ -8046,3 +8046,148 @@
       border-bottom: 1px solid var(--line);
     }
   }
+
+  /* ===== 입시결과 탭 정리 (2026-10-14) =====
+     요약은 카드 하나(판정 문장 + 수치 3개 한 줄), 지원권 색은 사이트 토큰으로,
+     표의 색 줄무늬·왼쪽 색 막대 제거, 모바일 카드 행은 라벨/값 한 줄 유지. */
+  .adm-verdict {
+    margin-bottom: 16px;
+    padding: 22px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    display: grid;
+    gap: 18px;
+  }
+  .adm-verdict-head {
+    display: grid;
+    gap: 6px;
+  }
+  .adm-verdict-title {
+    color: var(--ink);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .adm-verdict-copy {
+    margin: 0;
+    max-width: 68ch;
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+    word-break: keep-all;
+  }
+  .adm-verdict-missing {
+    margin: 0;
+    color: var(--warning);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .adm-verdict-stats {
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+    gap: 16px 24px;
+  }
+  .adm-verdict-stats > div {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    min-width: 0;
+  }
+  .adm-verdict-stats dt {
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .adm-verdict-stats dd {
+    margin: 0;
+  }
+  .adm-verdict-num {
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  .adm-verdict-num.empty {
+    color: var(--ink-mute);
+    font-family: var(--font-sans);
+    font-size: 15px;
+  }
+  .adm-verdict-distrib {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .grade-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .grade-pill.grade-safe    { background: color-mix(in oklab, var(--success) 12%, white); color: var(--success); }
+  .grade-pill.grade-match   { background: rgb(var(--accent-rgb) / 0.10); color: var(--accent); }
+  .grade-pill.grade-reach   { background: color-mix(in oklab, var(--warning) 12%, white); color: var(--warning); }
+  .grade-pill.grade-hard,
+  .grade-pill.grade-pending { background: var(--bg-subtle); color: var(--ink-mute); }
+  .adm-compare-table td {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .adm-diff-plus  { color: var(--success) !important; }
+  .adm-diff-minus { color: var(--danger) !important; }
+
+  .adm-grade-badge.grade-safe  { background: var(--success); }
+  .adm-grade-badge.grade-match { background: var(--accent); }
+  .adm-grade-badge.grade-reach { background: var(--warning); }
+  table.adm-table tr[data-grade] td,
+  table.adm-table tr[data-grade]:hover td {
+    background: transparent;
+  }
+  table.adm-table tr[data-grade]:hover td {
+    background: var(--bg-subtle);
+  }
+  table.adm-table tr[data-grade] td:first-child {
+    box-shadow: none;
+  }
+
+  .adm-grade-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+  }
+  @media (max-width: 760px) {
+    .adm-verdict { padding: 18px 16px; }
+    .adm-verdict-title { font-size: 22px; }
+    .adm-verdict-stats { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .adm-verdict-stats > div:last-child { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .grade-pill { font-size: 11px; padding: 3px 8px; }
+    .adm-grade-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 4px;
+      width: 100%;
+    }
+    .adm-grade-tabs button {
+      padding-inline: 4px !important;
+      white-space: nowrap;
+    }
+    .adm-short-lines div {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+  }
