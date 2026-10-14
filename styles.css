@@ -8218,40 +8218,6 @@
   .qs-head .section-label {
     justify-content: center;
   }
-  .qs-head .section-desc {
-    margin: 0;
-  }
-  .qs-progress {
-    display: grid;
-    justify-items: center;
-    gap: 6px;
-    margin-top: 12px;
-  }
-  .qs-progress-text {
-    color: var(--ink-mute);
-    font-size: 13px;
-    font-variant-numeric: tabular-nums;
-  }
-  .qs-progress-text b {
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 800;
-  }
-  .qs-progress-track {
-    display: block;
-    width: 200px;
-    height: 4px;
-    border-radius: 999px;
-    background: var(--bg-subtle);
-    overflow: hidden;
-  }
-  .qs-progress-track span {
-    display: block;
-    height: 100%;
-    background: var(--accent);
-    transition: width var(--motion-medium) var(--ease-out);
-  }
-
   .qs-panel .handoff-note {
     margin-top: 16px;
   }
@@ -8446,7 +8412,6 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .qs-progress-track span,
     .qs-num input,
     .qs-seg button {
       transition: none;

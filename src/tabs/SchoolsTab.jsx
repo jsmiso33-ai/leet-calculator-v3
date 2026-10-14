@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LAW_SCHOOLS } from '../../data/schools.js';
 import { calcSchool } from '../lib/schoolCalc.js';
 import { calcForYear } from '../lib/score.js';
@@ -200,7 +200,6 @@ export default function SchoolsTab() {
 
   const leetDone = schState.eonStd !== null && schState.chuStd !== null;
   const engScoreSchools = ENG_SCORE_SCHOOLS;
-  const readyCount = useMemo(() => LAW_SCHOOLS.filter((sc) => calcSchool(sc, input).total !== null).length, [input]);
 
   // Enter를 누르면 다음 입력칸으로 이동
   const focusNextOnEnter = (e) => {
@@ -265,11 +264,6 @@ export default function SchoolsTab() {
       <section className="input-area qs-panel">
         <div className="qs-head">
           <div className="section-label">정량 점수 입력</div>
-          <div className="section-desc">입력값은 자동 저장되고 입시결과 탭과 공유됩니다.</div>
-          <div className="qs-progress" aria-live="polite">
-            <span className="qs-progress-text"><b>{readyCount}</b> / {LAW_SCHOOLS.length}개교 환산 완료</span>
-            <span className="qs-progress-track" aria-hidden="true"><span style={{ width: `${(readyCount / LAW_SCHOOLS.length) * 100}%` }} /></span>
-          </div>
         </div>
 
         {handoff && (
