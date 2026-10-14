@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDownToLine, BookOpenText, Check, GraduationCap, Languages } from 'lucide-react';
+import { ArrowDownToLine } from 'lucide-react';
 import { LAW_SCHOOLS } from '../../data/schools.js';
 import { calcSchool } from '../lib/schoolCalc.js';
 import { calcForYear } from '../lib/score.js';
@@ -167,6 +167,7 @@ function Segmented({ value, onChange, options, label, labelledBy }) {
 export default function SchoolsTab() {
   const { schState, patch, input, favSet, getFavoriteSchoolNames, toggleFavorite, handoff } = useSchoolInput();
   const [searchQuery, setSearchQuery] = useState('');
+  const [guideOpen, setGuideOpen] = useState(false);
   const schoolFilter = useAnimatedDisclosure();
 
   const gpaMissing = schState.gpaPct === null && schState.gpaScore === null;
@@ -223,8 +224,6 @@ export default function SchoolsTab() {
   const leetError = inputErrors.eonStd || inputErrors.chuStd || inputErrors.eonPct || inputErrors.chuPct;
   const gpaError = inputErrors.gpaScore || inputErrors.gpaPct;
   const leetDone = schState.eonStd !== null && schState.chuStd !== null && !leetError;
-  const gpaDone = !gpaMissing && !gpaError;
-  const engDone = !engMissing && !inputErrors.engScore;
   const engScoreSchools = ENG_SCORE_SCHOOLS;
 
   // Enter를 누르면 다음 입력칸으로 이동
@@ -307,75 +306,74 @@ export default function SchoolsTab() {
           </div>
         )}
 
-        {/* LEET는 두 영역을 나란히 비교하고, 학점·영어는 기준을 선택한 뒤 점수를 입력한다. */}
+        {/* 세 묶음 모두 두 줄: 첫 줄은 점수, 둘째 줄은 보조(백분위·만점 기준·시험 종류). 같은 높이로 가로선을 맞춘다. */}
         <div className="qs-grid" onKeyDown={focusNextOnEnter}>
-          <fieldset className="qs-block qs-block-leet">
+          <fieldset className="qs-block">
             <legend className="qs-block-head">
-              <span className="qs-block-name"><BookOpenText size={19} aria-hidden="true" />LEET</span>
-              <span className={'qs-state' + (leetDone ? ' done' : '') + (leetError ? ' has-error' : '')}>{leetDone && <Check size={13} aria-hidden="true" />}{leetError ? '점수 확인' : leetDone ? '입력됨' : '표준점수 필수'}</span>
+              LEET
+              {(leetError || !leetDone) && <span className={'qs-state' + (leetError ? ' has-error' : '')}>{leetError ? '점수 확인' : '필요'}</span>}
             </legend>
-            <div className="qs-sub qs-sub-first">표준점수</div>
             <div className="qs-cols"><label htmlFor="sch-eon-std">언어이해</label><label htmlFor="sch-chu-std">추리논증</label></div>
             <div className="qs-row qs-row-2">
-              <NumField id="sch-eon-std" label="언어이해 표준점수" value={schState.eonStd} onChange={numChange('eonStd')} placeholder="입력" error={inputErrors.eonStd} />
-              <NumField id="sch-chu-std" label="추리논증 표준점수" value={schState.chuStd} onChange={numChange('chuStd')} placeholder="입력" error={inputErrors.chuStd} />
+              <NumField id="sch-eon-std" label="언어이해 표준점수" value={schState.eonStd} onChange={numChange('eonStd')} placeholder="표준점수" error={inputErrors.eonStd} />
+              <NumField id="sch-chu-std" label="추리논증 표준점수" value={schState.chuStd} onChange={numChange('chuStd')} placeholder="표준점수" error={inputErrors.chuStd} />
             </div>
-            <div className="qs-sub">백분위</div>
             <div className="qs-row qs-row-2">
-              <NumField id="sch-eon-pct" label="언어이해 백분위 (%)" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="입력" suffix="%" error={inputErrors.eonPct} />
-              <NumField id="sch-chu-pct" label="추리논증 백분위 (%)" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="입력" suffix="%" error={inputErrors.chuPct} />
+              <NumField id="sch-eon-pct" label="언어이해 백분위 (%)" value={schState.eonPct} onChange={numChange('eonPct')} placeholder="백분위" suffix="%" error={inputErrors.eonPct} />
+              <NumField id="sch-chu-pct" label="추리논증 백분위 (%)" value={schState.chuPct} onChange={numChange('chuPct')} placeholder="백분위" suffix="%" error={inputErrors.chuPct} />
             </div>
           </fieldset>
 
           <fieldset className="qs-block">
             <legend className="qs-block-head">
-              <span className="qs-block-name"><GraduationCap size={19} aria-hidden="true" />학부 성적</span>
-              <span className={'qs-state' + (gpaDone ? ' done' : '') + (gpaError ? ' has-error' : '')}>{gpaDone && <Check size={13} aria-hidden="true" />}{gpaError ? '점수 확인' : gpaDone ? '입력됨' : '평점 또는 백분위'}</span>
+              학부 성적
+              {(gpaError || gpaMissing) && <span className={'qs-state' + (gpaError ? ' has-error' : '')}>{gpaError ? '점수 확인' : '필요'}</span>}
             </legend>
-            <div className="qs-sub qs-sub-first" id="sch-gpa-scale-label">만점 기준</div>
-            <div className="qs-row">
-              <Segmented labelledBy="sch-gpa-scale-label" value={schState.gpaScale} onChange={(v) => patch({ gpaScale: v })}
-                options={[['4.5', '4.5'], ['4.3', '4.3'], ['4.0', '4.0']]} />
-            </div>
-            <div className="qs-cols qs-cols-next"><label htmlFor="sch-gpa-score">평점</label><label htmlFor="sch-gpa-pct">백분위</label></div>
+            <div className="qs-cols"><label htmlFor="sch-gpa-score">평점</label><label htmlFor="sch-gpa-pct">백분위</label></div>
             <div className="qs-row qs-row-2">
-              <NumField id="sch-gpa-score" label={`학부 평점 (${schState.gpaScale} 만점)`} value={schState.gpaScore} onChange={numChange('gpaScore')} placeholder="입력" step="0.01" suffix={`/ ${schState.gpaScale}`} error={inputErrors.gpaScore} />
-              <NumField id="sch-gpa-pct" label="학부 성적 백분위 (%)" value={schState.gpaPct} onChange={numChange('gpaPct')} placeholder="입력" step="0.01" suffix="%" error={inputErrors.gpaPct} />
+              <NumField id="sch-gpa-score" label={`학부 평점 (${schState.gpaScale} 만점)`} value={schState.gpaScore} onChange={numChange('gpaScore')} placeholder="평점" step="0.01" suffix={`/ ${schState.gpaScale}`} error={inputErrors.gpaScore} />
+              <NumField id="sch-gpa-pct" label="학부 성적 백분위 (%)" value={schState.gpaPct} onChange={numChange('gpaPct')} placeholder="백분위" step="0.01" suffix="%" error={inputErrors.gpaPct} />
+            </div>
+            <div className="qs-row">
+              <Segmented label="평점 만점 기준" value={schState.gpaScale} onChange={(v) => patch({ gpaScale: v })}
+                options={[['4.5', '4.5 만점'], ['4.3', '4.3 만점'], ['4.0', '4.0 만점']]} />
             </div>
           </fieldset>
 
           <fieldset className="qs-block">
             <legend className="qs-block-head">
-              <span className="qs-block-name"><Languages size={19} aria-hidden="true" />공인영어</span>
-              <span className={'qs-state' + (engDone ? ' done' : '') + (inputErrors.engScore ? ' has-error' : '')}>{engDone && <Check size={13} aria-hidden="true" />}{inputErrors.engScore ? '점수 확인' : engDone ? '입력됨' : `${engScoreSchools}개교 점수 반영`}</span>
+              공인영어
+              {inputErrors.engScore
+                ? <span className="qs-state has-error">점수 확인</span>
+                : engMissing && <span className="qs-state">{engScoreSchools}개교 반영</span>}
             </legend>
-            <div className="qs-sub qs-sub-first" id="sch-eng-type-label">시험 종류</div>
+            <div className="qs-cols"><label htmlFor="sch-eng-score">점수</label></div>
             <div className="qs-row">
-              <Segmented labelledBy="sch-eng-type-label" value={schState.engType} onChange={(v) => patch({ engType: v })}
+              <NumField id="sch-eng-score" label={`공인영어 점수 (${ENG_MAX[schState.engType]} 만점)`} value={schState.engScore} onChange={numChange('engScore')} placeholder="점수" step="1" inputMode="numeric" suffix={`/ ${ENG_MAX[schState.engType]}`} error={inputErrors.engScore} />
+            </div>
+            <div className="qs-row">
+              <Segmented label="공인영어 시험 종류" value={schState.engType} onChange={(v) => patch({ engType: v })}
                 options={[['toeic', 'TOEIC'], ['teps', 'TEPS'], ['toefl', 'TOEFL iBT']]} />
             </div>
-            <div className="qs-cols qs-cols-next"><label htmlFor="sch-eng-score">취득 점수</label></div>
-            <div className="qs-row">
-              <NumField id="sch-eng-score" label={`공인영어 점수 (${ENG_MAX[schState.engType]} 만점)`} value={schState.engScore} onChange={numChange('engScore')} placeholder="입력" step="1" inputMode="numeric" suffix={`/ ${ENG_MAX[schState.engType]}`} error={inputErrors.engScore} />
-            </div>
           </fieldset>
         </div>
 
-        <div className="qs-import">
+        <div className="qs-foot">
           <ImportLogRow onApply={applyLogResult} />
-          <span className="qs-keyboard-tip"><kbd>Enter</kbd> 다음 입력칸</span>
+          <span className="qs-foot-sep" aria-hidden="true">·</span>
+          <button type="button" className="qs-guide-toggle" aria-expanded={guideOpen} aria-controls="qs-guide" onClick={() => setGuideOpen((v) => !v)}>
+            입력 방법 안내
+          </button>
         </div>
-
-        <details className="info-callout guidance-callout">
-          <summary>입력 방법 안내</summary>
-          <ul>
+        {guideOpen && (
+          <ul className="qs-guide" id="qs-guide">
             <li><strong>LEET 표준점수 / 백분위</strong>: 표준점수는 거의 모든 학교에서 사용되고, 백분위는 서울대·고려대·아주대·부산대 등에서 추가로 사용됩니다. 표준점수만 입력해도 대부분 학교는 계산됩니다.</li>
             <li><strong>GPA 백분위</strong>: 학교마다 환산식이 달라서 본인 학교에서 받은 백분위(또는 동일 학과 내 본인 위치)를 직접 입력하세요. 학적팀에서 발급받거나 졸업증명서/성적증명서에서 확인할 수 있습니다.</li>
             <li><strong>GPA 평점</strong>: 한국외대·중앙대·영남대·동아대·원광대·인하대 등은 평점 자체를 환산표에 적용합니다. 백분위만 입력하면 추정 평점으로 계산하니 가능하면 둘 다 입력하세요.</li>
             <li><strong>영어</strong>: {ENG_SCORE_SCHOOLS}개 학교만 점수 반영, 나머지는 P/F입니다 (각 학교 카드에 표시). TEPS는 뉴텝스 기준입니다.</li>
             <li>실제 입시 점수는 정성평가(서류·면접)가 더해져 최종 결정되므로, 이 도구는 <strong>정량 영역 비교용</strong>으로만 사용하세요.</li>
           </ul>
-        </details>
+        )}
       </section>
 
       <section className="schools-controls">
