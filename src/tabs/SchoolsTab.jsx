@@ -131,7 +131,7 @@ function rangeError(value, min, max) {
 // 숫자 입력칸: 단위/만점 표시를 칸 안쪽 오른쪽에 붙이고, 범위를 벗어나면 바로 알려준다
 function NumField({ id, label, value, onChange, placeholder, suffix, error, step = '0.1', inputMode = 'decimal' }) {
   return (
-    <div className={'qs-num' + (error ? ' invalid' : '')}>
+    <div className={'qs-num' + (error ? ' invalid' : (value !== null && value !== undefined ? ' filled' : ''))}>
       <input
         id={id}
         type="number"
@@ -288,10 +288,8 @@ export default function SchoolsTab() {
     <>
       <section className="input-area qs-panel" aria-labelledby="qs-title">
         <div className="qs-head">
-          <div>
-            <h2 id="qs-title">정량 점수 입력</h2>
-          </div>
-          <span className="qs-save-note">입력값 자동 저장</span>
+          <h2 id="qs-title">정량 점수 입력</h2>
+          <span className="qs-save-note">2027학년도 모집요강 기준 · 입력값 자동 저장</span>
         </div>
 
         {handoff && (
@@ -308,7 +306,7 @@ export default function SchoolsTab() {
 
         {/* 세 묶음 모두 두 줄: 첫 줄은 점수, 둘째 줄은 보조(백분위·만점 기준·시험 종류). 같은 높이로 가로선을 맞춘다. */}
         <div className="qs-grid" onKeyDown={focusNextOnEnter}>
-          <fieldset className="qs-block">
+          <fieldset className={'qs-block' + (leetDone ? ' done' : '')}>
             <legend className="qs-block-head">
               LEET
               {(leetError || !leetDone) && <span className={'qs-state' + (leetError ? ' has-error' : '')}>{leetError ? '점수 확인' : '필요'}</span>}
@@ -324,7 +322,7 @@ export default function SchoolsTab() {
             </div>
           </fieldset>
 
-          <fieldset className="qs-block">
+          <fieldset className={'qs-block' + (!gpaMissing && !gpaError ? ' done' : '')}>
             <legend className="qs-block-head">
               학부 성적
               {(gpaError || gpaMissing) && <span className={'qs-state' + (gpaError ? ' has-error' : '')}>{gpaError ? '점수 확인' : '필요'}</span>}
@@ -340,7 +338,7 @@ export default function SchoolsTab() {
             </div>
           </fieldset>
 
-          <fieldset className="qs-block">
+          <fieldset className={'qs-block' + (!engMissing && !inputErrors.engScore ? ' done' : '')}>
             <legend className="qs-block-head">
               공인영어
               {inputErrors.engScore
