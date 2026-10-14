@@ -262,12 +262,6 @@ export default function CalcTab() {
           {hasHero && (heroResult.eon.estimated || heroResult.chu.estimated) && (
             <p className="hp-estimate-note">* 표에 없는 구간을 보정한 추정 표준점수입니다.</p>
           )}
-          {hasHero && combinedPct != null && (
-            <p className="hp-estimate-note">
-              두 영역 백분위의 기하평균(√(언어백분위 × 추리백분위))으로 계산한 참고값입니다.
-              실제 합계 백분위나 등수를 뜻하지 않습니다.
-            </p>
-          )}
           {hasHero && eonPct != null && chuPct != null && (
             <div className="hp-next-step">
               <button type="button" onClick={continueToSchools}>
