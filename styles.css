@@ -8199,8 +8199,8 @@
   }
 
   /* ===== 학교별 환산점수: 정량 점수 입력 (2026-10-14) =====
-     LEET · 학부 성적 · 공인영어 세 묶음을 성적표처럼 한 줄에. 칸 안에 만점/단위,
-     범위 밖 값은 즉시 표시, Enter로 다음 칸 이동, 상단에 환산 완료 학교 수. */
+     LEET · 학부 성적 · 공인영어 세 묶음을 같은 뼈대(열 이름 → 입력 줄 → 소제목 → 둘째 줄)로
+     가운데 정렬. 칸 안에 만점/단위, 범위 밖 값은 즉시 표시, Enter로 다음 칸 이동. */
   .sr-only {
     position: absolute;
     width: 1px;
@@ -8210,19 +8210,22 @@
     white-space: nowrap;
   }
   .qs-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 12px 24px;
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+  .qs-head .section-label {
+    justify-content: center;
   }
   .qs-head .section-desc {
-    margin-bottom: 0;
+    margin: 0;
   }
   .qs-progress {
     display: grid;
-    justify-items: end;
+    justify-items: center;
     gap: 6px;
+    margin-top: 12px;
   }
   .qs-progress-text {
     color: var(--ink-mute);
@@ -8236,7 +8239,7 @@
   }
   .qs-progress-track {
     display: block;
-    width: 180px;
+    width: 200px;
     height: 4px;
     border-radius: 999px;
     background: var(--bg-subtle);
@@ -8253,34 +8256,31 @@
     margin-top: 16px;
   }
   .qs-grid {
-    margin-top: 20px;
+    margin-top: 24px;
+    padding-top: 4px;
     border-top: 1px solid var(--line);
     display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .qs-block {
     min-width: 0;
     margin: 0;
-    padding: 20px 24px 4px;
+    padding: 22px 24px 6px;
     border: 0;
     border-left: 1px solid var(--line);
+    text-align: center;
   }
   .qs-block:first-child {
-    padding-left: 0;
     border-left: 0;
-  }
-  .qs-block:last-child {
-    padding-right: 0;
   }
   .qs-block-head {
     float: left;
     width: 100%;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     padding: 0;
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
+    display: grid;
+    justify-items: center;
+    gap: 2px;
   }
   .qs-block > :not(legend) {
     clear: both;
@@ -8299,46 +8299,31 @@
     color: var(--success);
   }
 
-  .qs-sheet {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px;
-    margin-top: -8px;
-  }
-  .qs-sheet thead th {
-    padding: 0 4px 0 0;
-    color: var(--ink-mute);
-    font-size: 12px;
-    font-weight: 600;
-    text-align: left;
-  }
-  .qs-sheet tbody th {
-    width: 1%;
-    padding-right: 12px;
-    color: var(--ink);
-    font-size: 13px;
-    font-weight: 700;
-    text-align: left;
-    white-space: nowrap;
-  }
-  .qs-sheet td {
-    padding-right: 8px;
-    vertical-align: top;
-  }
-  .qs-sheet td:last-child {
-    padding-right: 0;
-  }
-
-  .qs-field {
+  .qs-cols,
+  .qs-row-2 {
     display: grid;
-    gap: 6px;
-    margin-bottom: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
-  .qs-field > label,
-  .qs-label {
+  .qs-cols:has(> :only-child) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .qs-cols {
+    margin-bottom: 6px;
+  }
+  .qs-cols label,
+  .qs-sub {
     color: var(--ink-soft);
     font-size: 12px;
     font-weight: 700;
+  }
+  .qs-sub {
+    margin: 14px 0 6px;
+  }
+  .qs-sub span {
+    margin-left: 4px;
+    color: var(--ink-mute);
+    font-weight: 500;
   }
 
   .qs-num {
@@ -8348,7 +8333,7 @@
   .qs-num input {
     width: 100%;
     height: 48px;
-    padding: 0 52px 0 14px;
+    padding: 0 40px;
     border: 1px solid var(--line-strong);
     border-radius: var(--radius-md);
     background: #fff;
@@ -8357,6 +8342,7 @@
     font-size: 18px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+    text-align: center;
     -moz-appearance: textfield;
     appearance: textfield;
     transition: border-color var(--motion-fast) var(--ease-out), box-shadow var(--motion-fast) var(--ease-out);
@@ -8367,7 +8353,7 @@
     margin: 0;
   }
   .qs-num input::placeholder {
-    color: rgb(var(--line-rgb) / 0.32);
+    color: rgb(var(--line-rgb) / 0.3);
     font-weight: 500;
   }
   .qs-num input:hover {
@@ -8406,14 +8392,14 @@
     grid-auto-columns: minmax(0, 1fr);
     grid-auto-flow: column;
     gap: 2px;
-    padding: 3px;
+    height: 48px;
+    padding: 4px;
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
     background: var(--bg-subtle);
   }
   .qs-seg button {
-    min-height: 34px;
-    padding: 0 8px;
+    padding: 0 6px;
     border: 0;
     border-radius: var(--radius-sm);
     background: transparent;
@@ -8438,32 +8424,25 @@
     outline-offset: 1px;
   }
 
-  .qs-hint {
-    margin: 10px 0 14px;
-    color: var(--ink-mute);
-    font-size: 12px;
-    line-height: 1.6;
-    word-break: keep-all;
+  .qs-import {
+    display: flex;
+    justify-content: center;
+    margin: 18px 0 4px;
   }
-  .qs-block-leet .import-log-row {
-    margin-bottom: 14px;
+  .qs-import .import-log-row {
+    margin-bottom: 0;
   }
 
   @media (max-width: 900px) {
     .qs-grid {
       grid-template-columns: minmax(0, 1fr);
     }
-    .qs-block,
-    .qs-block:first-child,
-    .qs-block:last-child {
-      padding: 18px 0 4px;
+    .qs-block {
+      padding: 20px 0 10px;
       border-left: 0;
     }
     .qs-block + .qs-block {
       border-top: 1px solid var(--line);
-    }
-    .qs-progress {
-      justify-items: start;
     }
   }
   @media (prefers-reduced-motion: reduce) {
