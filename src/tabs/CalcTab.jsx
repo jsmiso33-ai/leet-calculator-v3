@@ -11,6 +11,23 @@ import { useAnimatedDisclosure } from '../lib/useAnimatedDisclosure.js';
 
 const TrendChart = lazy(() => import('../components/TrendChart.jsx'));
 
+// 추이 차트(모션 라이브러리 포함, 압축 약 95KB)는 화면 근처까지 스크롤했을 때만 불러온다.
+function WhenNearViewport({ children, fallback }) {
+  const ref = useRef(null);
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    if (near) return undefined;
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') { setNear(true); return undefined; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) { setNear(true); io.disconnect(); }
+    }, { rootMargin: '400px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [near]);
+  return near ? children : <div ref={ref}>{fallback}</div>;
+}
+
 const STORAGE_KEY = 'leet_calculator_state_v1';
 // styles.css의 hpYearsCollapse(40ms 지연 + 220ms)가 끝난 뒤 팝오버를 언마운트한다.
 const PICKER_CLOSE_MS = 260;
@@ -296,7 +313,7 @@ export default function CalcTab() {
         <div className="section-label">연도별 표준점수 합계 추이</div>
         <div className="section-desc">같은 원점수가 학년도별로 합산 표준점수가 어떻게 다르게 환산되는지 보여줍니다. 점에 마우스를 올리면 영역별 점수도 같이 확인할 수 있어요.</div>
         {results.some((r) => r.eon?.std != null && r.chu?.std != null) ? (
-          <Suspense fallback={<p role="status">차트 불러오는 중…</p>}><TrendChart results={results} /></Suspense>
+          <WhenNearViewport fallback={<p role="status">차트 불러오는 중…</p>}><Suspense fallback={<p role="status">차트 불러오는 중…</p>}><TrendChart results={results} /></Suspense></WhenNearViewport>
         ) : <p className="empty-state">두 영역의 원점수를 입력하면 연도별 추이를 보여드립니다.</p>}
       </section>
 

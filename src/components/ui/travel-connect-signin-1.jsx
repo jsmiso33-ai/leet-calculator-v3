@@ -129,9 +129,9 @@ function KakaoIcon() {
   );
 }
 
-export function TravelConnectSignIn({ trigger }) {
+export function TravelConnectSignIn({ trigger, initialOpen = false }) {
   const { signIn, signInWithPassword, signUpWithPassword, resetPassword } = useAuth();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initialOpen);
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

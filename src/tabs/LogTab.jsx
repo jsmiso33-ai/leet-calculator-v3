@@ -9,7 +9,7 @@ import QGrade from '../components/QGrade.jsx';
 import { Input } from '../components/ui/input.jsx';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../components/ui/select.jsx';
 import { formatTimer, useTimer } from '../context/TimerContext.jsx';
-import { TravelConnectSignIn } from '../components/ui/travel-connect-signin-1.jsx';
+import LazySignIn from '../components/LazySignIn.jsx';
 
 const YEARS_DESC = Object.keys(LEET).map(Number).sort((a, b) => b - a);
 
@@ -98,7 +98,7 @@ export default function LogTab() {
             </div>
             <div className="login-nudge-desc">로그인하면 게스트 기록을 계정에 보관하고 이어볼 수 있어요.</div>
           </div>
-          <TravelConnectSignIn trigger={<button className="login-nudge-btn" type="button">로그인해서 기록 보관</button>} />
+          <LazySignIn trigger={<button className="login-nudge-btn" type="button">로그인해서 기록 보관</button>} />
         </section>
       )}
 

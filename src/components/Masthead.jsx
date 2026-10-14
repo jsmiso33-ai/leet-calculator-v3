@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext.jsx';
 import { ArrowRight, Cloud } from 'lucide-react';
-import { TravelConnectSignIn } from './ui/travel-connect-signin-1.jsx';
+import LazySignIn from './LazySignIn.jsx';
 import { FIRST_YEAR, LATEST_YEAR } from '../../data/site.js';
 
 // 헤더 (제목 + 인증). auth.js의 updateAuthUI 동작을 React로 이식.
@@ -34,7 +34,7 @@ export default function Masthead() {
             {user ? (
               <button className="auth-btn signed-in" id="authBtn" type="button" onClick={() => signOut()}>로그아웃</button>
             ) : (
-              <TravelConnectSignIn trigger={(
+              <LazySignIn trigger={(
                 <button className="auth-btn auth-login-open" id="authBtn" type="button">
                   로그인
                   <ArrowRight aria-hidden="true" size={15} strokeWidth={2.4} />

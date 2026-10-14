@@ -174,47 +174,7 @@
   .container--daily { max-width: 960px; }
 
   /* ===== EXAM TIMER ===== */
-  .exam-timer-card {
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-items: center;
-    gap: 14px;
-    padding: 22px 24px;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, #eff6ff, #f8fafc 58%);
-    border: 1px solid rgb(var(--accent-rgb) / 0.2);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-  }
-  .exam-timer-copy { text-align: center; }
-  .exam-timer-kicker { display: block; margin-bottom: 4px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .06em; }
-  .exam-timer-copy h2 { color: var(--ink); font-size: 20px; line-height: 1.35; }
-  .exam-timer-copy p { margin-top: 5px; color: var(--ink-mute); font-size: 13px; line-height: 1.5; }
-  .exam-timer-preview { display: grid; place-items: center; }
-  .exam-timer-ring {
-    display: grid; justify-items: center; gap: 3px; width: 122px;
-  }
-  .exam-analog-clock { position: relative; width: 96px; aspect-ratio: 1; border: 6px solid var(--accent); border-radius: 50%; background: #fff; box-shadow: 0 3px 10px rgb(var(--accent-rgb) / .14); }
-  .exam-clock-tick { position: absolute; top: 5px; left: calc(50% - 1px); width: 2px; height: 7px; border-radius: 2px; background: #64748b; transform: rotate(var(--tick-rotation)); transform-origin: 1px 37px; }
-  .exam-clock-tick:nth-child(3n + 1) { height: 9px; background: var(--ink); }
-  .exam-clock-hand { position: absolute; bottom: 50%; left: calc(50% - 1px); border-radius: 2px; transform-origin: 50% 100%; }
-  .exam-clock-hand-hour { width: 4px; height: 21px; margin-left: -1px; background: var(--ink); }
-  .exam-clock-hand-minute { width: 2px; height: 31px; background: var(--accent); }
-  .exam-clock-pin { position: absolute; top: calc(50% - 4px); left: calc(50% - 4px); width: 8px; height: 8px; border: 2px solid #fff; border-radius: 50%; background: var(--accent); box-sizing: border-box; }
-  .exam-timer-ring strong { color: var(--ink); font-family: var(--font-mono); font-size: 18px; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
-  .exam-timer-ring > span { color: var(--ink-tertiary); font-size: 10px; font-weight: 700; }
-  .exam-timer-controls { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-  .exam-timer-controls label { display: grid; gap: 4px; min-width: 92px; color: var(--ink-mute); font-size: 11px; font-weight: 700; }
-  .exam-timer-controls select, .exam-timer-controls input {
-    min-height: 38px; padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: #fff; color: var(--ink); font: inherit;
-  }
-  .exam-timer-controls input { width: 76px; }
-  .exam-timer-start { align-self: end; min-height: 38px; padding: 8px 13px; border: 1px solid var(--accent); border-radius: var(--radius-sm); background: var(--accent); color: #fff; font: inherit; font-size: 12px; font-weight: 800; }
-  .exam-timer-start:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
-  .exam-timer-start:disabled { opacity: .55; cursor: not-allowed; }
-  .exam-timer-note { grid-column: 1 / -1; margin-top: -2px; color: var(--ink-tertiary); font-size: 11px; text-align: center; }
   .timer-dock { position: fixed; z-index: 100; right: 24px; bottom: 88px; display: flex; align-items: center; gap: 16px; padding: 12px 14px 12px 16px; background: #0f172a; color: #fff; border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); }
-  .timer-dock.is-ending { background: #9a3412; }
   .timer-dock.is-finished { background: #14532d; }
   .timer-dock-copy { display: grid; gap: 2px; }
   .timer-dock-label { color: rgba(255,255,255,.72); font-size: 11px; font-weight: 700; }
@@ -232,14 +192,6 @@
   .timer-log-nudge button { border-color: var(--success); background: var(--success); }
   .timer-log-nudge button:hover { background: #166534; }
   @media (max-width: 720px) {
-    .exam-timer-card { grid-template-columns: 1fr; gap: 14px; padding: 20px; }
-    .exam-analog-clock { width: 84px; border-width: 5px; }
-    .exam-clock-tick { top: 4px; height: 6px; transform-origin: 1px 33px; }
-    .exam-clock-tick:nth-child(3n + 1) { height: 8px; }
-    .exam-clock-hand-hour { height: 18px; }
-    .exam-clock-hand-minute { height: 27px; }
-    .exam-timer-controls { justify-content: flex-start; }
-    .exam-timer-note { margin-top: -8px; }
     .timer-dock { right: 12px; bottom: 78px; left: 12px; justify-content: space-between; }
     .timer-log-nudge { align-items: flex-start; flex-direction: column; }
   }
@@ -517,13 +469,6 @@
   flex: 0 0 auto;
   justify-content: flex-end;
 }
-
-.meta.is-guest .auth-nudge {
-  max-width: none;
-  margin-top: 0;
-  text-align: right;
-  white-space: nowrap;
-}
   .meta .red { color: var(--accent); font-weight: 600; }
 
   /* ===== HERO PULSE: 입력+결과+연도 통합 카드 (calc 탭) ===== */
@@ -540,15 +485,6 @@
     grid-template-columns: minmax(280px, 0.85fr) minmax(0, 1.15fr);
     gap: 0;
     align-items: stretch;
-  }
-  .hero-pulse-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(90deg, rgb(var(--accent-rgb) / 0.04), rgba(255, 255, 255, 0) 52%),
-      linear-gradient(180deg, rgba(15, 118, 110, 0.04), rgba(255, 255, 255, 0) 64%);
-    z-index: 0;
   }
   .hp-result, .hp-input {
     position: relative;
@@ -574,23 +510,6 @@
   }
 
   /* result column */
-  .hp-era-badge {
-    align-self: center;
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 7px 16px;
-    background: rgba(255, 255, 255, 0.78);
-    color: var(--accent-hover);
-    border: 1px solid rgb(var(--accent-rgb) / 0.16);
-    border-radius: 999px;
-    font-size: 13px; font-weight: 600;
-    letter-spacing: 0;
-  }
-  .hp-era-dot {
-    width: 6px; height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: heroPulse 2s ease-in-out infinite;
-  }
   @keyframes heroPulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.5; transform: scale(1.4); }
@@ -632,85 +551,12 @@
     font-family: var(--font-mono);
     letter-spacing: 0;
   }
-  .hp-percentile-text.has-stats {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
-  }
-  .hp-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    min-width: 92px;
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.82);
-    border: 1px solid rgb(var(--accent-rgb) / 0.12);
-    border-radius: var(--radius-md);
-  }
-  .hp-stat-label {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-  }
-  .hp-stat-val {
-    font-family: var(--font-mono);
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent-hover);
-  }
   .hp-percentile-text b { color: var(--ink); font-weight: 600; }
 
   /* 백분위 미터 (상위 % 시각화) */
-  .hp-meter {
-    width: 100%;
-    max-width: 300px;
-    margin-top: 2px;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    animation: hpMeterIn var(--motion-medium) var(--ease-out-soft) both;
-  }
   @keyframes hpMeterIn {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-  .hp-meter-track {
-    position: relative;
-    height: 8px;
-    border-radius: 999px;
-    background: rgb(var(--line-rgb) / 0.08);
-    overflow: hidden;
-  }
-  .hp-meter-fill {
-    position: absolute;
-    inset: 0 auto 0 0;
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--teal) 100%);
-    transition: width var(--motion-slow) var(--ease-out);
-  }
-  .hp-meter-caption {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-mute);
-    letter-spacing: 0;
-    text-align: center;
-  }
-  .hp-meter-caption b {
-    color: var(--accent-hover);
-    font-weight: 700;
-    font-size: 13px;
-  }
-  .hp-meter-sub {
-    color: var(--ink-tertiary);
-    font-weight: 500;
-    margin-left: 2px;
   }
   .hp-next-step {
     width: 100%;
@@ -744,9 +590,6 @@
   }
   .hp-next-step button:active { transform: translateY(1px); }
   @media (prefers-reduced-motion: reduce) {
-    .hp-meter { animation: none; }
-    .hp-meter-fill { transition: none; }
-    .hp-era-dot { animation: none; }
     .hp-next-step button { transition: none; }
   }
 
@@ -1022,11 +865,7 @@
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.12);
   }
-
-  .year-selector { margin-top: 8px; }
-  .year-selector .y-label { font-size: 11px; color: var(--ink-mute); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
   .year-chips { display: flex; flex-wrap: wrap; gap: 4px; }
-  .year-row-break { flex-basis: 100%; height: 0; }
   .y-chip {
     padding: 6px 12px;
     border: 1px solid var(--line);
@@ -1086,13 +925,6 @@
     font-size: 11px;
     color: var(--ink-mute);
   }
-  .result-card .raw-display {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--ink-mute);
-    margin-bottom: 4px;
-  }
-  .result-card .raw-display .num { color: var(--ink); font-weight: 600; }
 
   table.score-table {
     width: 100%;
@@ -1455,26 +1287,6 @@
     display: inline-flex;
     align-items: center;
   }
-  .auth-provider-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    margin-right: 7px;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1;
-  }
-  .auth-kakao {
-    background: #fee500;
-    border-color: #f1d700;
-    color: #191600;
-  }
-  .auth-kakao:hover {
-    border-color: #d9c500;
-    box-shadow: 0 0 0 3px rgba(254, 229, 0, 0.18);
-  }
   .auth-btn:hover {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.08);
@@ -1504,10 +1316,6 @@
     box-shadow: 0 6px 14px rgb(var(--line-rgb) / .22);
   }
   .auth-btn.auth-login-open:focus-visible { outline: 3px solid rgb(var(--accent-rgb) / .28); outline-offset: 3px; }
-  .auth-btn.auth-kakao:hover {
-    border-color: #d9c500;
-    box-shadow: 0 0 0 3px rgba(254, 229, 0, 0.18);
-  }
   .auth-btn.signed-in {
     background: transparent;
     border: 1px solid var(--line-strong);
@@ -1530,19 +1338,6 @@
     color: var(--ink-mute);
     margin-top: 6px;
     text-align: right;
-  }
-  .auth-nudge {
-    margin-top: 6px;
-    max-width: 360px;
-    font-family: var(--font-sans);
-    font-size: 12px;
-    line-height: 1.45;
-    color: var(--ink-soft);
-    text-align: right;
-    white-space: nowrap;
-  }
-  .auth-nudge.is-hidden {
-    display: none;
   }
 
   /* ===== LIGHT SPLIT SIGN-IN DIALOG ===== */
@@ -1925,9 +1720,6 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xs);
   }
-  .login-nudge-card.is-hidden {
-    display: none;
-  }
   .login-nudge-copy {
     min-width: 0;
   }
@@ -2221,56 +2013,6 @@
   }
 
   /* ===== 학교별 환산 탭 ===== */
-  .schools-input-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  @media (max-width: 640px) {
-    .schools-input-grid { grid-template-columns: 1fr; }
-  }
-  .info-callout {
-    margin-top: 20px;
-    padding: 14px 18px;
-    background: var(--bg-subtle);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--ink-soft);
-  }
-  .info-callout strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-  .info-callout ul {
-    margin: 8px 0 0 16px;
-    padding: 0;
-  }
-  .info-callout li { margin-bottom: 6px; }
-
-  details.info-callout {
-    display: block;
-  }
-  details.info-callout summary {
-    min-height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    list-style: none;
-    cursor: pointer;
-    color: var(--ink);
-    font-weight: 700;
-  }
-  details.info-callout summary::-webkit-details-marker { display: none; }
-  details.info-callout summary::after {
-    content: '+';
-    color: var(--ink-mute);
-    font-size: 15px;
-    font-weight: 600;
-  }
-  details.info-callout[open] summary::after { content: '-'; }
-  details.info-callout[open] ul { margin-top: 10px; }
 
   .schools-controls {
     display: flex;
@@ -2485,12 +2227,6 @@
     margin-left: 2px;
   }
   .sc-total-val.empty { color: var(--ink-mute); font-size: 16px; }
-  .sc-pct-mini {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--ink);
-    margin-top: 2px;
-  }
 
   .sc-rows { display: flex; flex-direction: column; gap: 6px; }
   .sc-row {
@@ -2558,111 +2294,8 @@
   }
 
   /* ===== 커트라인 비교 인디케이터 ===== */
-  .sc-cutline {
-    margin-top: 12px;
-    padding: 10px 12px;
-    background: var(--bg-subtle);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-  }
-  .sc-cutline-title {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--ink-mute);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .sc-cutline-rows { display: flex; flex-direction: column; gap: 5px; }
-  .sc-cutline-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-  }
-  .sc-cutline-row .cl-label { color: var(--ink-soft); }
-  .sc-cutline-row .cl-ref {
-    color: var(--ink-mute);
-    font-size: 10px;
-  }
-  .sc-cutline-row .cl-diff {
-    font-weight: 700;
-    font-size: 13px;
-    min-width: 60px;
-    text-align: right;
-  }
-  .sc-cutline-row .cl-diff.plus { color: #2e7d32; }
-  .sc-cutline-row .cl-diff.minus { color: var(--accent); }
-  .sc-cutline-row .cl-diff.even { color: var(--ink-mute); }
-  .sc-cutline-na {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--ink-mute);
-    text-align: center;
-    padding: 4px 0;
-  }
 
   /* ===== 입시결과 비교 탭 ===== */
-  .adm-summary {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .adm-summary-item {
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 16px 18px;
-    box-shadow: var(--shadow-sm);
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-  .adm-summary-item .as-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--ink-mute);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .adm-summary-item .as-val {
-    font-family: var(--font-mono);
-    font-size: 26px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-  }
-  .adm-summary-item .as-val.empty { color: var(--ink-mute); font-size: 13px; font-weight: 500; }
-  .adm-summary-item .as-val.muted { color: var(--ink-mute); }
-  .adm-summary-item .as-val-school {
-    font-family: var(--font-sans);
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--accent);
-    letter-spacing: -0.02em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .adm-summary-item .as-sub {
-    font-size: 11px;
-    color: var(--ink-tertiary);
-    margin-top: 6px;
-    font-family: var(--font-mono);
-    letter-spacing: -0.01em;
-  }
-  .adm-summary-distrib .as-distrib {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 0;
-  }
   .grade-pill {
     display: inline-flex;
     align-items: center;
@@ -2729,12 +2362,6 @@
   table.adm-table th:first-child { text-align: left; }
   table.adm-table th:hover { color: var(--ink); }
   table.adm-table th.sorted { color: var(--accent); }
-  table.adm-table th .sort-arrow {
-    font-size: 10px;
-    margin-left: 4px;
-    opacity: 0.3;
-  }
-  table.adm-table th.sorted .sort-arrow { opacity: 1; }
 
   table.adm-table td {
     padding: 16px 10px;
@@ -2839,19 +2466,8 @@
     letter-spacing: 0.03em;
   }
   table.adm-table tr.adm-separator-row:hover td { background: #ede8dd; }
-
-  @media (max-width: 900px) {
-    .adm-summary { grid-template-columns: repeat(2, 1fr); }
-  }
   @media (max-width: 640px) {
     /* KPI 카드 모바일 */
-    .adm-summary { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
-    .adm-summary-item { padding: 12px 14px; }
-    .adm-summary-item .as-label { font-size: 9px; margin-bottom: 6px; }
-    .adm-summary-item .as-val { font-size: 20px; }
-    .adm-summary-item .as-val.empty { font-size: 12px; }
-    .adm-summary-item .as-val-school { font-size: 14px; }
-    .adm-summary-item .as-sub { font-size: 10px; margin-top: 4px; }
     .grade-pill { font-size: 10px; padding: 3px 8px; }
     .adm-school-sub { font-size: 10px; }
 
@@ -3178,10 +2794,6 @@
     color: var(--accent);
     background: var(--bg-tint);
   }
-  .import-icon {
-    font-size: 14px;
-    font-weight: 700;
-  }
   .import-log-dropdown {
     position: absolute;
     top: 100%;
@@ -3300,9 +2912,7 @@
     .auth-mode { font-size: 11px; }
     .auth-btn { padding: 6px 10px; font-size: 12px; }
     .auth-btn svg { width: 14px !important; height: 14px !important; margin-right: 4px !important; }
-    .auth-provider-mark { width: 14px; height: 14px; margin-right: 4px; }
     .auth-info { text-align: left; font-size: 10px; margin-top: 4px; }
-    .auth-nudge { text-align: left; font-size: 11px; max-width: none; white-space: normal; }
     .masthead .meta.is-guest {
       min-width: 0;
       align-items: center;
@@ -3504,51 +3114,6 @@
     min-height: 48px;
   }
 
-  .chart-wrap.chart-unavailable {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 180px;
-    border: 1px dashed var(--line-strong);
-    border-radius: var(--radius-md);
-    background: var(--bg-subtle);
-  }
-
-  .chart-wrap.chart-unavailable canvas {
-    display: none;
-  }
-
-  .chart-wrap.chart-unavailable::after {
-    content: "차트 라이브러리를 불러오지 못했습니다. 표 계산 결과는 계속 사용할 수 있습니다.";
-    max-width: 360px;
-    padding: 0 16px;
-    color: var(--ink-mute);
-    font-size: 13px;
-    line-height: 1.6;
-    text-align: center;
-  }
-  .chart-wrap.chart-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 180px;
-    border: 1px dashed var(--line-strong);
-    border-radius: var(--radius-md);
-    background: var(--bg-subtle);
-  }
-  .chart-wrap.chart-empty canvas {
-    display: none;
-  }
-  .chart-wrap.chart-empty::after {
-    content: "원점수와 비교할 학년도를 선택하면 연도별 표준점수 추이가 표시됩니다.";
-    max-width: 360px;
-    padding: 0 16px;
-    color: var(--ink-mute);
-    font-size: 13px;
-    line-height: 1.6;
-    text-align: center;
-  }
-
   @media (max-width: 900px) {
     .hp-result {
       border-right: 0;
@@ -3656,27 +3221,12 @@
       padding-bottom: 24px;
     }
 
-    .hp-era-badge {
-      font-size: 12px;
-      padding: 6px 13px;
-    }
-
     .hp-score {
       font-size: clamp(54px, 16vw, 70px);
     }
 
     .hp-score-meta {
       font-size: 12px;
-    }
-
-    .hp-stat {
-      min-width: 0;
-      flex: 1 1 120px;
-      padding: 9px 12px;
-    }
-
-    .hp-stat-val {
-      font-size: 20px;
     }
 
     .hp-years-trigger {
@@ -3693,7 +3243,6 @@
     }
 
     .log-actions,
-    .fb-actions,
     .confirm-actions {
       display: grid;
       grid-template-columns: 1fr;
@@ -3702,30 +3251,10 @@
 
     .log-actions .btn-primary,
     .log-actions .btn-secondary,
-    .fb-actions button,
     .confirm-actions button {
       width: 100%;
       min-height: 46px;
       justify-content: center;
-    }
-
-    details.guidance-callout {
-      padding: 0;
-      border-left-width: 0;
-      overflow: hidden;
-    }
-
-    details.guidance-callout summary {
-      min-height: 46px;
-      padding: 0 14px;
-      background: var(--bg-subtle);
-    }
-
-    details.guidance-callout ul {
-      margin: 0;
-      padding: 12px 16px 14px 28px;
-      background: var(--bg-card);
-      border-top: 1px solid var(--line);
     }
 
     .school-search-clear,
@@ -3760,10 +3289,6 @@
       grid-template-columns: 48px minmax(64px, 1fr) minmax(52px, auto);
     }
 
-    .adm-summary-item {
-      min-width: 0;
-    }
-
     table.adm-table tr {
       gap: 7px 10px;
     }
@@ -3791,17 +3316,6 @@
       white-space: nowrap;
     }
 
-    .fb-overlay {
-      align-items: flex-end;
-      padding: 12px;
-    }
-
-    .fb-modal {
-      max-height: min(86vh, 620px);
-      padding: 18px;
-      border-radius: var(--radius-lg);
-    }
-
     footer.foot {
       padding-bottom: 12px;
     }
@@ -3820,10 +3334,6 @@
   @media (max-width: 380px) {
     .hp-score {
       font-size: 50px;
-    }
-
-    .hp-stat {
-      flex-basis: 100%;
     }
 
     .sc-row {
@@ -3916,8 +3426,6 @@
     .sf-quick-actions button { padding: 8px 14px; font-size: 12px; }
     .sort-btn { padding: 8px 14px; }
     /* 채점 셀은 그리드라 자동으로 화면 폭에 맞춰지지만 최소 사이즈 유지 */
-    .qg-cell { font-size: 13px; }
-    .qg-cell .qg-num { font-size: 14px; }
     /* 폼 입력 — iOS 자동 줌 방지를 위해 16px 이상 유지 */
     input[type="number"], input[type="text"], input[type="date"], select, textarea {
       font-size: 16px !important;
@@ -3988,8 +3496,6 @@
     .section-label { font-size: 15px; }
     .section-desc { font-size: 12px; line-height: 1.7; }
     .input-area { padding: 16px; }
-    .info-callout { padding: 10px 12px; font-size: 11px; }
-    .info-callout ul { margin-left: 10px; }
   }
 
   /* ===== 문항별 채점 모드 ===== */
@@ -4056,99 +3562,8 @@
     color: var(--accent);
     font-weight: 700;
   }
-  .qgrade-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 6px;
-  }
-  @media (max-width: 640px) {
-    .qgrade-grid { grid-template-columns: repeat(6, 1fr); gap: 4px; }
-  }
-  @media (max-width: 380px) {
-    .qgrade-grid { grid-template-columns: repeat(5, 1fr); gap: 3px; }
-  }
-  .qg-cell {
-    aspect-ratio: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--bg-card);
-    border: none;
-    box-shadow: 0 0 0 1px rgba(24, 24, 27, 0.06);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all var(--motion-fast) var(--ease-out);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--ink-soft);
-    user-select: none;
-    position: relative;
-  }
-  .qg-cell:hover {
-    box-shadow: 0 0 0 1.5px var(--accent), 0 4px 8px rgb(var(--accent-rgb) / 0.1);
-    transform: translateY(-1px);
-    z-index: 2;
-  }
-  .qg-cell .qg-num {
-    font-weight: 600;
-    font-size: 13px;
-  }
-  .qg-cell .qg-mark {
-    font-size: 14px;
-    line-height: 1;
-    margin-top: 2px;
-    font-weight: 600;
-  }
-  .qg-cell.correct {
-    background: var(--success-soft);
-    box-shadow: 0 0 0 1px rgba(27, 124, 90, 0.24);
-    color: var(--success);
-  }
-  .qg-cell.correct:hover {
-    box-shadow: 0 0 0 1.5px var(--success), 0 4px 8px rgba(27, 124, 90, 0.2);
-  }
-  .qg-cell.incorrect {
-    background: var(--danger-soft);
-    box-shadow: 0 0 0 1px rgba(185, 28, 28, 0.24);
-    color: var(--danger);
-  }
-  .qg-cell.incorrect:hover {
-    box-shadow: 0 0 0 1.5px var(--danger), 0 4px 8px rgba(185, 28, 28, 0.2);
-  }
   /* 헷갈림 (legacy, 더 이상 사용 안 함) */
-  .qg-cell.unsure {
-    background: var(--warning-soft);
-    color: var(--warning);
-  }
   /* 카테고리 색띠 (메타데이터에서 가져옴) */
-  .qg-cell .qg-cat-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2.5px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-  .qg-cell .qg-tooltip {
-    visibility: hidden;
-    position: absolute;
-    bottom: 110%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--ink);
-    color: #fff;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-    z-index: 10;
-    pointer-events: none;
-    box-shadow: 0 4px 12px rgba(24, 24, 27, 0.15);
-  }
-  .qg-cell:hover .qg-tooltip { visibility: visible; }
 
   .qgrade-legend {
     display: flex;
@@ -4260,55 +3675,16 @@
   }
 
   /* "준비중" placeholder (유형별 정답률 분석) */
-  .qstats-coming-soon {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    padding: 36px 24px;
-    background: linear-gradient(180deg, var(--bg-subtle) 0%, transparent 100%);
-    border-radius: var(--radius-md);
-    text-align: center;
-  }
-  .qcs-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--ink);
-    color: var(--ink-on-dark);
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    border-radius: 999px;
-  }
-  .qcs-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-  }
-  .qcs-desc {
-    font-size: 13px;
-    color: var(--ink-mute);
-    line-height: 1.6;
-    max-width: 480px;
-  }
 
   /* 기출 풀이 기록 탭 */
   @media (max-width: 640px) {
-    .log-form { padding: 16px; }
-    .log-form-grid { grid-template-columns: 1fr; }
     .log-entry { padding: 10px 12px; }
     .log-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .log-stat-card { padding: 10px; }
   }
 
   /* 표준점수 계산기 탭 */
   @media (max-width: 640px) {
     .result-card { padding: 16px; }
-    .detail-summary { flex-direction: column; gap: 16px; }
-    .chart-container { height: 220px !important; }
   }
 
   /* 풋터 */
@@ -4734,36 +4110,6 @@
     border-radius: 50%;
   }
   /* ===== 채점 방식 토글 (개별 / 일괄) ===== */
-  .qg-mode-toggle {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 16px;
-    padding: 4px;
-    background: var(--bg-subtle);
-    border-radius: 8px;
-    width: fit-content;
-  }
-  .qg-mode-btn {
-    padding: 8px 16px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--ink-muted, #6b6256);
-    transition: all var(--motion-fast) var(--ease-out);
-  }
-  .qg-mode-btn:hover {
-    background: rgba(255,255,255,0.5);
-    color: var(--ink);
-  }
-  .qg-mode-btn.active {
-    background: #fff;
-    color: var(--ink);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  }
   .qg-bulk-help {
     background: var(--bg-subtle);
     border: 1px solid rgba(24, 24, 27, 0.08);
@@ -5000,58 +4346,6 @@
   .fb-fab:hover { background: var(--ink-soft); transform: translateY(-2px); }
   .fb-fab:active { transform: translateY(0); }
   .fb-fab svg { display: block; }
-
-  .fb-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 9995;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .fb-overlay.open { display: flex; animation: fadeIn var(--motion-fast) var(--ease-out); }
-  .fb-modal {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    max-width: 460px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.24);
-    animation: confirmPopIn var(--motion-medium) var(--ease-out-soft);
-  }
-  .fb-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
-  .fb-head h3 {
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.01em;
-    margin: 0;
-  }
-  .fb-close {
-    background: none;
-    border: none;
-    font-size: 26px;
-    line-height: 1;
-    color: var(--ink-tertiary);
-    cursor: pointer;
-    padding: 0 4px;
-  }
-  .fb-close:hover { color: var(--ink); }
-  .fb-desc {
-    font-size: 13px;
-    color: var(--ink-mute);
-    line-height: 1.6;
-    margin: 0 0 18px;
-  }
   .fb-field { margin-bottom: 14px; }
   .fb-field label {
     display: block;
@@ -5088,12 +4382,6 @@
     color: var(--ink-tertiary);
     font-family: var(--font-mono);
     margin-top: 4px;
-  }
-  .fb-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    margin-top: 20px;
   }
 
   @media (max-width: 640px) {
@@ -5187,10 +4475,6 @@
     background: var(--ink);
     color: #fff;
     border-color: var(--ink);
-  }
-  .exam-row-empty .exam-na {
-    font-size: 12px;
-    color: rgba(24, 24, 27, 0.35);
   }
   .exams-copyright {
     margin-top: 10px;
@@ -5385,7 +4669,6 @@
     .combined,
     .result-card,
     .qgrade-section,
-    .log-form,
     .school-card {
       border-radius: var(--radius-md);
     }
@@ -5492,8 +4775,7 @@
       gap: 8px;
     }
 
-    .sc-note,
-    .info-callout {
+    .sc-note {
       text-align: left;
       word-break: keep-all;
       overflow-wrap: anywhere;
@@ -5511,10 +4793,6 @@
       min-height: 38px;
       display: inline-flex;
       align-items: center;
-    }
-
-    .adm-summary {
-      grid-template-columns: 1fr;
     }
 
     table.adm-table tr {
@@ -5548,13 +4826,8 @@
       min-width: 0;
     }
 
-    .qgrade-grid,
     .admin-grid {
       gap: 5px;
-    }
-
-    .qg-cell {
-      min-height: 42px;
     }
 
     .qstats-row {
@@ -5603,7 +4876,6 @@
       font-size: 9px;
     }
 
-    .qgrade-grid,
     .admin-grid {
       grid-template-columns: repeat(5, 1fr);
     }
@@ -5647,7 +4919,6 @@
     }
 
     .log-actions,
-    .fb-actions,
     .confirm-actions {
       display: grid;
       grid-template-columns: 1fr;
@@ -5656,29 +4927,9 @@
 
     .log-actions .btn-primary,
     .log-actions .btn-secondary,
-    .fb-actions button,
     .confirm-actions button {
       width: 100%;
       min-height: 46px;
-    }
-
-    details.guidance-callout {
-      padding: 0;
-      border-left-width: 0;
-      overflow: hidden;
-    }
-
-    details.guidance-callout summary {
-      min-height: 46px;
-      padding: 0 14px;
-      background: var(--bg-subtle);
-    }
-
-    details.guidance-callout ul {
-      margin: 0;
-      padding: 12px 16px 14px 28px;
-      background: var(--bg-card);
-      border-top: 1px solid var(--line);
     }
 
     .school-search-clear,
@@ -5713,17 +4964,6 @@
       overflow: visible;
       clip: auto;
       white-space: normal;
-    }
-
-    .fb-overlay {
-      align-items: flex-end;
-      padding: 12px;
-    }
-
-    .fb-modal {
-      max-height: min(86vh, 620px);
-      padding: 18px;
-      border-radius: var(--radius-lg);
     }
   }
 
@@ -5868,9 +5108,7 @@
   }
 
   .section-desc,
-  .sc-note,
-  .info-callout,
-  details.guidance-callout {
+  .sc-note {
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
@@ -5885,126 +5123,6 @@
   /* Admission redesign: decision dashboard */
   #tab-admission .input-area {
     margin-bottom: 14px;
-  }
-
-  #tab-admission .adm-summary {
-    grid-template-columns: minmax(280px, 1.7fr) repeat(3, minmax(150px, 1fr));
-    align-items: stretch;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-
-  #tab-admission .adm-summary-react {
-    grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr);
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .adm-summary-lead,
-  #tab-admission .adm-summary-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: var(--bg-card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
-    min-width: 0;
-    min-height: 118px;
-  }
-
-  #tab-admission .adm-report-card {
-    min-height: 100%;
-    border-color: rgb(var(--accent-rgb) / 0.24);
-    background:
-      linear-gradient(135deg, rgba(239, 246, 255, 0.96), rgba(255, 255, 255, 0.98) 62%),
-      var(--bg-card);
-    box-shadow: 0 16px 34px rgb(var(--line-rgb) / 0.08);
-  }
-
-  #tab-admission .adm-report-kicker {
-    color: var(--accent-hover);
-  }
-
-  #tab-admission .adm-summary-stack {
-    min-width: 0;
-  }
-
-  #tab-admission .adm-metric-card {
-    min-height: 118px;
-    transition:
-      transform var(--motion-fast) var(--ease-out),
-      border-color var(--motion-fast) var(--ease-out),
-      box-shadow var(--motion-fast) var(--ease-out);
-  }
-
-  #tab-admission .adm-metric-card:hover {
-    transform: translateY(-2px);
-    border-color: rgb(var(--accent-rgb) / 0.24);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .adm-summary-lead {
-    padding: 12px 14px;
-  }
-
-  .adm-summary-lead .as-label,
-  #tab-admission .adm-summary-item .as-label {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--ink-mute);
-  }
-
-  .adm-summary-lead strong {
-    display: block;
-    margin-top: 6px;
-    color: var(--ink);
-    font-size: 24px;
-    line-height: 1.2;
-    letter-spacing: 0;
-    max-width: 100%;
-  }
-
-  .adm-summary-lead p {
-    margin-top: 5px;
-    color: var(--ink-soft);
-    font-size: 12px;
-    line-height: 1.45;
-    word-break: keep-all;
-    max-width: 100%;
-  }
-
-  .adm-readiness {
-    display: inline-flex;
-    align-items: center;
-    min-height: 24px;
-    margin-top: 8px;
-    padding: 4px 9px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-subtle);
-    color: var(--ink-soft);
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  #tab-admission .adm-summary-item {
-    padding: 12px 14px;
-  }
-
-  #tab-admission .adm-summary-item .as-val {
-    margin-top: 6px;
-    font-size: 24px;
-    line-height: 1.2;
-  }
-
-  #tab-admission .adm-summary-item .as-sub {
-    margin-top: 6px;
-    text-align: center;
   }
 
   .adm-decision-toolbar {
@@ -6070,18 +5188,6 @@
     margin: 10px 0 12px;
   }
 
-  #admFilterCard {
-    margin-bottom: 14px;
-  }
-
-  .adm-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 14px;
-    align-items: start;
-    margin-bottom: 16px;
-  }
-
   .adm-card-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6089,334 +5195,6 @@
     min-width: 0;
   }
 
-  .adm-school-card {
-    position: relative;
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-    transition:
-      transform var(--motion-fast) var(--ease-out),
-      border-color var(--motion-fast) var(--ease-out),
-      box-shadow var(--motion-fast) var(--ease-out),
-      background-color var(--motion-fast) var(--ease-out);
-  }
-
-
-  .adm-school-card:hover {
-    transform: translateY(-2px);
-    border-color: rgb(var(--accent-rgb) / 0.24);
-    box-shadow: var(--shadow-lg);
-  }
-
-  .adm-school-card.active {
-    border-color: rgb(var(--accent-rgb) / 0.24);
-    box-shadow: var(--shadow-md);
-    background: #FBFDFF;
-  }
-
-  .adm-card-hit {
-    width: 100%;
-    min-height: 190px;
-    padding: 15px 16px 14px;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    text-align: left;
-    cursor: pointer;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-rows: auto auto auto auto;
-    column-gap: 10px;
-    row-gap: 10px;
-  }
-
-  .adm-card-rank {
-    grid-column: 1;
-    grid-row: 1;
-    width: 28px;
-    height: 28px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--bg-subtle);
-    color: var(--ink-mute);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-  }
-
-  .adm-card-head {
-    grid-column: 2;
-    grid-row: 1;
-    min-width: 0;
-    padding-right: 30px;
-  }
-
-  .adm-card-head strong {
-    display: block;
-    color: var(--ink);
-    font-size: 17px;
-    line-height: 1.25;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .adm-card-head span {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 6px;
-  }
-
-  .adm-card-head i {
-    font-style: normal;
-    margin-left: 0;
-  }
-
-  .adm-card-diff {
-    grid-column: 3;
-    grid-row: 1;
-    align-self: start;
-    text-align: right;
-    min-width: 66px;
-  }
-
-  .adm-card-diff em {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-
-  .adm-card-diff small {
-    display: block;
-    margin-top: 4px;
-    color: var(--ink-mute);
-    font-size: 10px;
-    font-weight: 600;
-    word-break: keep-all;
-  }
-
-  .adm-card-diff.plus em,
-  .adm-detail-score strong.plus { color: var(--success); }
-  .adm-card-diff.minus em,
-  .adm-detail-score strong.minus { color: var(--danger); }
-  .adm-card-diff.even em,
-  .adm-card-diff.na em,
-  .adm-detail-score strong.even,
-  .adm-detail-score strong.na { color: var(--ink-mute); }
-
-  .adm-card-meter {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    height: 6px;
-    border-radius: 999px;
-    background: var(--bg-subtle);
-    overflow: hidden;
-  }
-
-  .adm-card-meter b {
-    display: block;
-    height: 100%;
-    min-width: 8px;
-    max-width: 100%;
-    border-radius: 999px;
-    background: var(--accent);
-  }
-
-  .grade-safe .adm-card-meter b { background: #16a34a; }
-  .grade-match .adm-card-meter b { background: #0ea5e9; }
-  .grade-reach .adm-card-meter b { background: #f59e0b; }
-  .grade-hard .adm-card-meter b,
-  .grade-pending .adm-card-meter b { background: var(--ink-tertiary); }
-
-  .adm-card-metrics {
-    grid-column: 1 / -1;
-    grid-row: 3;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  .adm-card-metrics span {
-    min-width: 0;
-    padding: 8px 9px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: var(--bg-subtle);
-  }
-
-  .adm-card-metrics small {
-    display: block;
-    color: var(--ink-mute);
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-  .adm-card-metrics b {
-    display: block;
-    margin-top: 3px;
-    color: var(--ink);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 700;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .adm-card-copy {
-    grid-column: 1 / -1;
-    grid-row: 4;
-    color: var(--ink-soft);
-    font-size: 12px;
-    line-height: 1.55;
-    word-break: keep-all;
-  }
-
-  .adm-card-favorite,
-  .adm-detail-favorite {
-    width: 34px;
-    height: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #fff;
-    color: var(--ink-mute);
-    font-size: 17px;
-    cursor: pointer;
-  }
-
-  .adm-card-favorite {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 2;
-  }
-
-  .adm-card-favorite:hover,
-  .adm-detail-favorite:hover,
-  .adm-card-favorite.active,
-  .adm-detail-favorite.active {
-    border-color: rgba(180, 83, 9, 0.35);
-    background: #FFF7ED;
-    color: var(--warning);
-  }
-
-  .adm-detail-panel {
-    position: sticky;
-    top: 14px;
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--bg-card);
-    box-shadow: var(--shadow-sm);
-    padding: 18px;
-  }
-
-  .adm-detail-head {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    align-items: flex-start;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .adm-detail-eyebrow {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 800;
-  }
-
-  .adm-detail-head h3 {
-    margin-top: 5px;
-    color: var(--ink);
-    font-size: 24px;
-    line-height: 1.2;
-  }
-
-  .adm-detail-head p {
-    margin-top: 7px;
-    color: var(--ink-mute);
-    font-size: 12px;
-    line-height: 1.55;
-    word-break: keep-all;
-  }
-
-  .adm-detail-score {
-    margin-top: 14px;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--bg-subtle);
-  }
-
-  .adm-detail-score span,
-  .adm-detail-score small {
-    display: block;
-    color: var(--ink-mute);
-    font-size: 12px;
-    font-weight: 700;
-  }
-
-  .adm-detail-score strong {
-    display: block;
-    margin: 5px 0;
-    font-family: var(--font-mono);
-    font-size: 34px;
-    line-height: 1;
-  }
-
-  .adm-detail-score small {
-    line-height: 1.5;
-    font-weight: 500;
-    word-break: keep-all;
-  }
-
-  .adm-detail-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .adm-detail-grid div {
-    min-width: 0;
-    padding: 10px 11px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    background: #fff;
-  }
-
-  .adm-detail-grid span {
-    display: block;
-    color: var(--ink-mute);
-    font-size: 10px;
-    font-weight: 700;
-  }
-
-  .adm-detail-grid strong {
-    display: block;
-    margin-top: 4px;
-    color: var(--ink);
-    font-family: var(--font-mono);
-    font-size: 13px;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-  }
-
-  .adm-detail-note,
-  .adm-detail-empty,
   .adm-empty-card {
     margin-top: 12px;
     padding: 12px;
@@ -6428,7 +5206,6 @@
     word-break: keep-all;
   }
 
-  .adm-detail-empty,
   .adm-empty-card {
     margin: 0;
     min-height: 160px;
@@ -6440,7 +5217,6 @@
     border: 1px dashed var(--line-strong);
   }
 
-  .adm-detail-empty strong,
   .adm-empty-card strong {
     color: var(--ink);
     font-size: 15px;
@@ -6499,41 +5275,7 @@
     margin-bottom: 0;
   }
 
-  @media (max-width: 1100px) {
-    #tab-admission .adm-summary {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    #tab-admission .adm-summary-react {
-      grid-template-columns: 1fr;
-    }
-
-    .adm-summary-lead {
-      grid-column: 1 / -1;
-    }
-
-    .adm-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .adm-detail-panel {
-      position: static;
-    }
-  }
-
   @media (max-width: 760px) {
-    #tab-admission .adm-summary {
-      grid-template-columns: 1fr;
-    }
-
-    .adm-layout {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .adm-detail-panel {
-      order: -1;
-    }
 
     .adm-grade-tabs {
       margin: 0 -2px;
@@ -6545,39 +5287,6 @@
     }
 
     .adm-card-list {
-      grid-template-columns: 1fr;
-    }
-
-    .adm-card-hit {
-      min-height: 0;
-      grid-template-columns: auto minmax(0, 1fr);
-      padding: 14px;
-    }
-
-    .adm-card-diff {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      text-align: left;
-      min-width: 0;
-      padding-top: 2px;
-    }
-
-    .adm-card-meter {
-      grid-row: 3;
-    }
-
-    .adm-card-metrics {
-      grid-row: 4;
-    }
-
-    .adm-card-copy {
-      grid-row: 5;
-    }
-
-    .adm-detail-grid {
       grid-template-columns: 1fr;
     }
 
@@ -6654,17 +5363,6 @@
     word-break: keep-all;
   }
 
-  #admShortlistMeta {
-    flex: 0 0 auto;
-    padding: 6px 10px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-subtle);
-    color: var(--ink-soft);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-  }
-
   .adm-shortlist-panel .adm-card-list {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -6701,19 +5399,6 @@
     align-items: start;
   }
 
-  .adm-short-initial {
-    width: 42px;
-    height: 42px;
-    border-radius: 999px;
-    background: #ECEEF3;
-    color: var(--ink-soft);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-size: 17px;
-  }
-
   .adm-short-title {
     min-width: 0;
   }
@@ -6734,16 +5419,6 @@
     color: var(--ink-mute);
     font-size: 12px;
     font-weight: 600;
-  }
-
-  .adm-short-rank {
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    background: var(--bg-subtle);
-    color: var(--ink-mute);
-    font-size: 10px;
-    font-weight: 800;
-    white-space: nowrap;
   }
 
   .adm-short-lines {
@@ -6947,7 +5622,6 @@
       align-items: stretch;
     }
 
-    #admShortlistMeta,
     .adm-compare-clear {
       width: 100%;
       text-align: center;
@@ -6965,11 +5639,6 @@
 
     .adm-short-top {
       grid-template-columns: 38px minmax(0, 1fr);
-    }
-
-    .adm-short-rank {
-      grid-column: 2;
-      justify-self: start;
     }
 
     .adm-short-lines div {
@@ -7066,10 +5735,6 @@
       box-shadow 180ms var(--ease-out);
   }
 
-  .adm-compare-panel.is-updated .adm-compare-slot:not(.empty) {
-    animation: admSlotSettle 360ms var(--ease-out) both;
-  }
-
   .adm-compare-table tbody tr {
     transition: background-color 160ms var(--ease-out);
   }
@@ -7102,8 +5767,6 @@
     .school-card:hover,
     .exam-card:hover,
     .stat-card:hover,
-    #tab-admission .adm-metric-card:hover,
-    .adm-school-card:hover,
     .adm-short-card:hover {
       transform: none;
     }
@@ -7150,8 +5813,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .adm-short-card,
-    .adm-compare-panel.is-updated .adm-compare-slot:not(.empty) {
+    .adm-short-card {
       animation: none !important;
       transform: none !important;
     }
@@ -7381,7 +6043,6 @@
   .notice-banner__icon {
     flex: 0 0 auto;
   }
-  .notice-banner--update .notice-banner__icon { color: #047857; }
   .notice-banner--daily .notice-banner__icon { color: var(--accent-hover); }
   .notice-banner__close {
     display: inline-grid;
@@ -7744,8 +6405,6 @@
   #heroPulse .hp-field-label { font-size: 12px; margin-bottom: 8px; }
   #heroPulse .hp-field input { width: 100%; min-width: 0; text-align: left; font-size: 24px !important; }
   #heroPulse .hp-field-max { flex-shrink: 0; }
-  #heroPulse .hp-percentile-text.has-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
-  #heroPulse .hp-stat { min-width: 0; padding: 10px; }
   header.masthead { gap: 10px; padding: 14px; }
   .masthead .meta { margin: 0; }
   .masthead .auth-info { overflow-wrap: anywhere; }
@@ -7773,16 +6432,12 @@
   .schools-controls .ctrl-label,
   .login-nudge-kicker,
   .sf-count,
-  .adm-summary-item .as-label,
-  .adm-summary-item .as-sub,
   .adm-school-sub,
   .exam-qtype,
   .header-timer-controls label,
   .header-timer-controls select,
   .header-timer-controls input,
   .header-timer-controls button,
-  .exam-timer-controls label,
-  .exam-timer-ring > span,
   .timer-dock-label,
   table.conv th,
   .header-timer-copy span,
@@ -7841,14 +6496,7 @@
     @keyframes ddayShine { from, to { transform: translateX(-120%); } }
 
     /* 호버 리프트·눌림 축소 제거 — 배경·그림자 변화는 그대로 상태를 알려준다 */
-    .btn-primary:hover, .btn-primary:active,
-    .btn-accent:hover, .btn-accent:active,
-    .auth-btn:hover, .login-nudge-btn:hover,
-    .tab-btn:active, .favorite-btn:active,
-    .qg-cell:hover, .admin-cell:hover,
-    .fb-fab:hover, .fb-fab:active,
-    .hp-next-step button:active,
-    .adm-compare-clear:hover { transform: none; }
+    .btn-primary:hover, .btn-primary:active, .btn-accent:hover, .btn-accent:active, .auth-btn:hover, .login-nudge-btn:hover, .tab-btn:active, .favorite-btn:active, .admin-cell:hover, .fb-fab:hover, .fb-fab:active, .hp-next-step button:active, .adm-compare-clear:hover { transform: none; }
 
     /* 탭 램프는 미끄러지지 않고 새 탭 자리에서 켜진다 */
     .tab-lamp { transition: opacity var(--motion-fast) var(--ease-out); }
@@ -7872,12 +6520,7 @@
      터치 기기(pointer: coarse)에서는 시험 중 시간 압박 속에 누르는 타이머·보조 컨트롤을 44px 이상으로.
      마우스 환경의 촘촘한 밀도는 그대로 둔다. */
   @media (pointer: coarse) {
-    .timer-dock button, .timer-log-nudge button,
-    .header-timer-controls select, .header-timer-controls input, .header-timer-controls button, .timer-setup-card .header-timer-controls button,
-    .exam-timer-controls select, .exam-timer-controls input, .exam-timer-start,
-    .btn-tiny, .auth-btn.auth-login-open, .login-nudge-btn,
-    .adm-grade-tabs button, .adm-compare-clear,
-    details.info-callout summary, .foot-links a, .sch-chip, .y-chip {
+    .timer-dock button, .timer-log-nudge button, .header-timer-controls select, .header-timer-controls input, .header-timer-controls button, .timer-setup-card .header-timer-controls button, .btn-tiny, .auth-btn.auth-login-open, .login-nudge-btn, .adm-grade-tabs button, .adm-compare-clear, .foot-links a, .sch-chip, .y-chip {
       min-height: 44px;
     }
 
@@ -7936,23 +6579,6 @@
   .section-desc {
     margin-left: 0;
   }
-
-  .adm-summary-lead,
-  #tab-admission .adm-summary-item {
-    justify-content: flex-start;
-    align-items: flex-start;
-    text-align: left;
-  }
-  #tab-admission .adm-report-card {
-    background: var(--bg-card);
-    border-color: var(--line);
-    box-shadow: none;
-  }
-  #tab-admission .adm-metric-card:hover {
-    transform: none;
-    border-color: var(--line);
-    box-shadow: var(--shadow-sm);
-  }
   .adm-short-card,
   .adm-short-card.grade-safe,
   .adm-short-card.grade-match,
@@ -7972,8 +6598,7 @@
   .sc-total-label,
   .sc-leet-pct,
   .login-nudge-kicker,
-  .adm-short-lines strong,
-  #tab-admission .adm-summary-item .as-val.empty {
+  .adm-short-lines strong {
     font-family: var(--font-sans);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0;
